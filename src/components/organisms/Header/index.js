@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../../store/actions/authActions';
@@ -27,7 +26,10 @@ function Header() {
   return (
     <header className="header">
       <div className="header-left">
-        <h2>Görev Takip Sistemi Pro</h2>
+        <h2 className="header-title">
+          <span className="full-title">Görev Takip Sistemi Pro</span>
+          <span className="short-title">GTS Pro</span>
+        </h2>
       </div>
       <div className="header-right">
         <button onClick={toggleTheme} className="theme-button">
