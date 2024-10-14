@@ -1,4 +1,4 @@
-import { LOGIN_SUCCESS, LOGIN_ERROR } from '../actions/authActions';
+import { LOGIN_SUCCESS, LOGIN_ERROR, LOGOUT } from '../actions/authActions';
 
 const initialState = {
   user: null,
@@ -17,6 +17,12 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         authError: action.payload,
+      };
+      case LOGOUT:
+      return {
+        ...state,
+        user: null,
+        authError: null,
       };
     default:
       return state;

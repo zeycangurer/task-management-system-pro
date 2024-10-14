@@ -1,8 +1,9 @@
 import { auth } from '../../firebaseConfig';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
+export const LOGOUT = 'LOGOUT';
 
 
 export const loginUser = (email, password) => {
@@ -29,6 +30,18 @@ export const loginUser = (email, password) => {
 
         dispatch({ type: LOGIN_ERROR, payload: errorMessage });
         return Promise.reject(error);
+      });
+  };
+};
+
+export const logoutUser = () => {
+  return (dispatch) => {
+    return signOut(auth)
+      .then(() => {
+        dispatch({ type: LOGOUT });
+      })
+      .catch((error) => {
+        console.error('Çıkış yaparken hata oluştu:', error);
       });
   };
 };

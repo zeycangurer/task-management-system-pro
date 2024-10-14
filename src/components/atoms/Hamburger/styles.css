@@ -1,0 +1,17 @@
+.hamburger {
+    display: none; 
+    font-size: 24px;
+    color: var(--text-color);
+    cursor: pointer;
+    z-index: 1001; 
+  }
+  
+  @media (max-width: 768px) {
+    .hamburger {
+      display: block;
+      position: fixed;
+      top: 15px;
+      left: 15px;
+    }
+  }
+  
