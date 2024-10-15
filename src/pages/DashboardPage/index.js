@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../components/organisms/Header';
 import Sidebar from '../../components/organisms/Sidebar';
 import StatsCard from '../../components/organisms/StatsCard';
-import TaskList from '../../components/organisms/TaskList';
+import DashboardTaskList from '../../components/organisms/DashboardTaskList';
 import RecentActivities from '../../components/organisms/RecentActivities';
 import { FaTasks, FaCheckCircle, FaProjectDiagram, FaUserPlus } from 'react-icons/fa';
 import './styles.css';
@@ -12,6 +12,7 @@ import { fetchTasks } from '../../store/actions/taskActions';
 function DashboardPage() {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks.tasks);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchTasks());
@@ -50,13 +51,15 @@ function DashboardPage() {
     { id: 3, type: 'user', description: 'Yeni kullanıcı kaydı.', time: '3 gün önce' },
   ];
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="dashboard-container">
-      <>
-        <Sidebar />
-        <Header />
-      </>
-      <div className="dashboard-main">
+      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+        <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         <main>
           <div className="stats-section">
             {stats.map((stat) => (
@@ -70,7 +73,7 @@ function DashboardPage() {
             ))}
           </div>
           <div className="main-section">
-            <TaskList tasks={tasks} />
+            <DashboardTaskList tasks={tasks} />
             <RecentActivities activities={activities} />
           </div>
         </main>

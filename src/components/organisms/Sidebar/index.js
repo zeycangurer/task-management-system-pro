@@ -1,32 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   FaTachometerAlt, 
   FaTasks, 
   FaProjectDiagram, 
   FaUser, 
-  FaChartPie, 
-  FaBars, 
-  FaTimes 
+  FaChartPie 
 } from 'react-icons/fa';
 import './styles.css';
 
-function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+function Sidebar({ isOpen, toggleSidebar }) {
 
   const handleLinkClick = () => {
-    setIsOpen(false);
+    if (isOpen) toggleSidebar();
+  };
+
+  const handleOverlayClick = () => {
+    if (isOpen) toggleSidebar();
   };
 
   return (
     <>
-      <div className="hamburger" onClick={toggleSidebar}>
-        {isOpen ? <FaTimes /> : <FaBars />}
-      </div>
+      {isOpen && <div className="overlay" onClick={handleOverlayClick}></div>}
 
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">

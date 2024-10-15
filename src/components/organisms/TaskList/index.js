@@ -1,64 +1,53 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import React from 'react';
 import './styles.css';
-import { FaCheckCircle, FaCircle, FaPlus } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
-import { addTask } from '../../../store/actions/taskActions';
 
 function TaskList({ tasks }) {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [newTaskTitle, setNewTaskTitle] = useState('');
+  console.log("TaskList received tasks:", tasks); 
 
-  const handleTaskClick = (taskId) => {
-    navigate(`/tasks/${taskId}`);
-  };
+  if (!Array.isArray(tasks)) {
+    console.error("Görevler dizisi değil:", tasks);
+    return <p>Görevler yükleniyor...</p>;
+  }
 
-  const handleAddTask = (e) => {
-    e.preventDefault();
-    if (newTaskTitle.trim() === '') return;
-
-    const task = {
-      title: newTaskTitle,
-      completed: false,
-      assignedTo: '',
-      history: [],
-      createdAt: new Date().toISOString(),
-    };
-
-    dispatch(addTask(task));
-    setNewTaskTitle('');
-  };
+  if (tasks.length === 0) {
+    console.log("Hiç görev bulunmuyor.");
+  }
 
   return (
-    <div className="task-list">
-      <h3>Görevler</h3>
-      <form onSubmit={handleAddTask} className="add-task-form">
-        <input
-          type="text"
-          placeholder="Yeni görev ekle..."
-          value={newTaskTitle}
-          onChange={(e) => setNewTaskTitle(e.target.value)}
-          required
-        />
-        <button type="submit" className="add-task-button">
-          <FaPlus />
-        </button>
-      </form>
-      <ul>
-        {tasks && tasks.length > 0 ? (
-          tasks.map((task) => (
-            <li key={task.id} onClick={() => handleTaskClick(task.id)}>
-              <span className="task-title">{task.title}</span>
-              <span className="task-status">
-                {task.completed ? <FaCheckCircle className="task-icon completed-icon" /> : <FaCircle className="task-icon" />}
-              </span>
-            </li>
-          ))
-        ) : (
-          <li>Görev bulunamadı.</li>
-        )}
-      </ul>
+    <div className="task-list-container">
+      {tasks.length === 0 ? (
+        <p>Görev bulunmamaktadır.</p>
+      ) : (
+        <table className="task-table">
+          <thead>
+            <tr>
+              <th>Başlık</th>
+              <th>Tanım</th>
+              <th>Atanan Kişi</th>
+              <th>Oluşturan Kişi</th>
+              <th>Durum</th>
+              <th>Tarih</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tasks.map((task) => (
+              <tr key={task.id}>
+                <td>{task.title}</td>
+                <td>{task.description}</td>
+                <td>{task.assignedToName}</td>
+                <td>{task.createdUserName}</td>
+                <td>
+                  <span className={`status ${task.completed ? 'completed' : 'pending'}`}>
+                    {task.completed ? 'Tamamlandı' : 'Bekliyor'}
+                  </span>
+                </td>
+                <td>{task.date || (task.dueDate ? new Date(task.dueDate.seconds * 1000 + task.dueDate.nanoseconds / 1000000).toLocaleDateString() : 'N/A')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
