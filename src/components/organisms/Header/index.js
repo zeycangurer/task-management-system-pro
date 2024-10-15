@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../../store/actions/authActions';
-import { FaUserCircle, FaSun, FaMoon } from 'react-icons/fa';
+import { FaUserCircle, FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
 import './styles.css';
 
-function Header() {
+function Header({ toggleSidebar, isSidebarOpen }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
@@ -17,7 +17,7 @@ function Header() {
     dispatch(logoutUser());
   };
 
-  const toggleTheme = () => {
+  const toggleThemeMode = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
@@ -25,19 +25,33 @@ function Header() {
 
   return (
     <header className="header">
-      <div className="header-left">
+      <div
+        className="hamburger"
+        onClick={toggleSidebar}
+        aria-label={isSidebarOpen ? 'Sidebar Kapat' : 'Sidebar Aç'}
+        role="button"
+        tabIndex={0}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') toggleSidebar();
+        }}
+      >
+        {isSidebarOpen ? <FaTimes /> : <FaBars />}
+      </div>
+
+      <div className="header-title-container">
         <h2 className="header-title">
           <span className="full-title">Görev Takip Sistemi Pro</span>
           <span className="short-title">GTS Pro</span>
         </h2>
       </div>
+
       <div className="header-right">
-        <button onClick={toggleTheme} className="theme-button">
+        <button onClick={toggleThemeMode} className="theme-button" aria-label="Temayı Değiştir">
           {theme === 'light' ? <FaMoon /> : <FaSun />}
         </button>
         <div className="user-info">
           <FaUserCircle className="user-icon" />
-          <span>{user.email}</span>
+          <span className="user-email">{user.email}</span>
         </div>
         <button onClick={handleLogout} className="logout-button">
           Çıkış Yap
