@@ -2,7 +2,7 @@
 import React from 'react';
 import './styles.css';
 
-function TaskList({ tasks }) {
+function TaskList({ tasks, onTaskClick }) {
   console.log("TaskList received tasks:", tasks); 
 
   if (!Array.isArray(tasks)) {
@@ -32,7 +32,7 @@ function TaskList({ tasks }) {
           </thead>
           <tbody>
             {tasks.map((task) => (
-              <tr key={task.id}>
+              <tr key={task.id} onClick={() => onTaskClick(task.id)} className="clickable-row">
                 <td>{task.title}</td>
                 <td>{task.description}</td>
                 <td>{task.assignedToName}</td>
