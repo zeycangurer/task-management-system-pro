@@ -55,3 +55,12 @@
     font-size: 0.7rem;
   }
 }
+
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.clickable-row:hover {
+  background-color: #f1f1f1;
+}

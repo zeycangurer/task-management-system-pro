@@ -1,5 +1,3 @@
-// src/pages/TasksPage/index.js
-
 import React, { useEffect, useState, useMemo } from 'react';
 import Header from '../../components/organisms/Header';
 import Sidebar from '../../components/organisms/Sidebar';
@@ -10,10 +8,11 @@ import { fetchTasks } from '../../store/actions/taskActions';
 import { fetchUsers } from '../../store/actions/userActions';
 import { fetchCustomers } from '../../store/actions/customerActions';
 import { startOfYear, format } from 'date-fns';
+import { useNavigate } from 'react-router-dom';
 
 function TasksPage() {
   const dispatch = useDispatch();
-  
+  const navigate = useNavigate();
   const tasksState = useSelector((state) => state.tasks);
   const usersState = useSelector((state) => state.users);
   const customersState = useSelector((state) => state.customers);
@@ -153,6 +152,10 @@ function TasksPage() {
     console.log("Tasks with User Names:", tasksWithUserNames);
   }, [tasksState.tasks, usersState.users, customersState.customers, filteredTasks, tasksWithUserNames]);
 
+  const handleTaskClick = (taskId) => {
+    navigate(`/tasks/${taskId}`);
+  };
+
   return (
     <div className="dashboard-container">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -218,7 +221,7 @@ function TasksPage() {
             ) : tasksState.error ? (
               <p className="error">{tasksState.error}</p>
             ) : (
-              <TaskList tasks={tasksWithUserNames} />
+              <TaskList tasks={tasksWithUserNames} onTaskClick={handleTaskClick} />
             )}
           </div>
         </main>
