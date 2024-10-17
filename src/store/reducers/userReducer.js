@@ -1,8 +1,13 @@
-
-import { FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS, FETCH_USERS_FAILURE } from '../actions/userActions';
+import { 
+  FETCH_USERS_REQUEST, 
+  FETCH_USERS_SUCCESS, 
+  FETCH_USERS_FAILURE, 
+  SET_CURRENT_USER 
+} from '../actions/userActions';
 
 const initialState = {
   users: [],
+  currentUser: null,
   loading: false,
   error: null,
 };
@@ -15,6 +20,8 @@ const userReducer = (state = initialState, action) => {
       return { ...state, users: action.payload, loading: false };
     case FETCH_USERS_FAILURE:
       return { ...state, loading: false, error: action.payload };
+    case SET_CURRENT_USER:
+      return { ...state, currentUser: action.payload };
     default:
       return state;
   }

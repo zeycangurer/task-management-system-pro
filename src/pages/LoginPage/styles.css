@@ -8,7 +8,7 @@
   height: 100vh;
   width: 100%;
   display: flex;
-  justify-content: center; /* Merkezi hizalama */
+  justify-content: center; 
   align-items: center;
   background-size: cover;
   background-position: center;
@@ -42,11 +42,11 @@
   
   @media (max-width: 768px) {
     .login-wrapper {
-      padding-right: 50px; /* Mobil cihazlarda sağ padding'i azalt */
+      padding-right: 50px; 
     }
   
     .login-container {
-      padding-left: 0; /* Mobil cihazlarda sol padding'i kaldır */
+      padding-left: 0;
     }
   }
   

@@ -103,9 +103,9 @@ function TasksPage() {
       return;
     }
 
-    console.log("Yüklenen görevler:", tasksState.tasks);
-    console.log("Yüklenen kullanıcılar:", usersState.users);
-    console.log("Yüklenen müşteriler:", customersState.customers);
+    console.log("Yüklenen görevler:", JSON.stringify(tasksState.tasks));
+    console.log("Yüklenen kullanıcılar:", JSON.stringify(usersState.users));
+    console.log("Yüklenen müşteriler:", JSON.stringify(customersState.customers));
 
     filterTasks();
   }, [
