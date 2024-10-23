@@ -70,9 +70,9 @@ function TaskDetailPage() {
     if (foundTask) {
       setEditTitle(foundTask.title);
       setAssignment(foundTask.assignedTo || []);
-      console.log('Görev:', foundTask);
-      console.log('Kullanıcılar:', users);
-      console.log('Müşteriler:', customers);
+      console.log('Görev:', JSON.stringify(foundTask));
+      console.log('Kullanıcılar:', JSON.stringify(users));
+      console.log('Müşteriler:', JSON.stringify(customers));
     }
   }, [tasks, taskId, users, customers]);
 
@@ -95,10 +95,19 @@ function TaskDetailPage() {
 
   const createdUserName = useMemo(() => {
     if (!task) return 'Bilinmiyor';
-    const user = users.find(u => u.id === task.createdBy);
-    if (user) return user.name;
-    const customer = customers.find(c => c.id === task.createdBy);
-    return customer ? customer.name : 'Bilinmiyor';
+    console.log('Task createdUser ID:', task.createdUser);
+    const user = users.find(u => u.id === task.createdUser);
+    if (user) {
+      console.log('Found user:', user);
+      return user.name;
+    }
+    const customer = customers.find(c => c.id === task.createdUser);
+    if (customer) {
+      console.log('Found customer:', customer);
+      return customer.name;
+    }
+    console.log('User veya customer bulunamadı.');
+    return 'Bilinmiyor';
   }, [task, users, customers]);
 
   const formattedCreatedAt = useMemo(() => {
@@ -124,18 +133,24 @@ function TaskDetailPage() {
   const handleAssignSubmit = () => {
     if (!task) return;
     let newAssignees = assignment;
-
+  
     if (newAssignees.includes('all')) {
       newAssignees = users.map(user => user.id);
     }
-
+  
+    if (newAssignees.length === 0) {
+      message.error('Atama yapabilmek için en az bir kullanıcı seçmelisiniz.');
+      return;
+    }
+  
     newAssignees = newAssignees.filter(userId => userId);
-
+  
     dispatch(assignTask(task.id, newAssignees, currentUser.uid))
       .catch((error) => {
         console.error('Görev atama hatası:', error);
       });
   };
+  
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
