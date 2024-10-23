@@ -5,64 +5,51 @@ import DashboardPage from './pages/DashboardPage';
 import TaskDetailPage from './pages/TaskDetailPage';
 import ProtectedRoute from './ProtectedRoute';
 import TasksPage from './pages/TasksPage';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useDispatch } from 'react-redux';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './firebaseConfig';
-import { LOGIN_SUCCESS, LOGOUT } from './store/actions/authActions';
+import { ToastContainer } from 'antd'
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUsers } from './store/actions/userActions';
+import { fetchCustomers } from './store/actions/customerActions';
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        dispatch({ type: LOGIN_SUCCESS, payload: user });
-      } else {
-        dispatch({ type: LOGOUT });
-      }
-    });
-
-    return () => unsubscribe();
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchUsers());
+      dispatch(fetchCustomers());
+    }
+  }, [dispatch, user]);
 
   return (
     <Router>
-      <ToastContainer />
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
-        
         <Route path="/login" element={<LoginPage />} />
-        
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <DashboardPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        <Route 
-          path="/tasks/:taskId" 
+        <Route
+          path="/tasks/:taskId"
           element={
             <ProtectedRoute>
               <TaskDetailPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-       
-        <Route 
-          path="/tasks" 
+        <Route
+          path="/tasks"
           element={
             <ProtectedRoute>
               <TasksPage />
             </ProtectedRoute>
-          } 
+          }
         />
-        
         <Route path="*" element={<h1>404: Sayfa Bulunamadı</h1>} />
       </Routes>
     </Router>

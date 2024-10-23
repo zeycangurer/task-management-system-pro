@@ -7,7 +7,7 @@ import RecentActivities from '../../components/organisms/RecentActivities';
 import { FaTasks, FaCheckCircle, FaProjectDiagram, FaUserPlus } from 'react-icons/fa';
 import './styles.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks } from '../../store/actions/taskActions';
+import { fetchTasks } from '../../store/actions/taskActions'; 
 
 function DashboardPage() {
   const dispatch = useDispatch();
@@ -15,7 +15,7 @@ function DashboardPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchTasks());
+    dispatch(fetchTasks()); 
   }, [dispatch]);
 
   const stats = [

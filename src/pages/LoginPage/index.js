@@ -5,8 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../store/actions/authActions';
 import './styles.css'
 import backgroundImage from '../../assets/login.jpg'; 
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -27,7 +25,6 @@ function LoginPage() {
       className="login-container"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <ToastContainer />
       <div className="login-wrapper">
         <div className="login-box">
           <h2 className="title">Görev Takip Sistemi Pro</h2>

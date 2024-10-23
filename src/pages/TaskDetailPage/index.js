@@ -2,16 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { 
-  updateTask, 
-  assignTask, 
-  deleteTask, 
-  addComment, 
-  setCurrentUser 
-} from '../../store/actions/taskActions'; 
-import { setCurrentUser as setUser } from '../../store/actions/userActions';
+import { updateTask, assignTask, deleteTask, addComment } from '../../store/actions/taskActions';
 import { FaEdit, FaCheck, FaTrash, FaArrowLeft } from 'react-icons/fa';
-import { Select, notification, Button, Spin, Alert } from 'antd';
+import { Select, message, Button, Spin, Alert } from 'antd'; 
 import Header from '../../components/organisms/Header';
 import Sidebar from '../../components/organisms/Sidebar';
 
@@ -25,7 +18,7 @@ function TaskDetailPage() {
   const tasks = useSelector((state) => state.tasks.tasks);
   const users = useSelector((state) => state.users.users);
   const customers = useSelector((state) => state.customers.customers);
-  const currentUser = useSelector((state) => state.users.currentUser);
+  const currentUser = useSelector((state) => state.auth.user); 
   const usersLoading = useSelector((state) => state.users.loading);
   const customersLoading = useSelector((state) => state.customers.loading);
   const tasksLoading = useSelector((state) => state.tasks.loading);
@@ -40,7 +33,6 @@ function TaskDetailPage() {
   const [editTitle, setEditTitle] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
 
-  
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
     
@@ -78,27 +70,34 @@ function TaskDetailPage() {
     if (foundTask) {
       setEditTitle(foundTask.title);
       setAssignment(foundTask.assignedTo || []);
+      console.log('Görev:', foundTask);
+      console.log('Kullanıcılar:', users);
+      console.log('Müşteriler:', customers);
     }
-  }, [tasks, taskId]);
+  }, [tasks, taskId, users, customers]);
 
   const sortedUsers = useMemo(() => {
     return [...users].sort((a, b) => a.name.localeCompare(b.name));
   }, [users]);
 
   const assignedUserNames = useMemo(() => {
-    if (!task || !Array.isArray(task.assignedTo)) return 'Atanmamış';
-    const names = task.assignedTo.map(userId => {
-      const user = users.find(u => u.id === userId);
-      return user ? user.name : 'Bilinmiyor';
-    });
+    if (!task || !Array.isArray(task.assignedTo) || task.assignedTo.length === 0) return 'Atanmamış';
+    const names = task.assignedTo
+      .filter(userId => userId) 
+      .map(userId => {
+        const user = users.find(u => u.id === userId);
+        if (user) return user.name;
+        const customer = customers.find(c => c.id === userId);
+        return customer ? customer.name : 'Bilinmiyor';
+      });
     return names.length > 0 ? names.join(', ') : 'Atanmamış';
-  }, [task, users]);
+  }, [task, users, customers]);
 
   const createdUserName = useMemo(() => {
     if (!task) return 'Bilinmiyor';
-    const user = users.find(u => u.id === task.createdUser);
+    const user = users.find(u => u.id === task.createdBy);
     if (user) return user.name;
-    const customer = customers.find(c => c.id === task.createdUser);
+    const customer = customers.find(c => c.id === task.createdBy);
     return customer ? customer.name : 'Bilinmiyor';
   }, [task, users, customers]);
 
@@ -118,140 +117,80 @@ function TaskDetailPage() {
       }));
   }, [task, users, customers]);
 
-  
   const handleAssignChange = (value) => {
     setAssignment(value);
   };
 
-  
   const handleAssignSubmit = () => {
     if (!task) return;
-    let assignees = assignment;
+    let newAssignees = assignment;
 
-    if (assignees.includes('all')) {
-      assignees = users.map(user => user.id);
+    if (newAssignees.includes('all')) {
+      newAssignees = users.map(user => user.id);
     }
 
-    dispatch(assignTask(task.id, assignees))
-      .then(() => {
-        notification.success({
-          message: 'Başarılı',
-          description: 'Görev başarıyla atandı.',
-          placement: 'topRight',
-        });
-      })
+    newAssignees = newAssignees.filter(userId => userId);
+
+    dispatch(assignTask(task.id, newAssignees, currentUser.uid))
       .catch((error) => {
-        notification.error({
-          message: 'Hata',
-          description: 'Görev atanırken bir hata oluştu.',
-          placement: 'topRight',
-        });
+        console.error('Görev atama hatası:', error);
       });
   };
 
-  
   const handleCommentSubmit = (e) => {
     e.preventDefault();
     if (comment.trim() === '') return;
-    dispatch(addComment(task.id, comment))
+    dispatch(addComment(task.id, comment, currentUser.uid))
       .then(() => {
-        notification.success({
-          message: 'Başarılı',
-          description: 'Yorum başarıyla eklendi.',
-          placement: 'topRight',
-        });
+        message.success('Yorum başarıyla eklendi.');
       })
       .catch((error) => {
-        notification.error({
-          message: 'Hata',
-          description: 'Yorum eklenirken bir hata oluştu.',
-          placement: 'topRight',
-        });
+        message.error('Yorum eklenirken bir hata oluştu.');
       });
     setComment('');
   };
 
-
   const handleEditTitle = () => {
     if (editTitle.trim() === '') return;
-    dispatch(updateTask({ ...task, title: editTitle }))
+    dispatch(updateTask(task.id, { title: editTitle }, currentUser.uid))
       .then(() => {
-        notification.success({
-          message: 'Başarılı',
-          description: 'Görev başlığı güncellendi.',
-          placement: 'topRight',
-        });
+        message.success('Görev başlığı güncellendi.');
         setIsEditing(false);
       })
       .catch((error) => {
-        notification.error({
-          message: 'Hata',
-          description: 'Görev başlığı güncellenirken bir hata oluştu.',
-          placement: 'topRight',
-        });
+        message.error('Görev başlığı güncellenirken bir hata oluştu.');
       });
   };
 
- 
   const handleDeleteTask = () => {
     dispatch(deleteTask(task.id))
       .then(() => {
-        notification.success({
-          message: 'Başarılı',
-          description: 'Görev başarıyla silindi.',
-          placement: 'topRight',
-        });
+        message.success('Görev başarıyla silindi.');
         navigate('/tasks'); 
       })
       .catch((error) => {
-        notification.error({
-          message: 'Hata',
-          description: 'Görev silinirken bir hata oluştu.',
-          placement: 'topRight',
-        });
+        message.error('Görev silinirken bir hata oluştu.');
       });
   };
-
 
   const handleToggleComplete = () => {
-    dispatch(updateTask({ ...task, completed: !task.completed }))
+    dispatch(updateTask(task.id, { completed: !task.completed }, currentUser.uid))
       .then(() => {
-        notification.success({
-          message: 'Başarılı',
-          description: 'Görev durumu güncellendi.',
-          placement: 'topRight',
-        });
+        message.success('Görev durumu güncellendi.');
       })
       .catch((error) => {
-        notification.error({
-          message: 'Hata',
-          description: 'Görev durumu güncellenirken bir hata oluştu.',
-          placement: 'topRight',
-        });
+        message.error('Görev durumu güncellenirken bir hata oluştu.');
       });
   };
 
-  
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  
   const handleBack = () => {
     navigate(-1);
   };
 
-  
-  useEffect(() => {
-    if (!currentUser && users.length > 0) {
-      const adminUser = users.find(user => user.role === 'admin');
-      if (adminUser) {
-        dispatch(setUser(adminUser));
-      }
-    }
-  }, [currentUser, users, dispatch]);
-
- 
   if (tasksLoading || usersLoading || customersLoading) {
     return (
       <div className="dashboard-container">
@@ -266,7 +205,6 @@ function TaskDetailPage() {
     );
   }
 
-  
   if (tasksError || usersError || customersError) {
     return (
       <div className="dashboard-container">
@@ -283,7 +221,6 @@ function TaskDetailPage() {
     );
   }
 
- 
   if (!task) {
     return (
       <div className="dashboard-container">

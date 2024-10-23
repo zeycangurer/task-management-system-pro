@@ -1,16 +1,22 @@
-import { 
-  SET_TASKS, 
-  SET_TASKS_ERROR,
-  ADD_TASK,
-  ADD_TASK_ERROR,
-  UPDATE_TASK, 
-  UPDATE_TASK_ERROR,
-  DELETE_TASK, 
-  DELETE_TASK_ERROR,
-  ASSIGN_TASK, 
-  ASSIGN_TASK_ERROR,
-  ADD_COMMENT, 
-  ADD_COMMENT_ERROR
+import {
+  CREATE_TASK_REQUEST,
+  CREATE_TASK_SUCCESS,
+  CREATE_TASK_FAILURE,
+  ASSIGN_TASK_REQUEST,
+  ASSIGN_TASK_SUCCESS,
+  ASSIGN_TASK_FAILURE,
+  UPDATE_TASK_REQUEST,
+  UPDATE_TASK_SUCCESS,
+  UPDATE_TASK_FAILURE,
+  ADD_COMMENT_REQUEST,
+  ADD_COMMENT_SUCCESS,
+  ADD_COMMENT_FAILURE,
+  DELETE_TASK_REQUEST,
+  DELETE_TASK_SUCCESS,
+  DELETE_TASK_FAILURE,
+  FETCH_TASKS_REQUEST,
+  FETCH_TASKS_SUCCESS,
+  FETCH_TASKS_FAILURE,
 } from '../actions/taskActions';
 
 const initialState = {
@@ -20,102 +26,76 @@ const initialState = {
 };
 
 const taskReducer = (state = initialState, action) => {
-  switch(action.type){
-    case SET_TASKS:
-      return { 
-        ...state, 
-        tasks: action.payload, 
-        loading: false, 
-        error: null 
-      };
-      
-    case SET_TASKS_ERROR:
+  switch (action.type) {
+    case CREATE_TASK_REQUEST:
+    case FETCH_TASKS_REQUEST:
+    case ASSIGN_TASK_REQUEST:
+    case UPDATE_TASK_REQUEST:
+    case ADD_COMMENT_REQUEST:
+    case DELETE_TASK_REQUEST:
+      return { ...state, loading: true, error: null };
+    
+    case CREATE_TASK_SUCCESS:
       return {
         ...state,
-        error: action.payload,
         loading: false,
-      };
-      
-    case ADD_TASK:
-      return { 
-        ...state, 
         tasks: [...state.tasks, action.payload],
-        error: null,
       };
-      
-    case ADD_TASK_ERROR:
+    
+    case FETCH_TASKS_SUCCESS:
+      return { ...state, loading: false, tasks: action.payload };
+    
+    case ASSIGN_TASK_SUCCESS:
       return {
         ...state,
-        error: action.payload,
-      };
-      
-    case UPDATE_TASK:
-      return { 
-        ...state, 
-        tasks: state.tasks.map(task => 
-          task.id === action.payload.id ? { ...task, ...action.payload } : task
-        ),
-        error: null,
-      };
-      
-    case UPDATE_TASK_ERROR:
-      return {
-        ...state,
-        error: action.payload,
-      };
-      
-    case ASSIGN_TASK:
-      return {
-        ...state,
-        tasks: state.tasks.map(task => 
-          task.id === action.payload.taskId ? { 
-            ...task, 
-            assignedTo: action.payload.assignees,
-          } : task
-        ),
-        error: null,
-      };
-      
-    case ASSIGN_TASK_ERROR:
-      return {
-        ...state,
-        error: action.payload,
-      };
-      
-    case ADD_COMMENT:
-      return {
-        ...state,
+        loading: false,
         tasks: state.tasks.map(task =>
-          task.id === action.payload.taskId ? { 
-            ...task, 
-            history: [
-              ...(task.history || []), 
-              action.payload.comment
-            ],
-          } : task
+          task.id === action.payload.taskId
+            ? { ...task, assignedTo: action.payload.newAssignees }
+            : task
         ),
-        error: null,
       };
-      
-    case ADD_COMMENT_ERROR:
+    
+    case UPDATE_TASK_SUCCESS:
       return {
         ...state,
-        error: action.payload,
+        loading: false,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { ...task, ...action.payload.updatedData }
+            : task
+        ),
       };
-      
-    case DELETE_TASK:
-      return { 
-        ...state, 
+    
+    case ADD_COMMENT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        tasks: state.tasks.map(task =>
+          task.id === action.payload.taskId
+            ? { 
+                ...task, 
+                history: [...task.history, action.payload.comment] 
+              }
+            : task
+        ),
+      };
+    
+    case DELETE_TASK_SUCCESS:
+      return {
+        ...state,
+        loading: false,
         tasks: state.tasks.filter(task => task.id !== action.payload),
-        error: null,
       };
-      
-    case DELETE_TASK_ERROR:
-      return {
-        ...state,
-        error: action.payload,
-      };
-      
+    
+    case CREATE_TASK_FAILURE:
+    case FETCH_TASKS_FAILURE:
+    case ASSIGN_TASK_FAILURE:
+    case UPDATE_TASK_FAILURE:
+    case ADD_COMMENT_FAILURE:
+    case DELETE_TASK_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+    
     default:
       return state;
   }

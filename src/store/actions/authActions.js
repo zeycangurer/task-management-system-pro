@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { auth } from '../../firebaseConfig';
 import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -36,18 +37,18 @@ export const loginUser = (email, password) => {
 };
 
 
-export const logoutUser = () => {
+export const logout = () => {
   return (dispatch) => {
-    return signOut(auth)
+    signOut(auth)
       .then(() => {
         dispatch({ type: LOGOUT });
+        message.success('Başarıyla çıkış yapıldı.');
       })
       .catch((error) => {
-        console.error('Çıkış yaparken hata oluştu:', error);
+        message.error('Çıkış yaparken bir hata oluştu.');
       });
   };
 };
-
 export const registerUser = (email, password) => {
   return (dispatch) => {
     return createUserWithEmailAndPassword(auth, email, password)

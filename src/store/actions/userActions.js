@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 
 export const FETCH_USERS_REQUEST = 'FETCH_USERS_REQUEST';
