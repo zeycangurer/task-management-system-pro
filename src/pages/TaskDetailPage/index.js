@@ -4,11 +4,12 @@ import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTask, assignTask, deleteTask, addComment } from '../../store/actions/taskActions';
 import { FaEdit, FaCheck, FaTrash, FaArrowLeft } from 'react-icons/fa';
-import { Select, message, Button, Spin, Alert } from 'antd'; 
+import { Select, message, Button, Spin, Alert, Card, List, Avatar, Form, Input } from 'antd'; 
 import Header from '../../components/organisms/Header';
 import Sidebar from '../../components/organisms/Sidebar';
 
 const { Option } = Select;
+const { TextArea } = Input;
 
 function TaskDetailPage() {
   const { taskId } = useParams();
@@ -150,11 +151,13 @@ function TaskDetailPage() {
         console.error('Görev atama hatası:', error);
       });
   };
-  
 
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (comment.trim() === '') return;
+  const handleCommentSubmit = (values) => {
+    const { comment } = values;
+    if (comment.trim() === '') {
+      message.error('Yorum boş olamaz.');
+      return;
+    }
     dispatch(addComment(task.id, comment, currentUser.uid))
       .then(() => {
         message.success('Yorum başarıyla eklendi.');
@@ -162,11 +165,13 @@ function TaskDetailPage() {
       .catch((error) => {
         message.error('Yorum eklenirken bir hata oluştu.');
       });
-    setComment('');
   };
 
   const handleEditTitle = () => {
-    if (editTitle.trim() === '') return;
+    if (editTitle.trim() === '') {
+      message.error('Başlık boş olamaz.');
+      return;
+    }
     dispatch(updateTask(task.id, { title: editTitle }, currentUser.uid))
       .then(() => {
         message.success('Görev başlığı güncellendi.');
@@ -212,7 +217,7 @@ function TaskDetailPage() {
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
           <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-          <div className="loading-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <div className="loading-container">
             <Spin size="large" tip="Yükleniyor..." />
           </div>
         </div>
@@ -226,7 +231,7 @@ function TaskDetailPage() {
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
           <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-          <div className="error-container" style={{ padding: '20px' }}>
+          <div className="error-container">
             {tasksError && <Alert message="Görev Hatası" description={tasksError} type="error" showIcon style={{ marginBottom: '10px' }} />}
             {usersError && <Alert message="Kullanıcı Hatası" description={usersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
             {customersError && <Alert message="Müşteri Hatası" description={customersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
@@ -242,7 +247,7 @@ function TaskDetailPage() {
         <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
           <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-          <div className="task-detail" style={{ padding: '20px' }}>
+          <div className="task-detail">
             <Alert message="Görev bulunamadı." type="warning" showIcon />
           </div>
         </div>
@@ -256,109 +261,124 @@ function TaskDetailPage() {
       <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         <div className="task-detail">
-          <button onClick={handleBack} className="back-button">
+          <Button type="link" onClick={handleBack} className="back-button">
             <FaArrowLeft /> Geri
-          </button>
+          </Button>
 
-          <div className="task-header">
-            {isEditing ? (
-              <input
-                type="text"
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                className="edit-title-input"
-              />
-            ) : (
-              <h2>{task.title}</h2>
-            )}
-            <div className="task-actions">
+          <Card title={task.title} bordered={false} className="task-card">
+            <div className="task-info">
+              <p><strong>Durum:</strong> {task.completed ? 'Tamamlandı' : 'Tamamlanmadı'}</p>
+              <p><strong>Atanan Kişi:</strong> {assignedUserNames}</p>
+              <p><strong>Oluşturulma Tarihi:</strong> {formattedCreatedAt}</p>
+              <p><strong>Görev İçeriği:</strong> {task.description || 'Açıklama yok.'}</p>
+              <p><strong>Oluşturan Kişi:</strong> {createdUserName}</p>
+            </div>
+          </Card>
+
+          <Card bordered={false} className="task-header-card">
+            <div className="task-header">
               {isEditing ? (
-                <button onClick={handleEditTitle} className="action-button save-button">
-                  <FaCheck /> Kaydet
-                </button>
+                <Input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="edit-title-input"
+                  placeholder="Görev Başlığını Düzenleyin"
+                />
               ) : (
-                <button onClick={() => setIsEditing(true)} className="action-button edit-button">
-                  <FaEdit /> Düzenle
-                </button>
+                <h2>{task.title}</h2>
               )}
-              <button onClick={handleDeleteTask} className="action-button delete-button">
-                <FaTrash /> Sil
-              </button>
-            </div>
-          </div>
-
-          <div className="task-info">
-            <p><strong>Durum:</strong> {task.completed ? 'Tamamlandı' : 'Tamamlanmadı'}</p>
-            <p><strong>Atanan Kişi:</strong> {assignedUserNames}</p>
-            <p><strong>Oluşturulma Tarihi:</strong> {formattedCreatedAt}</p>
-            <p><strong>Görev İçeriği:</strong> {task.description}</p>
-            <p><strong>Oluşturan Kişi:</strong> {createdUserName}</p>
-          </div>
-
-          <div className="task-actions-section">
-            <button onClick={handleToggleComplete} className="action-button complete-button">
-              {task.completed ? <FaCheck /> : <FaEdit />} {task.completed ? 'Geri Al' : 'Tamamla'}
-            </button>
-
-            <div className="assign-section">
-              <Select
-                mode="multiple"
-                allowClear
-                placeholder="Atanacak kişiler"
-                value={assignment.includes('all') ? ['all'] : assignment}
-                onChange={handleAssignChange}
-                style={{ width: 300 }}
-                optionLabelProp="label"
-                dropdownRender={menu => (
-                  <>
-                    {menu}
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: 8 }}>
-                      <Button type="link" onClick={handleAssignSubmit}>
-                        Gönder
-                      </Button>
-                    </div>
-                  </>
+              <div className="task-actions">
+                {isEditing ? (
+                  <Button type="primary" onClick={handleEditTitle} className="action-button save-button">
+                    <FaCheck /> Kaydet
+                  </Button>
+                ) : (
+                  <Button type="default" onClick={() => setIsEditing(true)} className="action-button edit-button">
+                    <FaEdit /> Düzenle
+                  </Button>
                 )}
-              >
-                <Option key="all" value="all" label="Tüm Kullanıcılar">
-                  Tüm Kullanıcılar
-                </Option>
-                {sortedUsers.map(user => (
-                  <Option key={user.id} value={user.id} label={user.name}>
-                    {user.name}
-                  </Option>
-                ))}
-              </Select>
+                <Button type="danger" onClick={handleDeleteTask} className="action-button delete-button">
+                  <FaTrash /> Sil
+                </Button>
+              </div>
             </div>
-          </div>
+          </Card>
 
-          <div className="task-comments">
-            <h3>Yorumlar</h3>
+          <Card bordered={false} className="task-actions-section-card">
+            <div className="task-actions-section">
+              <Button type="primary" onClick={handleToggleComplete} className="action-button complete-button">
+                {task.completed ? <FaCheck /> : <FaEdit />} {task.completed ? 'Geri Al' : 'Tamamla'}
+              </Button>
+
+              <div className="assign-section">
+                <Select
+                  mode="multiple"
+                  allowClear
+                  placeholder="Atanacak kişiler"
+                  value={assignment.includes('all') ? ['all'] : assignment}
+                  onChange={handleAssignChange}
+                  style={{ width: '100%' }}
+                  optionLabelProp="label"
+                  dropdownRender={menu => (
+                    <>
+                      {menu}
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: 8 }}>
+                        <Button type="link" onClick={handleAssignSubmit}>
+                          Gönder
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                >
+                  <Option key="all" value="all" label="Tüm Kullanıcılar">
+                    Tüm Kullanıcılar
+                  </Option>
+                  {sortedUsers.map(user => (
+                    <Option key={user.id} value={user.id} label={user.name}>
+                      {user.name}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+            </div>
+          </Card>
+
+          <Card title="Yorumlar" bordered={false} className="comments-list-card">
             {formattedComments && formattedComments.length > 0 ? (
-              <ul className="comments-list">
-                {formattedComments.map((cmt, index) => (
-                  <li key={index} className="comment-item">
-                    <p className="comment-text">{cmt.description}</p>
-                    <span className="comment-meta">{cmt.timestamp} - {cmt.authorName}</span>
-                  </li>
-                ))}
-              </ul>
+              <List
+                itemLayout="horizontal"
+                dataSource={formattedComments}
+                renderItem={(cmt, index) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      avatar={<Avatar>{cmt.authorName.charAt(0)}</Avatar>}
+                      title={`${cmt.authorName} - ${cmt.timestamp}`}
+                      description={cmt.description}
+                    />
+                  </List.Item>
+                )}
+              />
             ) : (
               <p>Henüz yorum eklenmemiş.</p>
             )}
-            <h4>Yeni Yorum Ekle</h4>
-            <form onSubmit={handleCommentSubmit}>
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Yorumunuzu buraya yazın..."
-                required
-              ></textarea>
-              <button type="submit" className="action-button submit-button">
-                Gönder
-              </button>
-            </form>
-          </div>
+          </Card>
+
+          <Card title="Yeni Yorum Ekle" bordered={false} className="add-comment-card">
+            <Form layout="vertical" onFinish={handleCommentSubmit}>
+              <Form.Item
+                name="comment"
+                label="Yorumunuz"
+                rules={[{ required: true, message: 'Yorumunuz boş olamaz!' }]}
+              >
+                <TextArea rows={4} placeholder="Yorumunuzu buraya yazın..." />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" className="action-button submit-button">
+                  Gönder
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
         </div>
       </div>
     </div>
