@@ -13,12 +13,10 @@ function LoginPage() {
   const handleLogin = (email, password) => {
     dispatch(loginUser(email, password))
       .then(() => {
-        navigate('/dashboard'); // Sadece başarılı girişlerde yönlendirme
+        navigate('/dashboard');
       })
       .catch((error) => {
         console.error('Giriş hatası:', error);
-        // alert('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
-
       });
   };
 

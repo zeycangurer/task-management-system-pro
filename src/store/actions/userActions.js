@@ -1,10 +1,11 @@
-
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 
 export const FETCH_USERS_REQUEST = 'FETCH_USERS_REQUEST';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 export const FETCH_USERS_FAILURE = 'FETCH_USERS_FAILURE';
+
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 
 export const fetchUsers = () => {
   return async (dispatch) => {
@@ -21,3 +22,8 @@ export const fetchUsers = () => {
     }
   };
 };
+
+export const setCurrentUser = (user) => ({
+  type: SET_CURRENT_USER,
+  payload: user,
+});

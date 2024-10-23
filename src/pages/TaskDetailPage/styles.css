@@ -1,4 +1,3 @@
-
 .task-detail {
   background-color: #ffffff;
   padding: 30px;
@@ -73,8 +72,8 @@
   background-color: var(--error-color);
 }
 
-.history-button {
-  background-color: var(--info-color);
+.complete-button {
+  background-color: var(--success-color);
 }
 
 .action-button:hover {
@@ -93,10 +92,6 @@
   gap: 20px;
 }
 
-.complete-button {
-  background-color: var(--success-color);
-}
-
 .assign-section {
   display: flex;
   align-items: center;
@@ -106,45 +101,19 @@
   width: 300px;
 }
 
-.history-button {
-  background-color: var(--info-color);
-}
-
-.task-history-section {
-  margin-top: 20px;
-}
-
-.task-history-section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.task-history-section ul li {
-  padding: 10px 0;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.task-history-section ul li:last-child {
-  border-bottom: none;
-}
-
-.task-history-section ul li p {
-  margin: 0;
-  font-size: 14px;
-}
-
-.task-history-section ul li span {
-  font-size: 12px;
-  color: #7f8c8d;
-}
-
 .task-comments {
   margin-top: 20px;
+}
+
+.task-comments h3 {
+  margin-bottom: 10px;
+  color: var(--primary-color);
 }
 
 .task-comments form {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .task-comments textarea {
@@ -154,16 +123,46 @@
   border: 1px solid #ccc;
   border-radius: 8px;
   resize: vertical;
-  margin-bottom: 10px;
 }
 
 .task-comments .submit-button {
   align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 5px;
   background-color: var(--primary-color);
+  border: none;
+  padding: 8px 16px;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
 .task-comments .submit-button:hover {
   opacity: 0.8;
+}
+
+.comments-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.comment-item {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 0;
+}
+
+.comment-text {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.comment-meta {
+  font-size: 12px;
+  color: #7f8c8d;
 }
 
 @media (max-width: 768px) {
@@ -194,5 +193,10 @@
 
   .back-button {
     font-size: 14px;
+  }
+
+  .task-comments .submit-button {
+    width: 100%;
+    justify-content: center;
   }
 }

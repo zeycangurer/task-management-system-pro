@@ -1,4 +1,3 @@
-
 import { FETCH_CUSTOMERS_REQUEST, FETCH_CUSTOMERS_SUCCESS, FETCH_CUSTOMERS_FAILURE } from '../actions/customerActions';
 
 const initialState = {

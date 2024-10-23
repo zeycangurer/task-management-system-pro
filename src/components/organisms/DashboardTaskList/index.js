@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 import { FaCheckCircle, FaCircle, FaPlus } from 'react-icons/fa';
-import { useDispatch } from 'react-redux';
-import { addTask } from '../../../store/actions/taskActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask } from '../../../store/actions/taskActions'; 
 
 function DashboardTaskList({ tasks }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [newTaskTitle, setNewTaskTitle] = useState('');
+
+  const currentUser = useSelector((state) => state.auth.user);
 
   const handleTaskClick = (taskId) => {
     navigate(`/tasks/${taskId}`);
@@ -21,12 +23,25 @@ function DashboardTaskList({ tasks }) {
     const task = {
       title: newTaskTitle,
       completed: false,
-      assignedTo: '',
+      assignedTo: [],
       history: [],
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(), 
+      updatedAt: new Date(),
+      status: 'open',
+      customer: '', 
+      description: '', 
+      createdUser: currentUser ? currentUser.uid : '', 
+      dueDate: new Date(), 
     };
 
-    dispatch(addTask(task));
+    dispatch(addTask(task, currentUser ? currentUser.uid : ''))
+      .then(() => {
+        console.log("eklendi")
+      })
+      .catch((error) => {
+        console.error('Görev eklenirken hata oluştu:', error);
+      });
+
     setNewTaskTitle('');
   };
 

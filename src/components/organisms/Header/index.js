@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutUser } from '../../../store/actions/authActions';
+import { logout } from '../../../store/actions/authActions';
 import { FaUserCircle, FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
 import './styles.css';
 
@@ -14,7 +14,7 @@ function Header({ toggleSidebar, isSidebarOpen }) {
   }, [theme]);
 
   const handleLogout = () => {
-    dispatch(logoutUser());
+    dispatch(logout());
   };
 
   const toggleThemeMode = () => {
