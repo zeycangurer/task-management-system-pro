@@ -9,6 +9,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  padding: 20px;
 }
 
 .loading-container, .error-container, .task-detail {
@@ -34,7 +35,20 @@
   opacity: 0.7;
 }
 
-.task-card, .task-header-card, .task-actions-section-card, .comments-list-card, .add-comment-card {
+.task-header-card {
+  margin-bottom: 20px;
+}
+
+.task-header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.task-header-actions .action-button {
+  padding: 6px 10px;
+}
+
+.task-card {
   margin-bottom: 20px;
 }
 
@@ -44,62 +58,8 @@
   color: #555;
 }
 
-.task-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.task-header h2 {
-  margin: 0;
-  color: var(--primary-color, #1890ff);
-}
-
-.edit-title-input {
-  width: 70%;
-  padding: 8px 12px;
-  font-size: 18px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  outline: none;
-}
-
-.task-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.action-button {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background-color: var(--primary-color, #1890ff);
-  border: none;
-  color: #fff;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.edit-button {
-  background-color: var(--secondary-color, #faad14);
-}
-
-.save-button {
-  background-color: var(--success-color, #52c41a);
-}
-
-.delete-button {
-  background-color: var(--error-color, #f5222d);
-}
-
-.complete-button {
-  background-color: var(--success-color, #52c41a);
-}
-
-.action-button:hover {
-  opacity: 0.8;
+.task-actions-section-card {
+  margin-bottom: 20px;
 }
 
 .task-actions-section {
@@ -130,8 +90,54 @@
   margin-top: 10px;
 }
 
+.comments-list-card .ant-list-item {
+  padding: 10px 0;
+}
+
+.add-comment-card textarea {
+  resize: vertical;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button {
+  background-color: var(--secondary-color, #faad14);
+}
+
+.save-button {
+  background-color: var(--success-color, #52c41a);
+}
+
+.delete-button {
+  background-color: var(--error-color, #f5222d);
+}
+
+.complete-button {
+  background-color: var(--success-color, #52c41a);
+}
+
+.submit-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-button:hover {
+  opacity: 0.8;
+}
+
 @media (max-width: 768px) {
-  .task-header {
+  .task-header-actions {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -142,26 +148,14 @@
   }
 
   .assign-section {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    width: 100%;
   }
 
   .assign-section .ant-select {
     width: 100%;
   }
 
-  .edit-title-input {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
   .back-button {
     font-size: 14px;
-  }
-
-  .task-comments .submit-button {
-    width: 100%;
-    justify-content: center;
   }
 }
