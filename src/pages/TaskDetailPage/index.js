@@ -4,9 +4,10 @@ import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTask, assignTask, deleteTask, addComment } from '../../store/actions/taskActions';
 import { FaEdit, FaCheck, FaTrash, FaArrowLeft } from 'react-icons/fa';
-import { Select, message, Button, Spin, Alert, Card, List, Avatar, Form, Input } from 'antd'; 
+import { Select, message, Button, Spin, Alert, Card, List, Avatar, Form, Input, Tooltip, Row, Col } from 'antd';
 import Header from '../../components/organisms/Header';
 import Sidebar from '../../components/organisms/Sidebar';
+import useWindowsSize from '../../hooks/useWindowsSize'
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -19,7 +20,7 @@ function TaskDetailPage() {
   const tasks = useSelector((state) => state.tasks.tasks);
   const users = useSelector((state) => state.users.users);
   const customers = useSelector((state) => state.customers.customers);
-  const currentUser = useSelector((state) => state.auth.user); 
+  const currentUser = useSelector((state) => state.auth.user);
   const usersLoading = useSelector((state) => state.users.loading);
   const customersLoading = useSelector((state) => state.customers.loading);
   const tasksLoading = useSelector((state) => state.tasks.loading);
@@ -29,16 +30,18 @@ function TaskDetailPage() {
 
   const [task, setTask] = useState(null);
   const [assignment, setAssignment] = useState([]);
-  const [comment, setComment] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const size = useWindowsSize()
+  console.log(size)
 
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
-    
+
     let date;
-    
+
     if (timestamp instanceof Date) {
       date = timestamp;
     } else if (timestamp.toDate && typeof timestamp.toDate === 'function') {
@@ -50,11 +53,11 @@ function TaskDetailPage() {
     } else {
       return 'N/A';
     }
-    
+
     if (isNaN(date.getTime())) {
       return 'N/A';
     }
-    
+
     return date.toLocaleString();
   };
 
@@ -84,7 +87,7 @@ function TaskDetailPage() {
   const assignedUserNames = useMemo(() => {
     if (!task || !Array.isArray(task.assignedTo) || task.assignedTo.length === 0) return 'Atanmamış';
     const names = task.assignedTo
-      .filter(userId => userId) 
+      .filter(userId => userId)
       .map(userId => {
         const user = users.find(u => u.id === userId);
         if (user) return user.name;
@@ -134,18 +137,18 @@ function TaskDetailPage() {
   const handleAssignSubmit = () => {
     if (!task) return;
     let newAssignees = assignment;
-  
+
     if (newAssignees.includes('all')) {
       newAssignees = users.map(user => user.id);
     }
-  
+
     if (newAssignees.length === 0) {
       message.error('Atama yapabilmek için en az bir kullanıcı seçmelisiniz.');
       return;
     }
-  
+
     newAssignees = newAssignees.filter(userId => userId);
-  
+
     dispatch(assignTask(task.id, newAssignees, currentUser.uid))
       .catch((error) => {
         console.error('Görev atama hatası:', error);
@@ -186,7 +189,7 @@ function TaskDetailPage() {
     dispatch(deleteTask(task.id))
       .then(() => {
         message.success('Görev başarıyla silindi.');
-        navigate('/tasks'); 
+        navigate('/tasks');
       })
       .catch((error) => {
         message.error('Görev silinirken bir hata oluştu.');
@@ -265,81 +268,97 @@ function TaskDetailPage() {
             <FaArrowLeft /> Geri
           </Button>
 
-          <Card title={task.title} bordered={false} className="task-card">
+          <Card
+            title={
+              <Row gutter={[16, 16]} align="middle">
+                <Col xs={24} sm={12}>
+                  {isEditing ? (
+                    <Input
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      className="edit-title-input"
+                      placeholder="Görev Başlığını Düzenleyin"
+                    />
+                  ) : (
+                    <h2 style={{ fontSize: 20 }}>{task.title}</h2>
+                  )}
+                </Col>
+                <Col xs={24} sm={12}>
+                  <Row gutter={[8, 8]} justify="end" align="middle">
+                    <Col xs={24} sm={12} md={8}>
+                      <Row gutter={[8, 8]} justify="end">
+                        {isEditing ? (
+                          <Col>
+                            <Tooltip title="Kaydet">
+                              <Button type="primary" onClick={handleEditTitle} className="action-button save-button">
+                                <FaCheck />
+                              </Button>
+                            </Tooltip>
+                          </Col>
+                        ) : (
+                          <Col>
+                            <Tooltip title="Düzenle">
+                              <Button type="default" size={size.width <= 768 ? 'small' : 'middle'} onClick={() => setIsEditing(true)} className="action-button edit-button">
+                                <FaEdit />
+                              </Button>
+                            </Tooltip>
+                          </Col>
+                        )}
+                        <Col>
+                          <Tooltip title="Sil">
+                            <Button type="danger" size={size.width <= 768 ? 'small' : 'middle'} onClick={handleDeleteTask} className="action-button delete-button">
+                              <FaTrash />
+                            </Button>
+                          </Tooltip>
+                        </Col>
+                        <Col>
+                          <Tooltip title={task.completed ? "Görevi Geri Al" : "Görevi Tamamla"}>
+                            <Button type="primary" size={size.width <= 768 ? 'small' : 'middle'} onClick={handleToggleComplete} className="action-button complete-button">
+                              <FaCheck />
+                            </Button>
+                          </Tooltip>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            }
+            className="task-header-card"
+          >
             <div className="task-info">
               <p><strong>Durum:</strong> {task.completed ? 'Tamamlandı' : 'Tamamlanmadı'}</p>
               <p><strong>Atanan Kişi:</strong> {assignedUserNames}</p>
               <p><strong>Oluşturulma Tarihi:</strong> {formattedCreatedAt}</p>
               <p><strong>Görev İçeriği:</strong> {task.description || 'Açıklama yok.'}</p>
               <p><strong>Oluşturan Kişi:</strong> {createdUserName}</p>
-            </div>
-          </Card>
-
-          <Card bordered={false} className="task-header-card">
-            <div className="task-header">
-              {isEditing ? (
-                <Input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  className="edit-title-input"
-                  placeholder="Görev Başlığını Düzenleyin"
-                />
-              ) : (
-                <h2>{task.title}</h2>
-              )}
-              <div className="task-actions">
-                {isEditing ? (
-                  <Button type="primary" onClick={handleEditTitle} className="action-button save-button">
-                    <FaCheck /> Kaydet
-                  </Button>
-                ) : (
-                  <Button type="default" onClick={() => setIsEditing(true)} className="action-button edit-button">
-                    <FaEdit /> Düzenle
-                  </Button>
-                )}
-                <Button type="danger" onClick={handleDeleteTask} className="action-button delete-button">
-                  <FaTrash /> Sil
-                </Button>
-              </div>
-            </div>
-          </Card>
-
-          <Card bordered={false} className="task-actions-section-card">
-            <div className="task-actions-section">
-              <Button type="primary" onClick={handleToggleComplete} className="action-button complete-button">
-                {task.completed ? <FaCheck /> : <FaEdit />} {task.completed ? 'Geri Al' : 'Tamamla'}
-              </Button>
-
-              <div className="assign-section">
-                <Select
-                  mode="multiple"
-                  allowClear
-                  placeholder="Atanacak kişiler"
-                  value={assignment.includes('all') ? ['all'] : assignment}
-                  onChange={handleAssignChange}
-                  style={{ width: '100%' }}
-                  optionLabelProp="label"
-                  dropdownRender={menu => (
-                    <>
-                      {menu}
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: 8 }}>
-                        <Button type="link" onClick={handleAssignSubmit}>
-                          Gönder
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                >
-                  <Option key="all" value="all" label="Tüm Kullanıcılar">
-                    Tüm Kullanıcılar
-                  </Option>
-                  {sortedUsers.map(user => (
-                    <Option key={user.id} value={user.id} label={user.name}>
-                      {user.name}
+              <Col xs={24} sm={16} md={12}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    placeholder="Atanacak kişiler"
+                    value={assignment.includes('all') ? ['all'] : assignment}
+                    onChange={handleAssignChange}
+                    style={{ flex: 1, marginRight: '8px' }}
+                    optionLabelProp="label"
+                  >
+                    <Option key="all" value="all" label="Tüm Kullanıcılar">
+                      Tüm Kullanıcılar
                     </Option>
-                  ))}
-                </Select>
-              </div>
+                    {sortedUsers.map(user => (
+                      <Option key={user.id} value={user.id} label={user.name}>
+                        {user.name}
+                      </Option>
+                    ))}
+                  </Select>
+                  <Tooltip title="Atama">
+                    <Button type="primary" onClick={handleAssignSubmit} className="action-button assign-button" size={size.width <= 768 ? 'small' : 'middle'}>
+                      Atama
+                    </Button>
+                  </Tooltip>
+                </div>
+              </Col>
             </div>
           </Card>
 
@@ -373,7 +392,7 @@ function TaskDetailPage() {
                 <TextArea rows={4} placeholder="Yorumunuzu buraya yazın..." />
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit" className="action-button submit-button">
+                <Button type="primary" htmlType="submit" className="action-button submit-button" size={size.width <= 768 ? 'small' : 'middle'}>
                   Gönder
                 </Button>
               </Form.Item>
