@@ -3,8 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateTask, assignTask, deleteTask, addComment } from '../../store/actions/taskActions';
-import { FaEdit, FaCheck, FaTrash, FaArrowLeft } from 'react-icons/fa';
-import { Select, message, Button, Spin, Alert, Card, List, Avatar, Form, Input, Tooltip, Row, Col } from 'antd';
+import { FaEdit, FaCheck, FaTrash, FaArrowLeft, FaHistory, FaRegTimesCircle } from 'react-icons/fa';
+import { Select, message, Button, Spin, Alert, Card, List, Avatar, Form, Input, Tooltip, Row, Col, Modal } from 'antd';
 import Header from '../../components/organisms/Header';
 import Sidebar from '../../components/organisms/Sidebar';
 import useWindowsSize from '../../hooks/useWindowsSize'
@@ -33,6 +33,7 @@ function TaskDetailPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
 
   const size = useWindowsSize()
   console.log(size)
@@ -214,6 +215,20 @@ function TaskDetailPage() {
     navigate(-1);
   };
 
+  const showHistoryModal = () => {
+    setIsHistoryModalVisible(true);
+  };
+
+  const handleHistoryModalClose = () => {
+    setIsHistoryModalVisible(false);
+  };
+
+  const filteredHistory = useMemo(() => {
+    if (!task || !Array.isArray(task.history)) return [];
+    return task.history.filter(entry => ['assign', 'unassign', 'update'].includes(entry.changeType));
+  }, [task]);
+
+
   if (tasksLoading || usersLoading || customersLoading) {
     return (
       <div className="dashboard-container">
@@ -269,64 +284,90 @@ function TaskDetailPage() {
           </Button>
 
           <Card
-            title={
-              <Row gutter={[16, 16]} align="middle">
-                <Col xs={12} sm={6} >
-                  {isEditing ? (
-                    <Input
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      className="edit-title-input"
-                      placeholder="Görev Başlığını Düzenleyin"
-                    />
-                  ) : (
-                    <h2 style={{ fontSize: 20 }}>{task.title}</h2>
-                  )}
-                </Col>
-                <Col xs={18} sm={18} align='middle'>
-                  <Row gutter={[8, 8]} justify="end" align="middle">
-                    <Col xs={24} sm={12} md={8} align='middle'>
-                      <Row gutter={[8, 8]} justify="end">
-                        {isEditing ? (
-                          <Col>
-                            <Tooltip title="Kaydet">
-                              <Button type="primary" onClick={handleEditTitle} className="action-button save-button">
-                                <FaCheck />
-                              </Button>
-                            </Tooltip>
-                          </Col>
-                        ) : (
-                          <Col>
-                            <Tooltip title="Düzenle">
-                              <Button type="default" size={size.width <= 768 ? 'small' : 'middle'} onClick={() => setIsEditing(true)} className="action-button edit-button">
-                                <FaEdit />
-                              </Button>
-                            </Tooltip>
-                          </Col>
-                        )}
-                        <Col>
-                          <Tooltip title="Sil">
-                            <Button type="danger" size={size.width <= 768 ? 'small' : 'middle'} onClick={handleDeleteTask} className="action-button delete-button">
-                              <FaTrash />
-                            </Button>
-                          </Tooltip>
-                        </Col>
-                        <Col>
-                          <Tooltip title={task.completed ? "Görevi Geri Al" : "Görevi Tamamla"}>
-                            <Button type="primary" size={size.width <= 768 ? 'small' : 'middle'} onClick={handleToggleComplete} className="action-button complete-button">
-                              <FaCheck />
-                            </Button>
-                          </Tooltip>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            }
+            styles={{ alignContent: 'center' }}
+            title=
+            {isEditing ? (
+              <div className='title-edit-container'>
+                <Input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="edit-title-input"
+                  placeholder="Görev Başlığını Düzenleyin"
+                />
+                <Tooltip title="Kaydet">
+                  <Button
+                    type="primary"
+                    onClick={handleEditTitle}
+                    className="action-button save-button"
+                    size={size.width <= 768 ? 'small' : 'middle'}
+                  >
+                    <FaCheck />
+                  </Button>
+                </Tooltip>
+              </div>
+            ) : (
+              <div className='title-container'>
+                <h2 style={{ fontSize: 20 }}>{task.title}</h2>
+              </div>
+            )}
             className="task-header-card"
           >
             <div className="task-info">
+              <div className="buttons-container">
+                <Tooltip title="Tarihçe">
+                  <Button
+                    onClick={showHistoryModal}
+                    className="action-button history-button"
+                    size={size.width <= 768 ? 'small' : 'middle'}
+                  >
+                    <FaHistory />
+                  </Button>
+                </Tooltip>
+                {isEditing ? (
+                  <Tooltip title="İptal">
+                    <Button
+                      type="primary"
+                      onClick={() => setIsEditing(false)}
+                      className="action-button save-button"
+                      size={size.width <= 768 ? 'small' : 'middle'}
+                    >
+                      <FaRegTimesCircle />
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip title="Düzenle">
+                    <Button
+                      type="default"
+                      onClick={() => setIsEditing(true)}
+                      className="action-button edit-button"
+                      size={size.width <= 768 ? 'small' : 'middle'}
+                    >
+                      <FaEdit />
+                    </Button>
+                  </Tooltip>
+                )}
+
+                <Tooltip title="Sil">
+                  <Button
+                    type="danger"
+                    onClick={handleDeleteTask}
+                    className="action-button delete-button"
+                    size={size.width <= 768 ? 'small' : 'middle'}
+                  >
+                    <FaTrash />
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Kaydet">
+                  <Button
+                    type="primary"
+                    onClick={handleToggleComplete}
+                    className="action-button complete-button"
+                    size={size.width <= 768 ? 'small' : 'middle'}
+                  >
+                    <FaCheck />
+                  </Button>
+                </Tooltip>
+              </div>
               <p><strong>Durum:</strong> {task.completed ? 'Tamamlandı' : 'Tamamlanmadı'}</p>
               <p><strong>Atanan Kişi:</strong> {assignedUserNames}</p>
               <p><strong>Oluşturulma Tarihi:</strong> {formattedCreatedAt}</p>
@@ -362,7 +403,7 @@ function TaskDetailPage() {
             </div>
           </Card>
 
-          <Card title="Yorumlar" bordered={false} className="comments-list-card">
+          <Card bordered={false} className="comments-list-card">
             {formattedComments && formattedComments.length > 0 ? (
               <List
                 itemLayout="horizontal"
@@ -398,6 +439,36 @@ function TaskDetailPage() {
               </Form.Item>
             </Form>
           </Card>
+
+          <Modal
+            title="Görev Tarihçesi"
+            visible={isHistoryModalVisible}
+            onCancel={handleHistoryModalClose}
+            footer={[
+              <Button key="close" onClick={handleHistoryModalClose}>
+                Kapat
+              </Button>,
+            ]}
+            width={800}
+          >
+            {filteredHistory.length > 0 ? (
+              <List
+                itemLayout="vertical"
+                dataSource={filteredHistory}
+                renderItem={(item, index) => (
+                  <List.Item key={index}>
+                    <List.Item.Meta
+                      title={`${getChangedByName(item.changedBy)} tarafından ${formatTimestamp(item.timestamp)}`}
+                    />
+                    <div>{item.description || 'Detay yok.'}</div>
+                  </List.Item>
+                )}
+              />
+            ) : (
+              <p>Görev tarihçesi bulunmamaktadır.</p>
+            )}
+          </Modal>
+
         </div>
       </div>
     </div>

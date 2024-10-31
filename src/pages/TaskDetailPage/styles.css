@@ -16,6 +16,25 @@
   padding: 20px;
 }
 
+.title-container {
+  align-content: center;
+  align-self: center;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center; 
+  justify-content:start;
+}
+
+.title-edit-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center; 
+}
+
 .task-detail {
   padding: 20px;
 }
@@ -116,20 +135,27 @@
 
 .edit-button {
   background-color: var(--secondary-color, #faad14);
+  margin-right: 3px;
 }
 
 .save-button {
   background-color: var(--success-color, #52c41a);
+  margin-right: 3px;
 }
 
 .delete-button {
   background-color: var(--error-color, #f5222d);
+  margin-right: 3px;
 }
 
 .complete-button {
   background-color: var(--success-color, #52c41a);
+  margin-right: 3px;
 }
 
+.history-button {
+  margin-right: 3px;
+}
 .submit-button {
   display: flex;
   align-items: center;
@@ -140,15 +166,31 @@
   opacity: 0.8;
 }
 
+.history-button {
+  background-color: #1890ff;
+}
+
+.edit-title-input {
+  margin-right: 10px;
+}
+
 @media (max-width: 768px) {
-  .task-header-actions {
+  .task-header-card .ant-card-body {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
   }
 
-  .task-actions-section {
-    flex-direction: column;
-    align-items: flex-start;
+
+  .task-header-card .ant-card-body .ant-row {
+    width: 100%;
+  }
+
+  .task-header-card .ant-card-body .ant-col:last-child {
+    margin-top: 20px;
+  }
+
+  .task-header-card .ant-card-body .ant-row .ant-col .ant-row {
+    justify-content: flex-start;
   }
 
   .assign-section {
@@ -162,4 +204,5 @@
   .back-button {
     font-size: 14px;
   }
+  
 }
