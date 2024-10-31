@@ -1,7 +1,10 @@
+.dashboard-container {
+  flex:1;
+  background-color: var(--background-color)
+}
 
 .tasks-main {
   padding: 20px;
-  background-color: var(--background-color);
   flex: 1;
   overflow-y: auto;
 }
