@@ -73,6 +73,10 @@
   flex: 1;
 }
 
+.add-comment-card {
+  margin-top: 20px;
+}
+
 .assign-section .ant-select {
   width: 100%;
 }

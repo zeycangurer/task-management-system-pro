@@ -271,7 +271,7 @@ function TaskDetailPage() {
           <Card
             title={
               <Row gutter={[16, 16]} align="middle">
-                <Col xs={24} sm={12}>
+                <Col xs={12} sm={6} >
                   {isEditing ? (
                     <Input
                       value={editTitle}
@@ -283,9 +283,9 @@ function TaskDetailPage() {
                     <h2 style={{ fontSize: 20 }}>{task.title}</h2>
                   )}
                 </Col>
-                <Col xs={24} sm={12}>
+                <Col xs={18} sm={18} align='middle'>
                   <Row gutter={[8, 8]} justify="end" align="middle">
-                    <Col xs={24} sm={12} md={8}>
+                    <Col xs={24} sm={12} md={8} align='middle'>
                       <Row gutter={[8, 8]} justify="end">
                         {isEditing ? (
                           <Col>
@@ -382,11 +382,11 @@ function TaskDetailPage() {
             )}
           </Card>
 
-          <Card title="Yeni Yorum Ekle" bordered={false} className="add-comment-card">
+          <Card bordered={false} className="add-comment-card">
             <Form layout="vertical" onFinish={handleCommentSubmit}>
               <Form.Item
                 name="comment"
-                label="Yorumunuz"
+                label="Açıklama"
                 rules={[{ required: true, message: 'Yorumunuz boş olamaz!' }]}
               >
                 <TextArea rows={4} placeholder="Yorumunuzu buraya yazın..." />
