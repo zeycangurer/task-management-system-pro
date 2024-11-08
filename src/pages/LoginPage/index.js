@@ -1,10 +1,10 @@
 import React from 'react';
-import LoginForm from '../../components/molecules/LoginForm/index';
+import LoginFormOrganism from '../../components/organisms/LoginForm';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../store/actions/authActions';
-import './styles.css'
-import backgroundImage from '../../assets/login.jpg'; 
+import './styles.css';
+import backgroundImage from '../../assets/login.jpg';
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -21,14 +21,16 @@ function LoginPage() {
   };
 
   return (
-    <div
-      className="login-container"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <div className="login-wrapper">
-        <div className="login-box">
-          <h2 className="title">Görev Takip Sistemi Pro</h2>
-          <LoginForm onSubmit={handleLogin} />
+    <div className="login-page">
+      <div
+        className="login-container"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        <div className="login-wrapper">
+          <div className="login-box">
+            <h1 className="app-title">Görev Takip Sistemi Pro</h1>
+            <LoginFormOrganism onSubmit={handleLogin} />
+          </div>
         </div>
       </div>
     </div>

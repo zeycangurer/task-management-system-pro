@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import Input from '../../atoms/Input';
-import Button from '../../atoms/Button';
-import './styles.css';
+import InputAtom from '../../atoms/Input';
+import ButtonAtom from '../../atoms/Button';
+import ErrorContainerMolecule from '../../molecules/ErrorContainerMolecule';
 import { useSelector } from 'react-redux';
+import './styles.css'; 
 
-function LoginForm({ onSubmit }) {
+function LoginFormOrganism({ onSubmit }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const authError = useSelector((state) => state.auth.authError);
@@ -16,26 +17,29 @@ function LoginForm({ onSubmit }) {
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
-      <Input
+      <h2 className="login-form-title">Giriş Yap</h2>
+      <InputAtom
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         name="email"
+        className="login-input"
       />
-      <Input
+      <InputAtom
         type="password"
         placeholder="Şifre"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         name="password"
+        className="login-input"
       />
-      <div className="error-container">
-        {authError && <p className="error-message">{authError}</p>}
-      </div>
-      <Button type="submit">Giriş Yap</Button>
+      <ErrorContainerMolecule error={authError} />
+      <ButtonAtom type="primary" htmlType="submit" className="login-button">
+        Giriş Yap
+      </ButtonAtom>
     </form>
   );
 }
 
-export default LoginForm;
+export default LoginFormOrganism;

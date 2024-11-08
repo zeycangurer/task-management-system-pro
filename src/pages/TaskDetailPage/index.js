@@ -2,31 +2,34 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateTask, assignTask, deleteTask, addComment } from '../../store/actions/taskActions';
-import { FaEdit, FaCheck, FaTrash, FaArrowLeft, FaHistory, FaRegTimesCircle } from 'react-icons/fa';
-import { Select, message, Button, Spin, Alert, Card, List, Avatar, Form, Input, Tooltip, Row, Col, Modal } from 'antd';
-import Header from '../../components/organisms/Header';
-import Sidebar from '../../components/organisms/Sidebar';
-import useWindowsSize from '../../hooks/useWindowsSize'
+import * as action from '../../store/actions/taskActions';
+import { message, Spin, Alert, Button, Card } from 'antd';
+import TaskDetailTemplate from '../../components/templates/TaskDetailTemplate';
+import TaskHeader from '../../components/organisms/TaskHeader';
+import TaskInfo from '../../components/organisms/TaskInfo';
+import CommentsList from '../../components/organisms/CommentsList';
+import AddCommentForm from '../../components/organisms/AddCommentForm';
+import HistoryModal from '../../components/organisms/HistoryModal';
+import useWindowsSize from '../../hooks/useWindowsSize';
+import { FaArrowLeft } from 'react-icons/fa';
 
-const { Option } = Select;
-const { TextArea } = Input;
 
 function TaskDetailPage() {
   const { taskId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const root = useSelector(state => state);
 
-  const tasks = useSelector((state) => state.tasks.tasks);
-  const users = useSelector((state) => state.users.users);
-  const customers = useSelector((state) => state.customers.customers);
-  const currentUser = useSelector((state) => state.auth.user);
-  const usersLoading = useSelector((state) => state.users.loading);
-  const customersLoading = useSelector((state) => state.customers.loading);
-  const tasksLoading = useSelector((state) => state.tasks.loading);
-  const usersError = useSelector((state) => state.users.error);
-  const customersError = useSelector((state) => state.customers.error);
-  const tasksError = useSelector((state) => state.tasks.error);
+  const tasks = root.tasks.tasks;
+  const users = root.users.users;
+  const customers = root.customers;
+  const currentUser = root.auth.user;
+  const usersLoading = root.users.loading;
+  const customersLoading = root.customers.loading;
+  const tasksLoading = root.tasks.loading;
+  const usersError = root.users.error;
+  const customersError = root.customers.error;
+  const tasksError = root.tasks.error;
 
   const [task, setTask] = useState(null);
   const [assignment, setAssignment] = useState([]);
@@ -35,8 +38,9 @@ function TaskDetailPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
 
+  
   const size = useWindowsSize()
-  console.log(size)
+  // console.log(size)
 
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
@@ -70,16 +74,20 @@ function TaskDetailPage() {
   };
 
   useEffect(() => {
+    console.log(tasks)
     const foundTask = tasks.find((t) => t.id === taskId);
     setTask(foundTask);
     if (foundTask) {
       setEditTitle(foundTask.title);
       setAssignment(foundTask.assignedTo || []);
-      console.log('Görev:', JSON.stringify(foundTask));
-      console.log('Kullanıcılar:', JSON.stringify(users));
-      console.log('Müşteriler:', JSON.stringify(customers));
+      console.log('Görev:', foundTask);
+      // console.log('Kullanıcılar:', JSON.stringify(users));
+      // console.log('Müşteriler:', JSON.stringify(customers));
     }
   }, [tasks, taskId, users, customers]);
+  
+
+ 
 
   const sortedUsers = useMemo(() => {
     return [...users].sort((a, b) => a.name.localeCompare(b.name));
@@ -100,18 +108,18 @@ function TaskDetailPage() {
 
   const createdUserName = useMemo(() => {
     if (!task) return 'Bilinmiyor';
-    console.log('Task createdUser ID:', task.createdUser);
+    // console.log('Task createdUser ID:', task.createdUser);
     const user = users.find(u => u.id === task.createdUser);
     if (user) {
-      console.log('Found user:', user);
+      // console.log('Found user:', user);
       return user.name;
     }
     const customer = customers.find(c => c.id === task.createdUser);
     if (customer) {
-      console.log('Found customer:', customer);
+      // console.log('Found customer:', customer);
       return customer.name;
     }
-    console.log('User veya customer bulunamadı.');
+    // console.log('User veya customer bulunamadı.');
     return 'Bilinmiyor';
   }, [task, users, customers]);
 
@@ -150,9 +158,9 @@ function TaskDetailPage() {
 
     newAssignees = newAssignees.filter(userId => userId);
 
-    dispatch(assignTask(task.id, newAssignees, currentUser.uid))
+    dispatch(action.assignTask(task.id, newAssignees, currentUser.uid))
       .catch((error) => {
-        console.error('Görev atama hatası:', error);
+        // console.error('Görev atama hatası:', error);
       });
   };
 
@@ -162,7 +170,7 @@ function TaskDetailPage() {
       message.error('Yorum boş olamaz.');
       return;
     }
-    dispatch(addComment(task.id, comment, currentUser.uid))
+    dispatch(action.addComment(task.id, comment, currentUser.uid))
       .then(() => {
         message.success('Yorum başarıyla eklendi.');
       })
@@ -176,7 +184,7 @@ function TaskDetailPage() {
       message.error('Başlık boş olamaz.');
       return;
     }
-    dispatch(updateTask(task.id, { title: editTitle }, currentUser.uid))
+    dispatch(action.updateTask(task.id, { title: editTitle }, currentUser.uid))
       .then(() => {
         message.success('Görev başlığı güncellendi.');
         setIsEditing(false);
@@ -187,7 +195,7 @@ function TaskDetailPage() {
   };
 
   const handleDeleteTask = () => {
-    dispatch(deleteTask(task.id))
+    dispatch(action.deleteTask(task.id))
       .then(() => {
         message.success('Görev başarıyla silindi.');
         navigate('/tasks');
@@ -198,7 +206,7 @@ function TaskDetailPage() {
   };
 
   const handleToggleComplete = () => {
-    dispatch(updateTask(task.id, { completed: !task.completed }, currentUser.uid))
+    dispatch(action.updateTask(task.id, { completed: !task.completed }, currentUser.uid))
       .then(() => {
         message.success('Görev durumu güncellendi.');
       })
@@ -231,247 +239,79 @@ function TaskDetailPage() {
 
   if (tasksLoading || usersLoading || customersLoading) {
     return (
-      <div className="dashboard-container">
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-          <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-          <div className="loading-container">
-            <Spin size="large" tip="Yükleniyor..." />
-          </div>
+      <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+        <div className="loading-container">
+          <Spin size="large" tip="Yükleniyor..." />
         </div>
-      </div>
+      </TaskDetailTemplate>
     );
   }
 
+
   if (tasksError || usersError || customersError) {
     return (
-      <div className="dashboard-container">
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-          <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-          <div className="error-container">
-            {tasksError && <Alert message="Görev Hatası" description={tasksError} type="error" showIcon style={{ marginBottom: '10px' }} />}
-            {usersError && <Alert message="Kullanıcı Hatası" description={usersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
-            {customersError && <Alert message="Müşteri Hatası" description={customersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
-          </div>
+      <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+        <div className="error-container">
+          {tasksError && <Alert message="Görev Hatası" description={tasksError} type="error" showIcon style={{ marginBottom: '10px' }} />}
+          {usersError && <Alert message="Kullanıcı Hatası" description={usersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
+          {customersError && <Alert message="Müşteri Hatası" description={customersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
         </div>
-      </div>
+      </TaskDetailTemplate>
     );
   }
 
   if (!task) {
     return (
-      <div className="dashboard-container">
-        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-        <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-          <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-          <div className="task-detail">
-            <Alert message="Görev bulunamadı." type="warning" showIcon />
-          </div>
+      <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+        <div className="task-detail">
+          <Alert message="Görev bulunamadı." type="warning" showIcon />
         </div>
-      </div>
+      </TaskDetailTemplate>
     );
   }
 
   return (
-    <div className="dashboard-container">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-        <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-        <div className="task-detail">
+    <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+      <div className="task-detail">
+        <Card bordered={false} className='task-header-info'>
           <Button type="link" onClick={handleBack} className="back-button">
             <FaArrowLeft /> Geri
           </Button>
-
-          <Card
-            styles={{ alignContent: 'center' }}
-            title=
-            {isEditing ? (
-              <div className='title-edit-container'>
-                <Input
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  className="edit-title-input"
-                  placeholder="Görev Başlığını Düzenleyin"
-                />
-                <Tooltip title="Kaydet">
-                  <Button
-                    type="primary"
-                    onClick={handleEditTitle}
-                    className="action-button save-button"
-                    size={size.width <= 768 ? 'small' : 'middle'}
-                  >
-                    <FaCheck />
-                  </Button>
-                </Tooltip>
-              </div>
-            ) : (
-              <div className='title-container'>
-                <h2 style={{ fontSize: 20 }}>{task.title}</h2>
-              </div>
-            )}
-            className="task-header-card"
-          >
-            <div className="task-info">
-              <div className="buttons-container">
-                <Tooltip title="Tarihçe">
-                  <Button
-                    onClick={showHistoryModal}
-                    className="action-button history-button"
-                    size={size.width <= 768 ? 'small' : 'middle'}
-                  >
-                    <FaHistory />
-                  </Button>
-                </Tooltip>
-                {isEditing ? (
-                  <Tooltip title="İptal">
-                    <Button
-                      type="primary"
-                      onClick={() => setIsEditing(false)}
-                      className="action-button save-button"
-                      size={size.width <= 768 ? 'small' : 'middle'}
-                    >
-                      <FaRegTimesCircle />
-                    </Button>
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Düzenle">
-                    <Button
-                      type="default"
-                      onClick={() => setIsEditing(true)}
-                      className="action-button edit-button"
-                      size={size.width <= 768 ? 'small' : 'middle'}
-                    >
-                      <FaEdit />
-                    </Button>
-                  </Tooltip>
-                )}
-
-                <Tooltip title="Sil">
-                  <Button
-                    type="danger"
-                    onClick={handleDeleteTask}
-                    className="action-button delete-button"
-                    size={size.width <= 768 ? 'small' : 'middle'}
-                  >
-                    <FaTrash />
-                  </Button>
-                </Tooltip>
-                <Tooltip title="Kaydet">
-                  <Button
-                    type="primary"
-                    onClick={handleToggleComplete}
-                    className="action-button complete-button"
-                    size={size.width <= 768 ? 'small' : 'middle'}
-                  >
-                    <FaCheck />
-                  </Button>
-                </Tooltip>
-              </div>
-              <p><strong>Durum:</strong> {task.completed ? 'Tamamlandı' : 'Tamamlanmadı'}</p>
-              <p><strong>Atanan Kişi:</strong> {assignedUserNames}</p>
-              <p><strong>Oluşturulma Tarihi:</strong> {formattedCreatedAt}</p>
-              <p><strong>Görev İçeriği:</strong> {task.description || 'Açıklama yok.'}</p>
-              <p><strong>Oluşturan Kişi:</strong> {createdUserName}</p>
-              <Col xs={24} sm={16} md={12}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Select
-                    mode="multiple"
-                    allowClear
-                    placeholder="Atanacak kişiler"
-                    value={assignment.includes('all') ? ['all'] : assignment}
-                    onChange={handleAssignChange}
-                    style={{ flex: 1, marginRight: '8px' }}
-                    optionLabelProp="label"
-                  >
-                    <Option key="all" value="all" label="Tüm Kullanıcılar">
-                      Tüm Kullanıcılar
-                    </Option>
-                    {sortedUsers.map(user => (
-                      <Option key={user.id} value={user.id} label={user.name}>
-                        {user.name}
-                      </Option>
-                    ))}
-                  </Select>
-                  <Tooltip title="Atama">
-                    <Button type="primary" onClick={handleAssignSubmit} className="action-button assign-button" size={size.width <= 768 ? 'small' : 'middle'}>
-                      Atama
-                    </Button>
-                  </Tooltip>
-                </div>
-              </Col>
-            </div>
-          </Card>
-
-          <Card bordered={false} className="comments-list-card">
-            {formattedComments && formattedComments.length > 0 ? (
-              <List
-                itemLayout="horizontal"
-                dataSource={formattedComments}
-                renderItem={(cmt, index) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<Avatar>{cmt.authorName.charAt(0)}</Avatar>}
-                      title={`${cmt.authorName} - ${cmt.timestamp}`}
-                      description={cmt.description}
-                    />
-                  </List.Item>
-                )}
-              />
-            ) : (
-              <p>Henüz yorum eklenmemiş.</p>
-            )}
-          </Card>
-
-          <Card bordered={false} className="add-comment-card">
-            <Form layout="vertical" onFinish={handleCommentSubmit}>
-              <Form.Item
-                name="comment"
-                label="Açıklama"
-                rules={[{ required: true, message: 'Yorumunuz boş olamaz!' }]}
-              >
-                <TextArea rows={4} placeholder="Yorumunuzu buraya yazın..." />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit" className="action-button submit-button" size={size.width <= 768 ? 'small' : 'middle'}>
-                  Gönder
-                </Button>
-              </Form.Item>
-            </Form>
-          </Card>
-
-          <Modal
-            title="Görev Tarihçesi"
-            visible={isHistoryModalVisible}
-            onCancel={handleHistoryModalClose}
-            footer={[
-              <Button key="close" onClick={handleHistoryModalClose}>
-                Kapat
-              </Button>,
-            ]}
-            width={800}
-          >
-            {filteredHistory.length > 0 ? (
-              <List
-                itemLayout="vertical"
-                dataSource={filteredHistory}
-                renderItem={(item, index) => (
-                  <List.Item key={index}>
-                    <List.Item.Meta
-                      title={`${getChangedByName(item.changedBy)} tarafından ${formatTimestamp(item.timestamp)}`}
-                    />
-                    <div>{item.description || 'Detay yok.'}</div>
-                  </List.Item>
-                )}
-              />
-            ) : (
-              <p>Görev tarihçesi bulunmamaktadır.</p>
-            )}
-          </Modal>
-
-        </div>
+          <TaskHeader
+            isEditing={isEditing}
+            editTitle={editTitle}
+            setEditTitle={setEditTitle}
+            handleEditTitle={handleEditTitle}
+            setIsEditing={setIsEditing}
+            showHistoryModal={showHistoryModal}
+            handleDeleteTask={handleDeleteTask}
+            handleToggleComplete={handleToggleComplete}
+            size={size.width <= 768 ? 'small' : 'middle'}
+            task={task}
+          />
+          <TaskInfo
+            task={task}
+            assignedUserNames={assignedUserNames}
+            formattedCreatedAt={formattedCreatedAt}
+            createdUserName={createdUserName}
+            assignment={assignment}
+            handleAssignChange={handleAssignChange}
+            handleAssignSubmit={handleAssignSubmit}
+            sortedUsers={sortedUsers}
+            size={size.width <= 768 ? 'small' : 'middle'}
+          />
+        </Card>
+        <CommentsList formattedComments={formattedComments} />
+        <AddCommentForm handleCommentSubmit={handleCommentSubmit} size={size.width <= 768 ? 'small' : 'middle'} />
+        <HistoryModal
+          isVisible={isHistoryModalVisible}
+          handleClose={handleHistoryModalClose}
+          filteredHistory={filteredHistory}
+          getChangedByName={getChangedByName}
+          formatTimestamp={formatTimestamp}
+        />
       </div>
-    </div>
+    </TaskDetailTemplate>
   );
 }
 

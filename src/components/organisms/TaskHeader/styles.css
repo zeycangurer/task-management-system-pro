@@ -1,0 +1,40 @@
+.task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 0.5px solid gray;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .title-section {
+    flex: 1;
+  }
+  
+  .task-title {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .buttons-container button {
+    margin-right: 5px;
+  }
+  
+  .buttons-container button:last-child {
+    margin-right: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .task-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .buttons-container {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+  }
+  
