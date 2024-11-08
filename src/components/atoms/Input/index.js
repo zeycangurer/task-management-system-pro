@@ -1,8 +1,8 @@
 import React from 'react';
-import './styles.css';
+import { Input } from 'antd';
 
-function Input(props) {
-  return <input className="input" {...props} />;
+function InputAtom(props) {
+  return <Input {...props} />;
 }
 
-export default Input;
+export default InputAtom;

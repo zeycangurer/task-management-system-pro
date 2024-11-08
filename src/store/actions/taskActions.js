@@ -33,6 +33,7 @@ const getUserNameById = (userId, state) => {
   return customer ? customer.name : 'Bilinmiyor';
 };
 
+
 export const addTask = (taskData, currentUserId) => {
   return async (dispatch) => {
     dispatch({ type: CREATE_TASK_REQUEST });
@@ -99,9 +100,6 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
       const removedAssignees = currentAssignees.filter(userId => !newAssignees.includes(userId));
       const addedAssignees = newAssignees.filter(userId => !currentAssignees.includes(userId));
 
-      console.log('Atanan Kullanıcılar:', addedAssignees);
-      console.log('Çıkarılan Kullanıcılar:', removedAssignees);
-
       const batch = writeBatch(db);
 
       batch.update(taskRef, {
@@ -111,11 +109,10 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
 
       if (addedAssignees.length > 0) {
         const addedNames = addedAssignees.map(id => getUserNameById(id, state)).join(', ');
-        console.log('Atama History Entry:', addedNames);
         batch.update(taskRef, {
           history: arrayUnion({
             changeType: 'assign',
-            description: `Görev atandı: ${addedNames}`,
+            description: `Göreve atandı: ${addedNames}`,
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           }),
@@ -124,7 +121,6 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
 
       if (removedAssignees.length > 0) {
         const removedNames = removedAssignees.map(id => getUserNameById(id, state)).join(', ');
-        console.log('Çıkarma History Entry:', removedNames);
         batch.update(taskRef, {
           history: arrayUnion({
             changeType: 'unassign',
@@ -140,7 +136,6 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
         batch.update(userRef, {
           assignedTasks: arrayUnion(taskId),
         });
-        console.log(`Görev ID'si eklendi: Kullanıcı ${userId}`);
       });
 
       removedAssignees.forEach(userId => {
@@ -148,20 +143,22 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
         batch.update(userRef, {
           assignedTasks: arrayRemove(taskId),
         });
-        console.log(`Görev ID'si çıkarıldı: Kullanıcı ${userId}`);
       });
 
       await batch.commit();
 
-      dispatch({ type: ASSIGN_TASK_SUCCESS, payload: { taskId, newAssignees } });
+      const updatedTaskSnap = await getDoc(taskRef);
+      const updatedTaskData = { id: updatedTaskSnap.id, ...updatedTaskSnap.data() };
+
+      dispatch({ type: ASSIGN_TASK_SUCCESS, payload: updatedTaskData });
       message.success('Görev başarıyla atandı ve güncellendi.');
     } catch (error) {
       dispatch({ type: ASSIGN_TASK_FAILURE, payload: error.message });
       message.error('Görev atanırken veya güncellenirken bir hata oluştu.');
-      console.error('Görev atama hatası:', error);
     }
   };
 };
+
 
 
 export const updateTask = (taskId, updatedData, currentUserId) => {
@@ -178,9 +175,13 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
       if (updatedData.title) {
         description += `Başlık '${updatedData.title}' olarak değiştirildi. `;
       }
+      if (updatedData.completed !== undefined) {
+        description += `Görev ${updatedData.completed ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi. `;
+      }
       if (updatedData.description) {
         description += `Açıklama güncellendi. `;
       }
+
       await updateDoc(taskRef, {
         ...updatePayload,
         history: arrayUnion({
@@ -191,16 +192,18 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
         }),
       });
 
-      dispatch({ type: UPDATE_TASK_SUCCESS, payload: { taskId, updatedData } });
-      message.success('Görev başarıyla güncellendi.');
+      const taskSnap = await getDoc(taskRef);
+      const updatedTaskData = { id: taskSnap.id, ...taskSnap.data() };
 
+      dispatch({ type: UPDATE_TASK_SUCCESS, payload: updatedTaskData });
+      message.success('Görev başarıyla güncellendi.');
     } catch (error) {
       dispatch({ type: UPDATE_TASK_FAILURE, payload: error.message });
       message.error('Görev güncellenirken bir hata oluştu.');
-
     }
   };
 };
+
 
 export const addComment = (taskId, comment, currentUserId) => {
   return async (dispatch) => {
@@ -216,16 +219,19 @@ export const addComment = (taskId, comment, currentUserId) => {
       await updateDoc(taskRef, {
         history: arrayUnion(newComment),
       });
-      dispatch({ type: ADD_COMMENT_SUCCESS, payload: { taskId, comment: newComment } });
-      message.success('Yorum başarıyla eklendi.');
 
+      const taskSnap = await getDoc(taskRef);
+      const updatedTaskData = { id: taskSnap.id, ...taskSnap.data() };
+
+      dispatch({ type: ADD_COMMENT_SUCCESS, payload: updatedTaskData });
+      message.success('Yorum başarıyla eklendi.');
     } catch (error) {
       dispatch({ type: ADD_COMMENT_FAILURE, payload: error.message });
       message.error('Yorum eklenirken bir hata oluştu.');
-
     }
   };
 };
+
 
 export const deleteTask = (taskId) => {
   return async (dispatch) => {

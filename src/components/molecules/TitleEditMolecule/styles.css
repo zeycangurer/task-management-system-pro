@@ -1,0 +1,11 @@
+.title-edit-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .edit-title-input {
+    flex: 1;
+    margin-right: 10px;
+    /* max-width: 300px;  */
+  }
+  

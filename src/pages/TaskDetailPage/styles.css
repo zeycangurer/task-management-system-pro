@@ -12,6 +12,10 @@
   padding: 20px;
 }
 
+.task-header-info {
+  margin-bottom: 20px;
+}
+
 .loading-container, .error-container, .task-detail {
   padding: 20px;
 }

@@ -1,12 +1,8 @@
 import React from 'react';
-import './styles.css';
+import { Button } from 'antd';
 
-function Button({ type, onClick, children }) {
-  return (
-    <button className="button" type={type} onClick={onClick}>
-      {children}
-    </button>
-  );
+function ButtonAtom({ children, ...props }) {
+  return <Button {...props}>{children}</Button>;
 }
 
-export default Button;
+export default ButtonAtom;
