@@ -22,7 +22,7 @@ function TaskDetailPage() {
 
   const tasks = root.tasks.tasks;
   const users = root.users.users;
-  const customers = root.customers;
+  const customers = root.customers.customers;
   const currentUser = root.auth.user;
   const usersLoading = root.users.loading;
   const customersLoading = root.customers.loading;
@@ -74,13 +74,13 @@ function TaskDetailPage() {
   };
 
   useEffect(() => {
-    console.log(tasks)
+    // console.log(tasks)
     const foundTask = tasks.find((t) => t.id === taskId);
     setTask(foundTask);
     if (foundTask) {
       setEditTitle(foundTask.title);
       setAssignment(foundTask.assignedTo || []);
-      console.log('Görev:', foundTask);
+      // console.log('Görev:', foundTask);
       // console.log('Kullanıcılar:', JSON.stringify(users));
       // console.log('Müşteriler:', JSON.stringify(customers));
     }
@@ -136,6 +136,7 @@ function TaskDetailPage() {
         ...entry,
         timestamp: formatTimestamp(entry.timestamp),
         authorName: getChangedByName(entry.changedBy),
+        attachments: entry.attachments || [],
       }));
   }, [task, users, customers]);
 
@@ -165,19 +166,23 @@ function TaskDetailPage() {
   };
 
   const handleCommentSubmit = (values) => {
-    const { comment } = values;
+    const { comment, attachments } = values;
     if (comment.trim() === '') {
       message.error('Yorum boş olamaz.');
       return;
     }
-    dispatch(action.addComment(task.id, comment, currentUser.uid))
+    dispatch(action.addComment(task.id, comment, currentUser.uid, attachments))
       .then(() => {
         message.success('Yorum başarıyla eklendi.');
       })
       .catch((error) => {
         message.error('Yorum eklenirken bir hata oluştu.');
       });
+      console.log(values)
+      console.log('Görev ID:', task.id);
+
   };
+
 
   const handleEditTitle = () => {
     if (editTitle.trim() === '') {

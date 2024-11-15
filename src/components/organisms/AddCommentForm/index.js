@@ -1,13 +1,21 @@
 import React from 'react';
 import { Card, Form } from 'antd';
-import InputAtom from '../../atoms/Input';
-import TextAreaAtom from '../../atoms/TextArea'; 
+import TextAreaAtom from '../../atoms/TextArea';
 import ButtonAtom from '../../atoms/Button';
+import UploadAtom from '../../atoms/Upload';
+import FormItemMolecule from '../../molecules/FormItem';
 
 function AddCommentForm({ handleCommentSubmit, size }) {
+  const [form] = Form.useForm();
+
+  const onFinish = (values) => {
+    handleCommentSubmit(values);
+    form.resetFields();
+  };
+
   return (
     <Card bordered={false} className="add-comment-card">
-      <Form layout="vertical" onFinish={handleCommentSubmit}>
+      <Form layout="vertical" onFinish={onFinish} form={form}>
         <Form.Item
           name="comment"
           label="Açıklama"
@@ -15,6 +23,11 @@ function AddCommentForm({ handleCommentSubmit, size }) {
         >
           <TextAreaAtom rows={4} placeholder="Yorumunuzu buraya yazın..." />
         </Form.Item>
+        <FormItemMolecule label="Dosya Ekle" name="attachments">
+          <UploadAtom multiple beforeUpload={() => false}>
+            <ButtonAtom>Dosya Seç</ButtonAtom>
+          </UploadAtom>
+        </FormItemMolecule>
         <Form.Item>
           <ButtonAtom
             type="primary"

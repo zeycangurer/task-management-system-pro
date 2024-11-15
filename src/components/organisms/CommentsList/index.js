@@ -14,6 +14,7 @@ function CommentsList({ formattedComments }) {
               authorName={cmt.authorName}
               timestamp={cmt.timestamp}
               description={cmt.description}
+              attachments={cmt.attachments}
             />
           )}
         />

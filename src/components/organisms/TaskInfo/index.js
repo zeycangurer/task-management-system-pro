@@ -1,7 +1,8 @@
 import React from 'react';
-import { Col, Select, Tooltip } from 'antd';
+import { Col, Select, List } from 'antd';
 import ActionButton from '../../molecules/ActionButton';
 import { FaCheck } from 'react-icons/fa'
+import TooltipAtom from '../../atoms/Tooltip';
 
 const { Option } = Select;
 
@@ -33,6 +34,21 @@ function TaskInfo({
       <p>
         <strong>Oluşturan Kişi:</strong> {createdUserName}
       </p>
+      {task.attachments && task.attachments.length > 0 && (
+        <div>
+          <strong>Ekler:</strong>
+          <List
+            dataSource={task.attachments}
+            renderItem={(item, index) => (
+              <List.Item key={index}>
+                <a href={item} target="_blank" rel="noopener noreferrer">
+                  Dosya {index + 1}
+                </a>
+              </List.Item>
+            )}
+          />
+        </div>
+      )}
       <Col xs={24} sm={16} md={12}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Select
@@ -53,7 +69,7 @@ function TaskInfo({
               </Option>
             ))}
           </Select>
-          <Tooltip title="Atama">
+          <TooltipAtom title="Atama">
             <ActionButton
               tooltipTitle="Atama"
               icon={FaCheck}
@@ -62,7 +78,7 @@ function TaskInfo({
               size={size}
               type="primary"
             />
-          </Tooltip>
+          </TooltipAtom>
         </div>
       </Col>
     </div>

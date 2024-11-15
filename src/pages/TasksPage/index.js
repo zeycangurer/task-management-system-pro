@@ -81,6 +81,10 @@ function TasksPage() {
     setFilteredTasks(filtered);
   };
 
+  const handleCreateTask = () => {
+    navigate('/createTask');
+  };
+
   useEffect(() => {
     dispatch(fetchTasks());
     dispatch(fetchUsers());
@@ -209,7 +213,7 @@ function TasksPage() {
               <button className="list-button" onClick={filterTasks}>
                 Talep Listele
               </button>
-              <button className="create-button">
+              <button className="create-button" onClick={handleCreateTask}>
                 Talep Oluştur
               </button>
             </div>
