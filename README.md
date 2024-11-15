@@ -16,6 +16,7 @@ Note: The project is under development.
     -   [Installing Dependencies](#installing-dependencies)
     -   [Running the Application](#running-the-application)
 -   [Usage](#usage)
+-   [License](#license)
 
 ## **Features**
 
@@ -140,3 +141,7 @@ Visit [http://localhost:3000](http://localhost:3000) in your browser.
 ### **5. Viewing Task History**
 
 -   In the task detail page, click on the history button to view all changes and comments related to the task.
+
+## **License**
+
+This project is licensed under the MIT License - see the LICENSE file for details.
