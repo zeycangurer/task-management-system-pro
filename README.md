@@ -1,70 +1,142 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Task Management System Project
 
-## Available Scripts
+This project is a task management system where users can create tasks, assign them, add comments, and upload files. It is developed using modern web technologies and is designed to be scalable and efficient.
 
-In the project directory, you can run:
+Note: The project is under development.
 
-### `npm start`
+## **Table of Contents**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+-   [Features](#features)
+-   [Technologies Used](#technologies-used)
+-   [Installation and Setup](#installation-and-setup)
+    -   [Prerequisites](#prerequisites)
+    -   [Cloning the Project](#cloning-the-project)
+    -   [Setting Up Environment Variables](#setting-up-environment-variables)
+    -   [Installing Dependencies](#installing-dependencies)
+    -   [Running the Application](#running-the-application)
+-   [Usage](#usage)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## **Features**
 
-### `npm test`
+-   **Task Creation and Editing:**
+    -   Create new tasks with titles, descriptions, and assign them to users.
+    -   Edit tasks, mark them as completed, or delete them.
+-   **File Attachment to Tasks:**
+    -   Add file attachments when creating or editing tasks.
+    -   Uploaded files are stored on Cloudinary and displayed in task details.
+-   **Adding Comments and File Uploads:**
+    -   Add comments to tasks and attach files to comments.
+    -   Comments are displayed with timestamps and author information.
+-   **User and Customer Management:**
+    -   Assign tasks to users or customers.
+    -   Dynamic loading and selection of user and customer lists.
+-   **History Tracking:**
+    -   All changes to tasks are logged and viewable through the history module.
+-   **Responsive Design:**
+    -   The application is responsive and adapts to different screen sizes.
+-   **Secure Authentication:**
+    -   User login and security are managed using Firebase Authentication.
+-   **Dark and Light Mode Support:**
+    -   Users can switch between dark and light themes for better visual comfort.
+    -   The theme preference is saved and persists across sessions.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## **Technologies Used**
 
-### `npm run build`
+-   **Frontend:**
+    -   [React](https://reactjs.org/): For building user interfaces.
+    -   Redux: For state management.
+    -   [Redux Thunk](https://github.com/reduxjs/redux-thunk): Middleware for handling asynchronous actions.
+    -   [Ant Design](https://ant.design/): UI components and design system.
+    -   [React Router](https://reactrouter.com/): For client-side routing.
+-   **Backend Services:**
+    -   Firebase Firestore: Realtime database.
+    -   Firebase Authentication: User authentication.
+    -   [Cloudinary](https://cloudinary.com/): File upload and storage service.
+-   **Other Tools and Libraries:**
+    -   [Axios](https://axios-http.com/): For HTTP requests.
+    -   React Icons: For icons.
+    -   [Formik](https://formik.org/): For form management.
+ 
+## **Installation and Setup**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### **Prerequisites**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+-   **Node.js and NPM:** [Node.js](https://nodejs.org/) version 14 or higher.
+-   **Firebase Account:** Create a project on Firebase Console.
+-   **Cloudinary Account:** Sign up for a free account at Cloudinary.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### **Cloning the Project**
 
-### `npm run eject`
+bash
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Kodu kopyala
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`git clone https://github.com/yourusername/task-management-system-pro.git
+cd task-management-system-pro` 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### **Setting Up Environment Variables**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Create a `.env` file in the root directory of the project and add the following configurations:
 
-## Learn More
+env
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Kodu kopyala
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+`REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
 
-### Code Splitting
+REACT_APP_CLOUDINARY_CLOUD_NAME=your_cloud_name
+REACT_APP_CLOUDINARY_UPLOAD_PRESET=your_unsigned_upload_preset` 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**Note:** Replace the `your_*` placeholders with your actual Firebase and Cloudinary account details.
 
-### Analyzing the Bundle Size
+### **Installing Dependencies**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+bash
 
-### Making a Progressive Web App
+Kodu kopyala
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+`npm install` 
 
-### Advanced Configuration
+### **Running the Application**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+bash
 
-### Deployment
+Kodu kopyala
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+`npm start` 
 
-### `npm run build` fails to minify
+Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## **Usage**
+
+### **1. User Login and Registration**
+
+-   On the homepage, log in if you have an existing account or create a new one.
+
+### **2. Creating a Task**
+
+-   Navigate to the **Tasks** page and click on the **Create New Task** button.
+-   Fill in the task title, description, assignees, and file attachments.
+-   Click the **Create** button to add the task.
+
+### **3. Task Details**
+
+-   Click on a task from the task list to view its details.
+-   You can view, edit, or delete task information.
+-   Add comments and upload files within the task details.
+
+### **4. Adding Comments**
+
+-   In the task detail page, use the **Add Comment** section to write your comment.
+-   Attach files if needed.
+-   Click **Submit** to add your comment.
+
+### **5. Viewing Task History**
+
+-   In the task detail page, click on the history button to view all changes and comments related to the task.
