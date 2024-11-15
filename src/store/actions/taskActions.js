@@ -2,6 +2,7 @@ import { db } from '../../firebaseConfig';
 import { collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, arrayRemove, Timestamp, getDocs, writeBatch, getDoc } from 'firebase/firestore';
 import { message } from 'antd'
 
+
 export const CREATE_TASK_REQUEST = 'CREATE_TASK_REQUEST';
 export const CREATE_TASK_SUCCESS = 'CREATE_TASK_SUCCESS';
 export const CREATE_TASK_FAILURE = 'CREATE_TASK_FAILURE';
@@ -34,30 +35,91 @@ const getUserNameById = (userId, state) => {
 };
 
 
+// export const addTask = (taskData, currentUserId) => {
+//   return async (dispatch) => {
+//     dispatch({ type: CREATE_TASK_REQUEST });
+//     try {
+//       const docRef = await addDoc(collection(db, 'tasks'), {
+//         ...taskData,
+//         createdAt: Timestamp.fromDate(new Date()),
+//         updatedAt: Timestamp.fromDate(new Date()),
+//         history: [
+//           {
+//             changeType: 'update', 
+//             description: 'Görev oluşturuldu.',
+//             changedBy: currentUserId,
+//             timestamp: Timestamp.fromDate(new Date()),
+//           },
+//         ],
+//       });
+//       dispatch({ type: CREATE_TASK_SUCCESS, payload: { id: docRef.id, ...taskData } });
+//       message.success('Görev başarıyla oluşturuldu.');
+
+//     } catch (error) {
+//       dispatch({ type: CREATE_TASK_FAILURE, payload: error.message });
+//       message.error('Görev oluşturulurken bir hata oluştu.');
+
+//     }
+//   };
+// };
+
+
 export const addTask = (taskData, currentUserId) => {
   return async (dispatch) => {
     dispatch({ type: CREATE_TASK_REQUEST });
     try {
-      const docRef = await addDoc(collection(db, 'tasks'), {
-        ...taskData,
+      const { attachments, ...taskInfo } = taskData;
+      let attachmentURLs = [];
+
+      if (attachments && attachments.fileList && attachments.fileList.length > 0) {
+        const uploadPromises = attachments.fileList.map(async (file) => {
+          const formData = new FormData();
+          formData.append('file', file.originFileObj);
+          formData.append('upload_preset', `${process.env.REACT_APP_UPLOAD_PRESET}`);
+
+          const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_API_KEY}/upload`,
+            {
+              method: 'POST',
+              body: formData,
+            }
+          );
+          const data = await response.json();
+
+          if (data.secure_url) {
+            return data.secure_url;
+          } else {
+            throw new Error('Cloudinary yükleme hatası: ' + data.error.message);
+          }
+        });
+
+        attachmentURLs = await Promise.all(uploadPromises);
+      }
+
+      const newTask = {
+        ...taskInfo,
+        attachments: attachmentURLs,
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
+        createdUser: currentUserId,
         history: [
           {
-            changeType: 'update', 
+            changeType: 'update',
             description: 'Görev oluşturuldu.',
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           },
         ],
-      });
-      dispatch({ type: CREATE_TASK_SUCCESS, payload: { id: docRef.id, ...taskData } });
-      message.success('Görev başarıyla oluşturuldu.');
+      };
 
+      const docRef = await addDoc(collection(db, 'tasks'), newTask);
+
+      dispatch({ type: CREATE_TASK_SUCCESS, payload: { id: docRef.id, ...newTask } });
+      message.success('Görev başarıyla oluşturuldu.');
     } catch (error) {
       dispatch({ type: CREATE_TASK_FAILURE, payload: error.message });
       message.error('Görev oluşturulurken bir hata oluştu.');
-
+      console.error('Görev oluşturma hatası:', error);
     }
   };
 };
@@ -205,29 +267,67 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
 };
 
 
-export const addComment = (taskId, comment, currentUserId) => {
+export const addComment = (taskId, comment, currentUserId, attachments) => {
   return async (dispatch) => {
-    dispatch({ type: ADD_COMMENT_REQUEST });
+    dispatch({ type: UPDATE_TASK_REQUEST });
     try {
+      let attachmentURLs = [];
+      if (attachments && attachments.fileList && attachments.fileList.length > 0) {
+        const uploadPromises = attachments.fileList.map(async (file) => {
+          const formData = new FormData();
+          formData.append('file', file.originFileObj);
+          formData.append('upload_preset', `${process.env.REACT_APP_UPLOAD_PRESET}`);
+
+          const response = await fetch(
+            `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_API_KEY}/upload`,
+            {
+              method: 'POST',
+              body: formData,
+            }
+          );
+          const data = await response.json();
+
+          if (data.secure_url) {
+            return data.secure_url;
+          } else {
+            throw new Error('Cloudinary yükleme hatası: ' + data.error.message);
+          }
+        });
+
+        attachmentURLs = await Promise.all(uploadPromises);
+      }
+
       const taskRef = doc(db, 'tasks', taskId);
       const newComment = {
         changeType: 'comment',
         description: comment,
         changedBy: currentUserId,
         timestamp: Timestamp.fromDate(new Date()),
+        attachments: attachmentURLs
       };
       await updateDoc(taskRef, {
         history: arrayUnion(newComment),
       });
+      // await updateDoc(taskRef, {
+      //   history: arrayUnion({
+      //     changeType: 'comment',
+      //     description: commentText,
+      //     changedBy: currentUserId,
+      //     timestamp: Timestamp.fromDate(new Date()),
+      //     attachments: attachmentURLs, 
+      //   }),
+      //   updatedAt: Timestamp.fromDate(new Date()),
+      // });
 
       const taskSnap = await getDoc(taskRef);
       const updatedTaskData = { id: taskSnap.id, ...taskSnap.data() };
-
+      console.log(updatedTaskData)
       dispatch({ type: ADD_COMMENT_SUCCESS, payload: updatedTaskData });
       message.success('Yorum başarıyla eklendi.');
     } catch (error) {
-      dispatch({ type: ADD_COMMENT_FAILURE, payload: error.message });
-      message.error('Yorum eklenirken bir hata oluştu.');
+      dispatch({ type: UPDATE_TASK_FAILURE, payload: error.message });
+      console.error('Yorum ekleme hatası:', error);
+      throw error;
     }
   };
 };

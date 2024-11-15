@@ -9,6 +9,7 @@ import { ToastContainer } from 'antd'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from './store/actions/userActions';
 import { fetchCustomers } from './store/actions/customerActions';
+import TaskCreationPage from './pages/TaskCreationPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -47,6 +48,14 @@ function App() {
           element={
             <ProtectedRoute>
               <TasksPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/createTask"
+          element={
+            <ProtectedRoute>
+              <TaskCreationPage />
             </ProtectedRoute>
           }
         />
