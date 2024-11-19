@@ -10,6 +10,9 @@
   --error-color: #e74c3c;
   --success-color: #2ecc71;
   --font-family: 'Roboto', sans-serif;
+  --info-color: #3498db; 
+  --border-color: #d9d9d9;
+  --box-shadow-color: rgba(0, 0, 0, 0.1); 
 }
 
 [data-theme="dark"] {
@@ -23,6 +26,8 @@
   --error-color: #e74c3c;
   --success-color: #00b894;
   --info-color: #faad14;
+  --border-color: #434343;
+  --box-shadow-color: rgba(255, 255, 255, 0.1);
 }
 
 body {
