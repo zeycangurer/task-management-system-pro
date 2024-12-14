@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import Header from '../../components/organisms/Header';
-import Sidebar from '../../components/organisms/Sidebar';
-import TaskList from '../../components/organisms/TaskList';
+import Header from '../../../components/organisms/Header';
+import Sidebar from '../../../components/organisms/Sidebar';
+import TaskList from '../../../components/organisms/TaskList';
 import './styles.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTasks } from '../../store/actions/taskActions';
-import { fetchUsers } from '../../store/actions/userActions';
-import { fetchCustomers } from '../../store/actions/customerActions';
+import { fetchTasks } from '../../../store/actions/taskActions';
+import { fetchUsers } from '../../../store/actions/userActions';
+import { fetchCustomers } from '../../../store/actions/customerActions';
 import { startOfYear, format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 
@@ -107,9 +107,9 @@ function TasksPage() {
       return;
     }
 
-    console.log("Yüklenen görevler:", JSON.stringify(tasksState.tasks));
-    console.log("Yüklenen kullanıcılar:", JSON.stringify(usersState.users));
-    console.log("Yüklenen müşteriler:", JSON.stringify(customersState.customers));
+    // console.log("Yüklenen görevler:", JSON.stringify(tasksState.tasks));
+    // console.log("Yüklenen kullanıcılar:", JSON.stringify(usersState.users));
+    // console.log("Yüklenen müşteriler:", JSON.stringify(customersState.customers));
 
     filterTasks();
   }, [

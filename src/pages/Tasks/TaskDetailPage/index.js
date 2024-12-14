@@ -2,15 +2,15 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
-import * as action from '../../store/actions/taskActions';
+import * as action from '../../../store/actions/taskActions';
 import { message, Spin, Alert, Button, Card } from 'antd';
-import TaskDetailTemplate from '../../components/templates/TaskDetailTemplate';
-import TaskHeader from '../../components/organisms/TaskHeader';
-import TaskInfo from '../../components/organisms/TaskInfo';
-import CommentsList from '../../components/organisms/CommentsList';
-import AddCommentForm from '../../components/organisms/AddCommentForm';
-import HistoryModal from '../../components/organisms/HistoryModal';
-import useWindowsSize from '../../hooks/useWindowsSize';
+import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
+import TaskHeader from '../../../components/organisms/TaskHeader';
+import TaskInfo from '../../../components/organisms/TaskInfo';
+import CommentsList from '../../../components/organisms/CommentsList';
+import AddCommentForm from '../../../components/organisms/AddCommentForm';
+import HistoryModal from '../../../components/organisms/HistoryModal';
+import useWindowsSize from '../../../hooks/useWindowsSize';
 import { FaArrowLeft } from 'react-icons/fa';
 
 
@@ -244,39 +244,39 @@ function TaskDetailPage() {
 
   if (tasksLoading || usersLoading || customersLoading) {
     return (
-      <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <div className="loading-container">
           <Spin size="large" tip="Yükleniyor..." />
         </div>
-      </TaskDetailTemplate>
+      </HeaderSideBarTemplate>
     );
   }
 
 
   if (tasksError || usersError || customersError) {
     return (
-      <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <div className="error-container">
           {tasksError && <Alert message="Görev Hatası" description={tasksError} type="error" showIcon style={{ marginBottom: '10px' }} />}
           {usersError && <Alert message="Kullanıcı Hatası" description={usersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
           {customersError && <Alert message="Müşteri Hatası" description={customersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
         </div>
-      </TaskDetailTemplate>
+      </HeaderSideBarTemplate>
     );
   }
 
   if (!task) {
     return (
-      <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <div className="task-detail">
           <Alert message="Görev bulunamadı." type="warning" showIcon />
         </div>
-      </TaskDetailTemplate>
+      </HeaderSideBarTemplate>
     );
   }
 
   return (
-    <TaskDetailTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+    <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
       <div className="task-detail">
         <Card bordered={false} className='task-header-info'>
           <Button type="link" onClick={handleBack} className="back-button">
@@ -316,7 +316,7 @@ function TaskDetailPage() {
           formatTimestamp={formatTimestamp}
         />
       </div>
-    </TaskDetailTemplate>
+    </HeaderSideBarTemplate>
   );
 }
 

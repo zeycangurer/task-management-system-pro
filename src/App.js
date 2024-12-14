@@ -2,14 +2,17 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
-import TaskDetailPage from './pages/TaskDetailPage';
+import TaskDetailPage from './pages/Tasks/TaskDetailPage';
 import ProtectedRoute from './ProtectedRoute';
-import TasksPage from './pages/TasksPage';
-import { ToastContainer } from 'antd'
+import TasksPage from './pages/Tasks/TasksPage';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from './store/actions/userActions';
 import { fetchCustomers } from './store/actions/customerActions';
-import TaskCreationPage from './pages/TaskCreationPage';
+import TaskCreationPage from './pages/Tasks/TaskCreationPage';
+import ProjectsPage from './pages/Projects/ProjectsPage';
+import NewProjectPage from './pages/Projects/NewProjectPage';
+import ProjectDetailPage from './pages/Projects/ProjectDetailPage';
+import EditProjectPage from './pages/Projects/EditProjectPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -35,6 +38,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/createTask"
+          element={
+            <ProtectedRoute>
+              <TaskCreationPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/tasks/:taskId"
           element={
@@ -51,11 +62,36 @@ function App() {
             </ProtectedRoute>
           }
         />
+       
         <Route
-          path="/createTask"
+          path="/projects"
           element={
             <ProtectedRoute>
-              <TaskCreationPage />
+              <ProjectsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/new"
+          element={
+            <ProtectedRoute>
+              <NewProjectPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:projectId"
+          element={
+            <ProtectedRoute>
+              <ProjectDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:projectId/edit"
+          element={
+            <ProtectedRoute>
+              <EditProjectPage />
             </ProtectedRoute>
           }
         />

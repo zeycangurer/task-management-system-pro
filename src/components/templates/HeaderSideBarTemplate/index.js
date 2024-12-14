@@ -2,11 +2,11 @@ import React from 'react';
 import Sidebar from '../../organisms/Sidebar';
 import Header from '../../organisms/Header';
 
-function TaskDetailTemplate({ isSidebarOpen, toggleSidebar, children }) {
+function HeaderSideBarTemplate({ isSidebarOpen, toggleSidebar, children }) {
   return (
-    <div className="dashboard-container">
+    <div className="container">
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      <div className={`main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         {children}
       </div>
@@ -14,4 +14,4 @@ function TaskDetailTemplate({ isSidebarOpen, toggleSidebar, children }) {
   );
 }
 
-export default TaskDetailTemplate;
+export default HeaderSideBarTemplate;
