@@ -7,16 +7,16 @@ import UploadAtom from '../../atoms/Upload';
 import ButtonAtom from '../../atoms/Button';
 import FormItemMolecule from '../../molecules/FormItem';
 
-function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories }) {
+function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories, projects, initialValues }) {
   const [form] = Form.useForm();
 
   const handleFinish = (values) => {
     console.log(values)
     onSubmit(values);
   };
-  
+
   return (
-    <Form form={form} onFinish={handleFinish} layout="vertical">
+    <Form form={form} onFinish={handleFinish} layout="vertical" initialValues={initialValues}>
       <FormItemMolecule
         label="Görev Başlığı"
         name="title"
@@ -84,7 +84,19 @@ function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories 
           ))}
         </SelectAtom>
       </FormItemMolecule>
-
+      <FormItemMolecule
+        label="Proje"
+        name="projectId"
+        rules={[{ required: true, message: 'Lütfen bir proje seçin' }]}
+      >
+        <SelectAtom placeholder="Bir proje seçin">
+          {projects.map((project) => (
+            <SelectAtom.Option key={project.id} value={project.id}>
+              {project.title}
+            </SelectAtom.Option>
+          ))}
+        </SelectAtom>
+      </FormItemMolecule>
       <FormItemMolecule>
         <ButtonAtom type="primary" htmlType="submit">
           Görevi Oluştur

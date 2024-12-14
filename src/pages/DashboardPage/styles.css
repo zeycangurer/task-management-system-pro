@@ -10,6 +10,8 @@
   flex-direction: column;
   transition: margin-left 0.3s ease;
   margin-left: 0; 
+  background-color: var(--background-color);
+
 }
 
 .dashboard-main.sidebar-open {
