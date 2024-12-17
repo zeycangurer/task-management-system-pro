@@ -67,15 +67,18 @@ export const updateProject = (projectId, updatedData) => {
       const oldAssignedTasks = projectData.assignedTasks || [];
       const newAssignedTasks = updatedData.assignedTasks || [];
 
-      
+      const startDateVal = updatedData.startDate instanceof Date ? Timestamp.fromDate(updatedData.startDate) : updatedData.startDate;
+      const endDateVal = updatedData.endDate instanceof Date ? Timestamp.fromDate(updatedData.endDate) : updatedData.endDate;
+
       const data = {
         ...updatedData,
         assignedUsers: updatedData.assignedUsers || [],
         assignedTasks: newAssignedTasks,
-        startDate: updatedData.startDate ? Timestamp.fromDate(updatedData.startDate) : null,
-        endDate: updatedData.endDate ? Timestamp.fromDate(updatedData.endDate) : null,
+        startDate: startDateVal || null,
+        endDate: endDateVal || null,
         updatedAt: Timestamp.fromDate(new Date()),
       };
+
 
       const batch = writeBatch(db);
 
@@ -100,15 +103,42 @@ export const updateProject = (projectId, updatedData) => {
         });
       }
 
-     
-      if (addedTasks.length > 0  || removedTasks.length > 0 ) {
+
+      if (addedTasks.length > 0 || removedTasks.length > 0) {
         const historyEntry = {
           changeType: 'taskupdate',
           description: `Görev güncellemeleri yapıldı.`,
-          changedBy: updatedData.changedBy || 'System', 
+          changedBy: updatedData.changedBy || 'System',
           timestamp: Timestamp.fromDate(new Date()),
         };
 
+        batch.update(projectRef, {
+          history: arrayUnion(historyEntry),
+        });
+      }
+
+      if (updatedData.status !== projectData.status) {
+        const description = `Proje durumu ${updatedData.status === 'completed' ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi.`;
+
+        const historyEntry = {
+          changeType: 'update',
+          description,
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        };
+
+        batch.update(projectRef, {
+          history: arrayUnion(historyEntry),
+        });
+      }
+
+      if (addedTasks.length > 0 || removedTasks.length > 0) {
+        const historyEntry = {
+          changeType: 'taskupdate',
+          description: 'Görev güncellemeleri yapıldı.',
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        };
         batch.update(projectRef, {
           history: arrayUnion(historyEntry),
         });
@@ -175,7 +205,7 @@ export const assignProject = (projectId, newAssignees, currentUserId) => {
         batch.update(projectRef, {
           history: arrayUnion({
             changeType: 'assign',
-            description: `Proje atandı: ${addedNames}`,
+            description: `Projeye atandı: ${addedNames}`,
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           }),
@@ -197,14 +227,14 @@ export const assignProject = (projectId, newAssignees, currentUserId) => {
       addedAssignees.forEach(userId => {
         const userRef = doc(db, 'users', userId);
         batch.update(userRef, {
-          assignedProjects: arrayUnion(projectId),
+          assignedTasks: arrayUnion(projectId),
         });
       });
 
       removedAssignees.forEach(userId => {
         const userRef = doc(db, 'users', userId);
         batch.update(userRef, {
-          assignedProjects: arrayRemove(projectId),
+          assignedTasks: arrayRemove(projectId),
         });
       });
 
