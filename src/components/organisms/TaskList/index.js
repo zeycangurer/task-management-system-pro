@@ -26,8 +26,9 @@ function TaskList({ tasks, onTaskClick }) {
               <th>Tanım</th>
               <th>Atanan Kişi</th>
               <th>Oluşturan Kişi</th>
+              <th>Oluşturulma Tarihi</th>
               <th>Durum</th>
-              <th>Tarih</th>
+              
             </tr>
           </thead>
           <tbody>
@@ -37,12 +38,12 @@ function TaskList({ tasks, onTaskClick }) {
                 <td>{task.description}</td>
                 <td>{task.assignedToName}</td>
                 <td>{task.createdUserName}</td>
+                <td>{task.date || (task.createdAt ? new Date(task.createdAt.seconds * 1000 + task.createdAt.nanoseconds / 1000000).toLocaleDateString() : 'N/A')}</td>
                 <td>
                   <span className={`status ${task.completed ? 'completed' : 'pending'}`}>
                     {task.completed ? 'Tamamlandı' : 'Bekliyor'}
                   </span>
                 </td>
-                <td>{task.date || (task.dueDate ? new Date(task.dueDate.seconds * 1000 + task.dueDate.nanoseconds / 1000000).toLocaleDateString() : 'N/A')}</td>
               </tr>
             ))}
           </tbody>

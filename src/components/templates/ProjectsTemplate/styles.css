@@ -1,13 +1,7 @@
-.dashboard-container {
-  flex:1;
-  background-color: var(--background-color);
-}
-
-.tasks-main {
+.projects-main {
   padding: 20px;
   flex: 1;
   overflow-y: auto;
-
 }
 
 .title {
@@ -79,42 +73,11 @@
   margin-top: 20px;
 }
 
-.error {
-  color: var(--error-color);
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-
-@media (max-width: 768px) {
-  .filters-section {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .button-group {
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 480px) {
-  .filters-section {
-    padding: 10px;
-  }
-
-  .filter-group label,
-  .filter-group input,
-  .filter-group select,
-  .list-button,
-  .create-button {
-    font-size: 0.8rem;
-  }
-
-  .button-group {
-    flex-direction: column;
-    gap: 5px;
-  }
-
-  .list-button,
-  .create-button {
-    width: 100%;
-  }
+.clickable-row:hover {
+  background-color: #f1f1f1;
 }
