@@ -15,3 +15,11 @@ export const projectPriorities = [
     { label: 'Orta', value: 'medium' },
     { label: 'Düşük', value: 'low' },
 ];
+
+export const projectCategories = [
+    { value: 'software', label: 'Yazılım' },
+    { value: 'design', label: 'Tasarım' },
+    { value: 'marketing', label: 'Pazarlama' },
+    { value: 'finance', label: 'Finans' },
+  ];
+  

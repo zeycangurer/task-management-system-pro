@@ -1,0 +1,21 @@
+
+.comments-list-card .ant-list-item-meta-title {
+    font-weight: bold;
+    color: var(--primary-color, #1890ff);
+  }
+  
+  .add-comment-card .ant-form-item {
+    margin-bottom: 0;
+  }
+  
+  .add-comment-card .ant-form-item:last-child {
+    margin-top: 10px;
+  }
+  
+  .comments-list-card .ant-list-item {
+    padding: 10px 0;
+  }
+  
+  .add-comment-card textarea {
+    resize: vertical;
+  }

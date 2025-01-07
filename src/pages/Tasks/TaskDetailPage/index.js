@@ -38,7 +38,7 @@ function TaskDetailPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
 
-  
+
   const size = useWindowsSize()
   // console.log(size)
 
@@ -85,26 +85,16 @@ function TaskDetailPage() {
       // console.log('Müşteriler:', JSON.stringify(customers));
     }
   }, [tasks, taskId, users, customers]);
-  
 
- 
+
+
 
   const sortedUsers = useMemo(() => {
     return [...users].sort((a, b) => a.name.localeCompare(b.name));
   }, [users]);
 
-  const assignedUserNames = useMemo(() => {
-    if (!task || !Array.isArray(task.assignedTo) || task.assignedTo.length === 0) return 'Atanmamış';
-    const names = task.assignedTo
-      .filter(userId => userId)
-      .map(userId => {
-        const user = users.find(u => u.id === userId);
-        if (user) return user.name;
-        const customer = customers.find(c => c.id === userId);
-        return customer ? customer.name : 'Bilinmiyor';
-      });
-    return names.length > 0 ? names.join(', ') : 'Atanmamış';
-  }, [task, users, customers]);
+  const assignedUserNames = users.filter((user) => (task?.assignedTo || []).includes(user.id));
+  const taskCustomer = customers.filter((customer) => (task?.customer || []).includes(customer.id));
 
   const createdUserName = useMemo(() => {
     if (!task) return 'Bilinmiyor';
@@ -178,8 +168,8 @@ function TaskDetailPage() {
       .catch((error) => {
         message.error('Yorum eklenirken bir hata oluştu.');
       });
-      console.log(values)
-      console.log('Görev ID:', task.id);
+    console.log(values)
+    console.log('Görev ID:', task.id);
 
   };
 
@@ -277,46 +267,50 @@ function TaskDetailPage() {
 
   return (
     <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
-      <div className="task-detail">
-        <Card bordered={false} className='task-header-info'>
-          <Button type="link" onClick={handleBack} className="back-button">
-            <FaArrowLeft /> Geri
-          </Button>
-          <TaskHeader
-            isEditing={isEditing}
-            editTitle={editTitle}
-            setEditTitle={setEditTitle}
-            handleEditTitle={handleEditTitle}
-            setIsEditing={setIsEditing}
-            showHistoryModal={showHistoryModal}
-            handleDeleteTask={handleDeleteTask}
-            handleToggleComplete={handleToggleComplete}
-            size={size.width <= 768 ? 'small' : 'middle'}
-            task={task}
+      <div className="dashboard-container">
+        <div className="task-detail">
+          <Card bordered={false} className='task-header-info'>
+            <Button type="link" onClick={handleBack} className="back-button">
+              <FaArrowLeft /> Geri
+            </Button>
+            <TaskHeader
+              isEditing={isEditing}
+              editTitle={editTitle}
+              setEditTitle={setEditTitle}
+              handleEditTitle={handleEditTitle}
+              setIsEditing={setIsEditing}
+              showHistoryModal={showHistoryModal}
+              handleDeleteTask={handleDeleteTask}
+              handleToggleComplete={handleToggleComplete}
+              size={size.width <= 768 ? 'small' : 'middle'}
+              task={task}
+            />
+            <TaskInfo
+              task={task}
+              assignedUserNames={assignedUserNames}
+              formattedCreatedAt={formattedCreatedAt}
+              createdUserName={createdUserName}
+              assignment={assignment}
+              handleAssignChange={handleAssignChange}
+              handleAssignSubmit={handleAssignSubmit}
+              sortedUsers={sortedUsers}
+              size={size.width <= 768 ? 'small' : 'middle'}
+              taskCustomer={taskCustomer}
+            />
+          </Card>
+          <CommentsList formattedComments={formattedComments} />
+          <AddCommentForm handleCommentSubmit={handleCommentSubmit} size={size.width <= 768 ? 'small' : 'middle'} />
+          <HistoryModal
+            isVisible={isHistoryModalVisible}
+            handleClose={handleHistoryModalClose}
+            filteredHistory={filteredHistory}
+            getChangedByName={getChangedByName}
+            formatTimestamp={formatTimestamp}
           />
-          <TaskInfo
-            task={task}
-            assignedUserNames={assignedUserNames}
-            formattedCreatedAt={formattedCreatedAt}
-            createdUserName={createdUserName}
-            assignment={assignment}
-            handleAssignChange={handleAssignChange}
-            handleAssignSubmit={handleAssignSubmit}
-            sortedUsers={sortedUsers}
-            size={size.width <= 768 ? 'small' : 'middle'}
-          />
-        </Card>
-        <CommentsList formattedComments={formattedComments} />
-        <AddCommentForm handleCommentSubmit={handleCommentSubmit} size={size.width <= 768 ? 'small' : 'middle'} />
-        <HistoryModal
-          isVisible={isHistoryModalVisible}
-          handleClose={handleHistoryModalClose}
-          filteredHistory={filteredHistory}
-          getChangedByName={getChangedByName}
-          formatTimestamp={formatTimestamp}
-        />
+        </div>
       </div>
     </HeaderSideBarTemplate>
+
   );
 }
 

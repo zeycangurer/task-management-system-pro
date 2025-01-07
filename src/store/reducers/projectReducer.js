@@ -12,7 +12,9 @@ const projectReducer = (state = initialState, action) => {
     case types.ADD_PROJECT_REQUEST:
     case types.ASSIGN_PROJECT_REQUEST:
     case types.UPDATE_PROJECT_REQUEST:
+    case types.ADD_COMMENT_REQUEST:
     case types.DELETE_PROJECT_REQUEST:
+    case types.ASSIGN_TASK_TO_PROJECT_REQUEST:
       return {
         ...state,
         loading: true,
@@ -30,7 +32,19 @@ const projectReducer = (state = initialState, action) => {
         loading: false,
         projects: [...state.projects, action.payload],
       };
+      case types.ASSIGN_TASK_TO_PROJECT_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          projects: state.projects.map((project) =>
+            project.id === action.payload.id
+              ? { ...action.payload } 
+              : project
+          ),
+        };
+      
     case types.UPDATE_PROJECT_SUCCESS:
+    case types.ADD_COMMENT_SUCCESS:
     case types.ASSIGN_PROJECT_SUCCESS:
       return {
         ...state,
@@ -49,7 +63,9 @@ const projectReducer = (state = initialState, action) => {
     case types.ADD_PROJECT_FAILURE:
     case types.UPDATE_PROJECT_FAILURE:
     case types.DELETE_PROJECT_FAILURE:
+    case types.ADD_COMMENT_FAILURE:
     case types.ASSIGN_PROJECT_FAILURE:
+    case types.ASSIGN_TASK_TO_PROJECT_FAILURE:
       return {
         ...state,
         loading: false,

@@ -9,18 +9,20 @@ import { fetchUsers } from '../../../store/actions/userActions';
 import { fetchCustomers } from '../../../store/actions/customerActions';
 import { startOfYear, format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import TitleAtom from '../../../components/atoms/Title';
 
 function TasksPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const tasksState = useSelector((state) => state.tasks);
-  const usersState = useSelector((state) => state.users);
-  const customersState = useSelector((state) => state.customers);
+  const root = useSelector(state => state)
+  const tasksState = root.tasks;
+  const usersState = root.users;
+  const customersState = root.customers;
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [dateRange, setDateRange] = useState({
-    startDate: format(startOfYear(new Date()), 'yyyy-MM-dd'), 
+    startDate: '2020-01-01', 
     endDate: format(new Date(), 'yyyy-MM-dd'), 
   });
   const [selectedUser, setSelectedUser] = useState('');
@@ -166,6 +168,7 @@ function TasksPage() {
       <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         <main className="tasks-main">
+        <TitleAtom level={1} className="title">Görevler</TitleAtom>
           <div className="filters-section">
             <div className="filter-group">
               <label htmlFor="start-date">Başlangıç Tarihi:</label>

@@ -16,6 +16,11 @@ function AddCommentForm({ handleCommentSubmit, size }) {
   return (
     <Card bordered={false} className="add-comment-card">
       <Form layout="vertical" onFinish={onFinish} form={form}>
+      <FormItemMolecule label="Dosya Ekle" name="attachments">
+          <UploadAtom multiple beforeUpload={() => false}>
+            <ButtonAtom>Dosya Seç</ButtonAtom>
+          </UploadAtom>
+        </FormItemMolecule>
         <Form.Item
           name="comment"
           label="Açıklama"
@@ -23,11 +28,6 @@ function AddCommentForm({ handleCommentSubmit, size }) {
         >
           <TextAreaAtom rows={4} placeholder="Yorumunuzu buraya yazın..." />
         </Form.Item>
-        <FormItemMolecule label="Dosya Ekle" name="attachments">
-          <UploadAtom multiple beforeUpload={() => false}>
-            <ButtonAtom>Dosya Seç</ButtonAtom>
-          </UploadAtom>
-        </FormItemMolecule>
         <Form.Item>
           <ButtonAtom
             type="primary"

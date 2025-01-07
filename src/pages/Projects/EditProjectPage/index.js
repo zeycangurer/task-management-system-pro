@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import ProjectCreationFormOrganism from '../../../components/organisms/ProjectCreation';
 import * as projectActions from '../../../store/actions/projectActions';
 import { message } from 'antd';
 import SpinAtom from '../../../components/atoms/Spin';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
-
+import './styles.css'
+import ProjectCreationTemplate from '../../../components/templates/ProjectCreationTemplate';
 function EditProjectPage() {
   const { projectId } = useParams();
   const dispatch = useDispatch();
@@ -59,16 +59,16 @@ function EditProjectPage() {
   };
 
   return (
-    <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
-      <div>
-        <h1>Proje Düzenle</h1>
-        <ProjectCreationFormOrganism
+    <div className="dashboard-container">
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+        <ProjectCreationTemplate
           onFinish={onFinish}
           initialValues={initialValues}
           isEditMode={true}
         />
-      </div>
-    </HeaderSideBarTemplate>
+
+      </HeaderSideBarTemplate>
+    </div>
   );
 }
 

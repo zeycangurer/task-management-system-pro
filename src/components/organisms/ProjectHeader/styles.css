@@ -1,4 +1,4 @@
-.task-header {
+.project-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -11,22 +11,25 @@
   flex: 1;
 }
 
-.task-title {
+
+.project-title {
   font-size: 20px;
   margin: 0;
   color: var(--text-color);
+
 }
 
-.buttons-container button {
-  margin-right: 5px;
-}
 
-.buttons-container button:last-child {
+.buttons-container > * {
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+.buttons-container > *:last-child {
   margin-right: 0;
 }
 
 @media (max-width: 768px) {
-  .task-header {
+  .project-header {
     flex-direction: column;
     align-items: flex-start;
   }

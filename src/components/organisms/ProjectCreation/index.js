@@ -9,128 +9,111 @@ import SelectAtom from '../../atoms/Select';
 import DatePickerAtom from '../../atoms/DatePicker';
 import * as userAction from '../../../store/actions/userActions';
 import * as taskAction from '../../../store/actions/taskActions';
+import * as customerAction from '../../../store/actions/customerActions';
 import dayjs from 'dayjs';
-import { projectPriorities } from '../../../utils/arrays';
+import { projectCategories, projectPriorities } from '../../../utils/arrays';
+import './styles.css'
+import { FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = false }) {
     const dispatch = useDispatch();
-    const root = useSelector((state) => state)
+    const navigate = useNavigate();
+    const root = useSelector((state) => state);
     const { users, loading: usersLoading } = root.users;
     const { tasks, loading: tasksLoading } = root.tasks;
-
+    const { customers, loading: customersLoading } = root.customers;
+  
     useEffect(() => {
-        if (!users.length) {
-            dispatch(userAction.fetchUsers());
-        }
-        if (!tasks.length) {
-            dispatch(taskAction.fetchTasks());
-        }
-    }, [dispatch, users.length, tasks.length]);
-
+      if (!users.length) dispatch(userAction.fetchUsers());
+      if (!tasks.length) dispatch(taskAction.fetchTasks());
+      if (!customers.length) dispatch(customerAction.fetchCustomers());
+    }, [dispatch, users.length, tasks.length, customers.length]);
+  
     const [form] = Form.useForm();
-
+  
     useEffect(() => {
-        if (initialValues) {
-            form.setFieldsValue({
-                ...initialValues,
-                startDate: initialValues.startDate ? dayjs(initialValues.startDate.toDate()) : null,
-                endDate: initialValues.endDate ? dayjs(initialValues.endDate.toDate()) : null,
-            });
-        }
+      if (initialValues) {
+        form.setFieldsValue({
+          ...initialValues,
+          startDate: initialValues.startDate ? dayjs(initialValues.startDate.toDate()) : null,
+          endDate: initialValues.endDate ? dayjs(initialValues.endDate.toDate()) : null,
+        });
+      }
     }, [initialValues, form]);
-
-
+  
+    const handleBack = () => navigate(-1);
+  
     return (
-        <Form layout="vertical" onFinish={onFinish} form={form}>
-            <FormItemMolecule
-                label="Proje Başlığı"
-                name="title"
-                rules={[{ required: true, message: 'Lütfen proje başlığını girin' }]}
-            >
-                <InputAtom placeholder="Proje başlığı" />
-            </FormItemMolecule>
-
-            <FormItemMolecule label="Proje Açıklaması" name="description">
-                <TextAreaAtom rows={4} placeholder="Proje açıklaması" />
-            </FormItemMolecule>
-
-            <FormItemMolecule
-                label="Başlangıç Tarihi"
-                name="startDate"
-                rules={[{ required: true, message: 'Lütfen başlangıç tarihini girin' }]}
-            >
-                <DatePickerAtom placeholder="Başlangıç tarihi seçin" style={{ width: '100%' }} />
-            </FormItemMolecule>
-
-            <FormItemMolecule
-                label="Bitiş Tarihi"
-                name="endDate"
-                rules={[{ required: true, message: 'Lütfen bitiş tarihini girin' }]}
-            >
-                <DatePickerAtom placeholder="Bitiş tarihi seçin" style={{ width: '100%' }} />
-            </FormItemMolecule>
-
-            <FormItemMolecule
-                label="Öncelik"
-                name="priority"
-                rules={[{ required: true, message: 'Lütfen öncelik seçin' }]}
-            >
-                <SelectAtom placeholder="Öncelik seçin">
-                    {projectPriorities.map((priority) => (
-                        <SelectAtom.Option key={priority.value} value={priority.value}>
-                            {priority.label}
-                        </SelectAtom.Option>
-                    ))}
-                </SelectAtom>
-            </FormItemMolecule>
-
-            <FormItemMolecule
-                label="Kullanıcılar"
-                name="assignedUsers"
-                rules={[{ required: true, message: 'Lütfen en az bir kullanıcı seçin' }]}
-            >
-                <SelectAtom
-                    mode="multiple"
-                    placeholder="Kullanıcıları seçin"
-                    loading={usersLoading}
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().includes(input.toLowerCase())
-                    }
-                >
-                    {users.map((user) => (
-                        <SelectAtom.Option key={user.id} value={user.id}>
-                            {user.name || user.email}
-                        </SelectAtom.Option>
-                    ))}
-                </SelectAtom>
-            </FormItemMolecule>
-
-            <FormItemMolecule label="Görevler" name="assignedTasks">
-                <SelectAtom
-                    mode="multiple"
-                    placeholder="Görevleri seçin"
-                    loading={tasksLoading}
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                        option.children.toLowerCase().includes(input.toLowerCase())
-                    }
-                >
-                    {tasks.map((task) => (
-                        <SelectAtom.Option key={task.id} value={task.id}>
-                            {task.title}
-                        </SelectAtom.Option>
-                    ))}
-                </SelectAtom>
-            </FormItemMolecule>
-
-            <Form.Item>
-                <ButtonAtom type="primary" htmlType="submit">
-                    {isEditMode ? 'Güncelle' : 'Oluştur'}
-                </ButtonAtom>
-            </Form.Item>
-        </Form>
+      <Form layout="vertical" onFinish={onFinish} form={form}>
+        <ButtonAtom type="link" onClick={handleBack} className="back-button">
+          <FaArrowLeft /> Geri
+        </ButtonAtom>
+        <FormItemMolecule label="Proje Başlığı" name="title" rules={[{ required: true, message: 'Lütfen proje başlığını girin' }]}>
+          <InputAtom placeholder="Proje başlığı" />
+        </FormItemMolecule>
+        <FormItemMolecule label="Proje Açıklaması" name="description">
+          <TextAreaAtom rows={4} placeholder="Proje açıklaması" />
+        </FormItemMolecule>
+        <FormItemMolecule label="Başlangıç Tarihi" name="startDate" rules={[{ required: true, message: 'Lütfen başlangıç tarihini girin' }]}>
+          <DatePickerAtom placeholder="Başlangıç tarihi seçin" style={{ width: '100%' }} />
+        </FormItemMolecule>
+        <FormItemMolecule label="Bitiş Tarihi" name="endDate" rules={[{ required: true, message: 'Lütfen bitiş tarihini girin' }]}>
+          <DatePickerAtom placeholder="Bitiş tarihi seçin" style={{ width: '100%' }} />
+        </FormItemMolecule>
+        <FormItemMolecule label="Öncelik" name="priority" rules={[{ required: true, message: 'Lütfen öncelik seçin' }]}>
+          <SelectAtom placeholder="Öncelik seçin">
+            {projectPriorities.map((priority) => (
+              <SelectAtom.Option key={priority.value} value={priority.value}>
+                {priority.label}
+              </SelectAtom.Option>
+            ))}
+          </SelectAtom>
+        </FormItemMolecule>
+        <FormItemMolecule label="Kategori" name="category" rules={[{ required: true, message: 'Lütfen bir kategori seçin' }]}>
+          <SelectAtom placeholder="Kategori seçin">
+            {projectCategories.map((category) => (
+              <SelectAtom.Option key={category.value} value={category.value}>
+                {category.label}
+              </SelectAtom.Option>
+            ))}
+          </SelectAtom>
+        </FormItemMolecule>
+        <FormItemMolecule label="Müşteri" name="customerId" rules={[{ required: true, message: 'Lütfen bir müşteri seçin' }]}>
+          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading}>
+            {customers.map((customer) => (
+              <SelectAtom.Option key={customer.id} value={customer.id}>
+                {customer.name}
+              </SelectAtom.Option>
+            ))}
+          </SelectAtom>
+        </FormItemMolecule>
+        <FormItemMolecule label="Kullanıcılar" name="assignedUsers" rules={[{ required: true, message: 'Lütfen en az bir kullanıcı seçin' }]}>
+          <SelectAtom mode="multiple" placeholder="Kullanıcıları seçin" loading={usersLoading}>
+            {users.map((user) => (
+              <SelectAtom.Option key={user.id} value={user.id}>
+                {user.name || user.email}
+              </SelectAtom.Option>
+            ))}
+          </SelectAtom>
+        </FormItemMolecule>
+        <FormItemMolecule label="Görevler" name="assignedTasks">
+          <SelectAtom mode="multiple" placeholder="Görevleri seçin" loading={tasksLoading}>
+            {tasks.map((task) => (
+              <SelectAtom.Option key={task.id} value={task.id}>
+                {task.title}
+              </SelectAtom.Option>
+            ))}
+          </SelectAtom>
+        </FormItemMolecule>
+        <Form.Item>
+          <ButtonAtom type="primary" htmlType="submit">
+            {isEditMode ? 'Güncelle' : 'Oluştur'}
+          </ButtonAtom>
+        </Form.Item>
+      </Form>
     );
-}
+  }
+  
 
 export default ProjectCreationFormOrganism;

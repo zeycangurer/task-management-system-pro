@@ -72,7 +72,7 @@ function TaskHeader({
           tooltipTitle={task.completed ? 'Görevi Geri Al' : 'Görevi Tamamla'}
           icon={FaCheck}
           onClick={handleToggleComplete}
-          className="action-button complete-button"
+          className="action-button save-button"
           size={size}
           type="primary"
         />

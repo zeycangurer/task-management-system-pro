@@ -6,10 +6,9 @@ import * as customerAction from '../../../store/actions/customerActions';
 import * as projectAction from '../../../store/actions/projectActions';
 import { message } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Sidebar from '../../../components/organisms/Sidebar';
-import Header from '../../../components/organisms/Header';
 import './styles.css'
 import { taskPriorities, taskCategories } from '../../../utils/arrays';
+import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 
 function TaskCreationPage() {
   const dispatch = useDispatch();
@@ -34,8 +33,8 @@ function TaskCreationPage() {
     dispatch(customerAction.fetchCustomers());
   }, [dispatch]);
 
-  
- 
+
+
 
   const handleSubmit = (values) => {
     const taskData = {
@@ -59,9 +58,7 @@ function TaskCreationPage() {
 
   return (
     <div className="task-creation-container">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className={`task-creation-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-        <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <main>
           <TaskCreationTemplate
             onSubmit={handleSubmit}
@@ -72,7 +69,7 @@ function TaskCreationPage() {
             projects={projects}
           />
         </main>
-      </div>
+      </HeaderSideBarTemplate>
     </div>
   );
 }
