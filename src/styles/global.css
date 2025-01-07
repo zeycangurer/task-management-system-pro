@@ -13,6 +13,11 @@
   --info-color: #3498db; 
   --border-color: #d9d9d9;
   --box-shadow-color: rgba(0, 0, 0, 0.1); 
+  --create-color: #3498db;   
+  --edit-color: #faad14;      
+  --save-color: #2ecc71;      
+  --delete-color: #e74c3c;    
+  --history-color: #9b59b6; 
 }
 
 [data-theme="dark"] {
@@ -28,6 +33,11 @@
   --info-color: #faad14;
   --border-color: #434343;
   --box-shadow-color: rgba(255, 255, 255, 0.1);
+  --create-color: #2980b9;    
+  --edit-color: #d98a0f;      
+  --save-color: #27ae60;      
+  --delete-color: #c0392b;    
+  --history-color: #8e44ad;
 }
 
 body {
@@ -38,4 +48,106 @@ body {
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
   padding-top: 60px;
+}
+
+/* buttons */
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.create-button {
+  background-color: var(--create-color) !important;
+  border-color: var(--create-color) !important;
+  transition: background-color 0.3s, border-color 0.3s;
+  margin-right: 3px;
+}
+.create-button:hover {
+  opacity: 0.9;
+}
+
+.edit-button {
+  background-color: var(--edit-color) !important;
+  border-color: var(--edit-color) !important;
+  margin-right: 3px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.edit-button:hover {
+  opacity: 0.9;
+}
+
+.save-button {
+  background-color: var(--save-color) !important;
+  border-color: var(--save-color) !important;
+  margin-right: 3px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.save-button:hover {
+  opacity: 0.9;
+}
+
+.delete-button {
+  background-color: var(--delete-color) !important;
+  border-color: var(--delete-color) !important;
+  margin-right: 3px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.delete-button:hover {
+  opacity: 0.9;
+}
+
+.complete-button {
+  background-color: var(--complete-color) !important;
+  border-color: var(--complete-color) !important;
+  margin-right: 3px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.complete-button:hover {
+  opacity: 0.9;
+}
+
+.history-button {
+  background-color: var(--history-color) !important;
+  border-color: var(--history-color) !important;
+  margin-right: 3px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.history-button:hover {
+  opacity: 0.9;
+}
+
+.submit-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.action-button:hover {
+  opacity: 0.8;
+}
+
+.history-button {
+  background-color:var(--primary-color);
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  color: var(--primary-color, #1890ff);
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  opacity: 0.7;
 }

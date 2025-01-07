@@ -7,6 +7,8 @@ import * as userAction from '../../../store/actions/userActions';
 import useWindowsSize from '../../../hooks/useWindowsSize';
 import ProjectDetailTemplate from '../../../components/templates/ProjectDetailTemplate';
 import { message } from 'antd';
+import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
+import './styles.css'
 
 function ProjectDetailPage() {
   const { projectId } = useParams();
@@ -16,13 +18,23 @@ function ProjectDetailPage() {
 
   const root = useSelector(state => state);
   const { users } = root.users;
+  const { customers } = root.customers;
   const { projects, loading, error } = root.projects;
   const { tasks } = root.tasks;
   const currentUser = root.auth.user;
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [project, setProject] = useState(null);
   const [assignment, setAssignment] = useState([]);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  // useEffect(() => {
+  //   console.log('Proje veya görevler güncellendi:', project, tasks);
+  // }, [project, tasks]);
+  
   useEffect(() => {
     if (!users.length) {
       dispatch(userAction.fetchUsers());
@@ -41,12 +53,16 @@ function ProjectDetailPage() {
   }, [projects, projectId]);
 
   const assignedUsers = users.filter((user) => (project?.assignedUsers || []).includes(user.id));
+  const projectCustomer = customers.filter((customer) => (project?.customerId || []).includes(customer.id));
+
   const sortedUsers = useMemo(() => {
     return [...users].sort((a, b) => (a.displayName || a.email).localeCompare(b.displayName || b.email));
   }, [users]);
 
-  const projectTasks = tasks.filter((task) => task.projectId === projectId);
-
+  const projectTasks = useMemo(() => {
+    return tasks.filter((task) => task.projectId === projectId);
+  }, [tasks, projectId]);
+  
   const handleBack = () => navigate(-1);
 
   const handleEdit = () => {
@@ -64,20 +80,23 @@ function ProjectDetailPage() {
   };
 
   const handleToggleComplete = () => {
-    const newStatus = project.status === 'completed' ? 'active' : 'completed';
+    const newStatus = project.status === 'close' ? 'open' : 'close';
+
     const updatedProject = {
-      ...project,
-      status: newStatus,
-      changedBy: currentUser.id, 
+        ...project,
+        status: newStatus,
+        changedBy: currentUser.uid,
     };
+
     dispatch(projectAction.updateProject(projectId, updatedProject))
-      .then(() => {
-        message.success('Proje durumu güncellendi');
-      })
-      .catch((error) => {
-        message.error('Proje durumu güncellenemedi: ' + error.message);
-      });
-  };
+        .then(() => {
+            message.success('Proje durumu güncellendi');
+        })
+        .catch((error) => {
+            message.error('Proje durumu güncellenemedi: ' + error.message);
+        });
+};
+
 
   const handleAssignChange = (value) => {
     setAssignment(value);
@@ -88,7 +107,7 @@ function ProjectDetailPage() {
     let newAssignees = assignment;
 
     if (newAssignees.includes('all')) {
-      newAssignees = users.map(user => user.uid);
+      newAssignees = users.map(user => user.id);
     }
 
     if (newAssignees.length === 0) {
@@ -112,33 +131,42 @@ function ProjectDetailPage() {
     return <div>Hata: {error}</div>;
   }
 
-  
+
   const comments = project.comments || [];
   const attachments = project.attachments || [];
   const historyEntries = project.history || [];
   const relatedTasks = project.relatedTasks || [];
 
+  // console.log(JSON.stringify(project))
+
   return (
-    <ProjectDetailTemplate
-      onBack={handleBack}
-      project={project}
-      tasks={projectTasks}
-      assignedUsers={assignedUsers}
-      sortedUsers={sortedUsers}
-      assignment={assignment}
-      handleAssignChange={handleAssignChange}
-      handleAssignSubmit={handleAssignSubmit}
-      onEditProject={handleEdit}
-      onDeleteProject={handleDeleteProject}
-      onCreateTask={handleCreateTask}
-      onToggleComplete={handleToggleComplete}
-      onTaskClick={(taskId) => navigate(`/tasks/${taskId}`)}
-      comments={comments}
-      attachments={attachments}
-      historyEntries={historyEntries}
-      relatedTasks={relatedTasks}
-      size={size}
-    />
+
+    <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+      <div className="dashboard-container">
+        <ProjectDetailTemplate
+          onBack={handleBack}
+          project={project}
+          tasks={projectTasks}
+          assignedUsers={assignedUsers}
+          sortedUsers={sortedUsers}
+          assignment={assignment}
+          handleAssignChange={handleAssignChange}
+          handleAssignSubmit={handleAssignSubmit}
+          onEditProject={handleEdit}
+          onDeleteProject={handleDeleteProject}
+          onCreateTask={handleCreateTask}
+          onToggleComplete={handleToggleComplete}
+          onTaskClick={(taskId) => navigate(`/tasks/${taskId}`)}
+          comments={comments}
+          attachments={attachments}
+          historyEntries={historyEntries}
+          relatedTasks={relatedTasks}
+          size={size}
+          projectCustomer={projectCustomer}
+        />
+      </div>
+    </HeaderSideBarTemplate>
+
   );
 }
 

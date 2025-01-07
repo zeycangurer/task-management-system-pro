@@ -1,5 +1,5 @@
 import { db } from '../../firebaseConfig';
-import { collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, arrayRemove, Timestamp, getDocs, writeBatch, getDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, arrayRemove, Timestamp, getDocs, writeBatch, getDoc, onSnapshot } from 'firebase/firestore';
 import { message } from 'antd'
 import * as types from '../constants/taskActionTypes';
 
@@ -71,24 +71,25 @@ export const addTask = (taskData, currentUserId) => {
   };
 };
 
+
 export const fetchTasks = () => {
   return async (dispatch) => {
     dispatch({ type: types.FETCH_TASKS_REQUEST });
+
     try {
-      const querySnapshot = await getDocs(collection(db, 'tasks'));
-      const tasks = [];
-      querySnapshot.forEach((doc) => {
-        tasks.push({ id: doc.id, ...doc.data() });
+      const tasksCollection = collection(db, "tasks");
+      const unsubscribe = onSnapshot(tasksCollection, (snapshot) => {
+        const tasks = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        dispatch({ type: types.FETCH_TASKS_SUCCESS, payload: tasks });
       });
-      dispatch({ type: types.FETCH_TASKS_SUCCESS, payload: tasks });
+
+      return unsubscribe; 
     } catch (error) {
       dispatch({ type: types.FETCH_TASKS_FAILURE, payload: error.message });
-      message.error('Görev çekilirken bir hata oluştu.');
-
+      console.error("Görevler alınırken hata oluştu:", error);
     }
   };
 };
-
 
 
 
@@ -216,7 +217,7 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
 
 export const addComment = (taskId, comment, currentUserId, attachments) => {
   return async (dispatch) => {
-    dispatch({ type: types.UPDATE_TASK_REQUEST });
+    dispatch({ type: types.ADD_COMMENT_REQUEST });
     try {
       let attachmentURLs = [];
       if (attachments && attachments.fileList && attachments.fileList.length > 0) {
@@ -272,7 +273,7 @@ export const addComment = (taskId, comment, currentUserId, attachments) => {
       dispatch({ type: types.ADD_COMMENT_SUCCESS, payload: updatedTaskData });
       message.success('Yorum başarıyla eklendi.');
     } catch (error) {
-      dispatch({ type: types.UPDATE_TASK_FAILURE, payload: error.message });
+      dispatch({ type: types.ADD_COMMENT_FAILURE, payload: error.message });
       console.error('Yorum ekleme hatası:', error);
       throw error;
     }

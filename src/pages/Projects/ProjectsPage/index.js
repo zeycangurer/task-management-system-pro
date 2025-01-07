@@ -21,7 +21,7 @@ function ProjectsPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [dateRange, setDateRange] = useState({
-    startDate: format(startOfYear(new Date()), 'yyyy-MM-dd'),
+    startDate: '2020-01-01',
     endDate: format(new Date(), 'yyyy-MM-dd'),
   });
   const [selectedUser, setSelectedUser] = useState('');
@@ -89,9 +89,9 @@ function ProjectsPage() {
     }
   }, [loading, usersLoading, customersLoading, error, usersError, customersError, projects, users, customers, dateRange, selectedUser]);
 
-  if (loading || usersLoading || customersLoading) {
-    return <SpinAtom tip="Yükleniyor..." />;
-  }
+  // if (loading || usersLoading || customersLoading) {
+  //   return <SpinAtom tip="Yükleniyor..." />;
+  // }
 
   if (error || usersError || customersError) {
     return (
@@ -104,7 +104,7 @@ function ProjectsPage() {
     );
   }
 
-  console.log(projects)
+  // console.log(projects)
 
   return (
     <div className="dashboard-container">

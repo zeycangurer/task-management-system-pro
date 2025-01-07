@@ -3,8 +3,8 @@ import { Col, Select, List, Tag, Avatar } from 'antd';
 import TooltipAtom from '../../atoms/Tooltip';
 import ActionButton from '../../molecules/ActionButton';
 import { FaCheck } from 'react-icons/fa';
-import { projectPriorities } from '../../../utils/arrays';
-
+import { projectCategories, projectPriorities } from '../../../utils/arrays';
+import './styles.css'
 const { Option } = Select;
 
 function ProjectInfo({
@@ -14,29 +14,37 @@ function ProjectInfo({
   assignment,
   handleAssignChange,
   handleAssignSubmit,
-  tasks,
-  onTaskClick,
-  size
+  size,
+  createdUserName,
+  projectCustomer
 }) {
-  const statusColor = project.status === 'completed' ? 'green' : 'blue';
-  const statusLabel = project.status === 'completed' ? 'Tamamlandı' : 'Tamamlanmadı';
+  const statusColor = project.status === 'close' ? 'green' : 'blue';
+  const statusLabel = project.status === 'close' ? 'Tamamlandı' : 'Tamamlanmadı';
   const priorityColor = project.priority === 'high' ? 'red' : project.priority === 'medium' ? 'orange' : 'blue';
-  const priorityLabel = projectPriorities.find(item => item.value === project.priority)?.label || 'Belirsiz';
+  const priorityLabel = projectPriorities.filter(item => item.value === project.priority)[0].label || 'Belirsiz';
+  const categoryLabel = projectCategories.filter(item => item.value === project.category)[0].label || 'Belirsiz';
 
   const startDateStr = project.startDate ? project.startDate.toDate().toLocaleDateString() : 'Belirtilmemiş';
   const endDateStr = project.endDate ? project.endDate.toDate().toLocaleDateString() : 'Belirtilmemiş';
 
   return (
-    <div>
+    <div className='project-info'>
+      <p><strong>Açıklama: </strong>{project.description}</p>
+      <p><strong>Oluşturan Kişi: </strong>{createdUserName}</p>
+      <p><strong>Kategori: </strong>{categoryLabel}</p>
+      <p><strong>Müşteri: </strong>{projectCustomer[0].name || 'Belirsiz'}</p>
       <p><strong>Durum: </strong><Tag color={statusColor}>{statusLabel}</Tag></p>
       <p><strong>Öncelik: </strong><Tag color={priorityColor}>{priorityLabel}</Tag></p>
       <p><strong>Başlangıç Tarihi: </strong>{startDateStr}</p>
       <p><strong>Bitiş Tarihi: </strong>{endDateStr}</p>
 
-      <h3>Atanan Kullanıcılar</h3>
+      <p><strong>Atanan Kullanıcılar</strong></p>
       <List
         itemLayout="horizontal"
         dataSource={assignedUsers}
+        grid={{
+          column: assignedUsers.length || 1,
+        }}
         renderItem={(user) => (
           <List.Item>
             <List.Item.Meta
@@ -57,13 +65,14 @@ function ProjectInfo({
             value={assignment.includes('all') ? ['all'] : assignment}
             onChange={handleAssignChange}
             style={{ flex: 1, marginRight: '8px' }}
+            optionLabelProp="label"
           >
-            <Option key="all" value="all">
+            <Option key="all" value="all" label="Tüm Kullanıcılar">
               Tüm Kullanıcılar
             </Option>
             {sortedUsers.map((user) => (
-              <Option key={user.uid} value={user.uid}>
-                {user.displayName || user.email}
+              <Option key={user.id} value={user.id} label={user.name || user.email}>
+                {user.name || user.email}
               </Option>
             ))}
           </Select>
@@ -79,17 +88,6 @@ function ProjectInfo({
           </TooltipAtom>
         </div>
       </Col>
-
-      <h3>Görevler</h3>
-      <List
-        itemLayout="horizontal"
-        dataSource={tasks}
-        renderItem={(task) => (
-          <List.Item onClick={() => onTaskClick(task.id)}>
-            <List.Item.Meta title={task.title} description={task.description} />
-          </List.Item>
-        )}
-      />
     </div>
   );
 }

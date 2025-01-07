@@ -6,8 +6,11 @@ import SelectAtom from '../../atoms/Select';
 import UploadAtom from '../../atoms/Upload';
 import ButtonAtom from '../../atoms/Button';
 import FormItemMolecule from '../../molecules/FormItem';
+import { FaArrowLeft } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories, projects, initialValues }) {
+  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const handleFinish = (values) => {
@@ -15,8 +18,15 @@ function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories,
     onSubmit(values);
   };
 
+  const handleBack = () => {
+    navigate(-1);
+};
+
   return (
     <Form form={form} onFinish={handleFinish} layout="vertical" initialValues={initialValues}>
+      <ButtonAtom type="link" onClick={handleBack} className="back-button">
+        <FaArrowLeft /> Geri
+      </ButtonAtom>
       <FormItemMolecule
         label="Görev Başlığı"
         name="title"

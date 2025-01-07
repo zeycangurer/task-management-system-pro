@@ -3,18 +3,17 @@ import React from 'react';
 import './styles.css';
 
 function ProjectListOrganism({ projects, onItemClick }) {
-  console.log("ProjectList received projects:", projects); 
+  // console.log("ProjectList received projects:", projects); 
 
-  if (!Array.isArray(projects)) {
-    console.error("Projeler dizisi değil:", projects);
-    return <p>Görevler yükleniyor...</p>;
-  }
+  // if (!Array.isArray(projects)) {
+  //   console.error("Projeler dizisi değil:", projects);
+  //   return <p>Görevler yükleniyor...</p>;
+  // }
 
-  if (projects.length === 0) {
-    console.log("Hiç proje bulunmuyor.");
-  }
+  // if (projects.length === 0) {
+  //   console.log("Hiç proje bulunmuyor.");
+  // }
 
-  console.log(projects)
   return (
     <div className="project-list-container">
       {projects.length === 0 ? (
@@ -40,8 +39,8 @@ function ProjectListOrganism({ projects, onItemClick }) {
                 <td>{project.createdUserName}</td>
                 <td>{project.date || (project.createdAt ? new Date(project.createdAt.seconds * 1000 + project.createdAt.nanoseconds / 1000000).toLocaleDateString() : 'N/A')}</td>
                 <td>
-                  <span className={`status ${project.completed ? 'completed' : 'pending'}`}>
-                    {project.completed ? 'Tamamlandı' : 'Bekliyor'}
+                  <span className={`status ${project.status=='close' ? 'completed' : 'pending'}`}>
+                    {project.status == 'close' ? 'Tamamlandı' : 'Bekliyor'}
                   </span>
                 </td>
               </tr>

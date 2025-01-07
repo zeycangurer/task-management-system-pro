@@ -22,7 +22,7 @@ function TasksPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [dateRange, setDateRange] = useState({
-    startDate: format(startOfYear(new Date()), 'yyyy-MM-dd'), 
+    startDate: '2020-01-01', 
     endDate: format(new Date(), 'yyyy-MM-dd'), 
   });
   const [selectedUser, setSelectedUser] = useState('');

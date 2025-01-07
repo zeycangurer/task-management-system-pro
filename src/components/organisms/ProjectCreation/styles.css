@@ -1,0 +1,42 @@
+.project-creation-template {
+    padding: 20px;
+    background-color: var(--background-color);
+  }
+  
+  .template-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .content {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .content-with-sidebar {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .project-creation-form {
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 8px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--box-shadow-color);
+  }
+  
+  @media (max-width: 768px) {
+    .project-creation-form {
+      padding: 15px;
+    }
+  
+    .template-title {
+      font-size: 1.5rem;
+    }
+  }
+  
