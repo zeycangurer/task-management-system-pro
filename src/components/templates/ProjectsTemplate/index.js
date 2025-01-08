@@ -4,6 +4,7 @@ import ButtonAtom from '../../atoms/Button';
 import ProjectListOrganism from '../../organisms/ProjectList';
 import './styles.css';
 import { useSelector } from 'react-redux';
+import FilterComponent from '../../molecules/FilterComponent';
 
 function ProjectsTemplate({
   projects,
@@ -24,9 +25,9 @@ function ProjectsTemplate({
     return projects.map(project => {
       const assignedUserNames = Array.isArray(project.assignedUsers) && project.assignedUsers.length > 0
         ? project.assignedUsers.map(userId => {
-            const user = usersState.users.find(user => user.id === userId);
-            return user ? user.name : 'Bilinmiyor';
-          }).join(', ')
+          const user = usersState.users.find(user => user.id === userId);
+          return user ? user.name : 'Bilinmiyor';
+        }).join(', ')
         : 'Bilinmiyor';
 
       let createdUserName = 'Bilinmiyor';
@@ -44,53 +45,16 @@ function ProjectsTemplate({
   return (
     <div className='projects-main'>
       <TitleAtom level={1} className="title">Projeler</TitleAtom>
-
-      <div className="filters-section">
-        <div className="filter-group">
-          <label htmlFor="start-date">Başlangıç Tarihi:</label>
-          <input
-            type="date"
-            id="start-date"
-            value={dateRange.startDate}
-            onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
-          />
-        </div>
-
-        <div className="filter-group">
-          <label htmlFor="end-date">Bitiş Tarihi:</label>
-          <input
-            type="date"
-            id="end-date"
-            value={dateRange.endDate}
-            onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
-          />
-        </div>
-
-        <div className="filter-group">
-          <label htmlFor="user-select">Kullanıcı Seç:</label>
-          <select
-            id="user-select"
-            value={selectedUser}
-            onChange={(e) => setSelectedUser(e.target.value)}
-          >
-            <option value="">Tüm Kullanıcılar</option>
-            {users.map(user => (
-              <option key={user.id} value={user.id}>
-                {user.name || user.email}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="button-group">
-          <ButtonAtom type="primary" className="list-button" onClick={onFilter}>
-            Projeleri Listele
-          </ButtonAtom>
-          <ButtonAtom type="primary" className="create-button" onClick={onCreateProject}>
-            Proje Oluştur
-          </ButtonAtom>
-        </div>
-      </div>
+      <FilterComponent
+        dateRange={dateRange}
+        setDateRange={setDateRange}
+        usersState={usersState}
+        selectedUser={selectedUser}
+        setSelectedUser={setSelectedUser}
+        filterTasks={onFilter}
+        handleCreateTask={onCreateProject}
+        customersState={customersState}
+      />
 
       <div className="tasks-list-section">
         <ProjectListOrganism

@@ -19,6 +19,8 @@
 .filter-group {
   display: flex;
   flex-direction: column;
+  flex: 1 1 calc(33.33% - 20px);
+  min-width: 150px;
 }
 
 .filter-group label {
@@ -33,11 +35,14 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.9rem;
+  width: 100%;
 }
 
 .button-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: flex-start;
 }
 
 .list-button,
@@ -47,6 +52,7 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
+  flex: 1 1 auto;
 }
 
 .list-button {
@@ -80,4 +86,26 @@
 
 .clickable-row:hover {
   background-color: #f1f1f1;
+}
+
+@media (max-width: 768px) {
+  .filters-section {
+    flex-direction: row;
+    gap: 15px; 
+  }
+
+  .filter-group {
+    flex: 1 1 100%; 
+    min-width: unset; 
+  }
+
+  .button-group {
+    flex-direction: column; 
+    gap: 10px;
+  }
+
+  .list-button,
+  .create-button {
+    flex: none;
+  }
 }

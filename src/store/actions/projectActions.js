@@ -213,7 +213,30 @@ export const updateProject = (projectId, updatedData) => {
           updatedAt: Timestamp.fromDate(new Date()),
         });
       }
+      const historyUpdates = [];
+      if (updatedData.category !== projectData.category) {
+        historyUpdates.push({
+          changeType: 'update',
+          description: `Kategori güncellendi: '${updatedData.category || 'N/A'}'`,
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
 
+      if (updatedData.priority !== projectData.priority) {
+        historyUpdates.push({
+          changeType: 'update',
+          description: `Öncelik güncellendi: '${updatedData.priority || 'N/A'}'`,
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      historyUpdates.forEach((entry) => {
+        batch.update(projectRef, {
+          history: arrayUnion(entry),
+        });
+      });
 
       if (addedTasks.length > 0 || removedTasks.length > 0) {
         const historyEntry = {

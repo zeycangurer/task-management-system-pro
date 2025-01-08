@@ -10,6 +10,7 @@ import { fetchCustomers } from '../../../store/actions/customerActions';
 import { startOfYear, format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import TitleAtom from '../../../components/atoms/Title';
+import FilterComponent from '../../../components/molecules/FilterComponent';
 
 function TasksPage() {
   const dispatch = useDispatch();
@@ -18,12 +19,12 @@ function TasksPage() {
   const tasksState = root.tasks;
   const usersState = root.users;
   const customersState = root.customers;
-  
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [dateRange, setDateRange] = useState({
-    startDate: '2020-01-01', 
-    endDate: format(new Date(), 'yyyy-MM-dd'), 
+    startDate: '2020-01-01',
+    endDate: format(new Date(), 'yyyy-MM-dd'),
   });
   const [selectedUser, setSelectedUser] = useState('');
 
@@ -55,7 +56,7 @@ function TasksPage() {
     if (dateRange.startDate && dateRange.endDate) {
       const start = new Date(dateRange.startDate);
       const end = new Date(dateRange.endDate);
-      end.setHours(23, 59, 59, 999); 
+      end.setHours(23, 59, 59, 999);
       filtered = filtered.filter(task => {
         const taskDate = getTaskDate(task);
         if (!taskDate) {
@@ -132,9 +133,9 @@ function TasksPage() {
     return filteredTasks.map(task => {
       const assignedUserNames = Array.isArray(task.assignedTo) && task.assignedTo.length > 0
         ? task.assignedTo.map(userId => {
-            const user = usersState.users.find(user => user.id === userId);
-            return user ? user.name : 'Bilinmiyor';
-          }).join(', ')
+          const user = usersState.users.find(user => user.id === userId);
+          return user ? user.name : 'Bilinmiyor';
+        }).join(', ')
         : 'Bilinmiyor';
 
       let createdUserName = 'Bilinmiyor';
@@ -168,60 +169,16 @@ function TasksPage() {
       <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
         <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         <main className="tasks-main">
-        <TitleAtom level={1} className="title">Görevler</TitleAtom>
-          <div className="filters-section">
-            <div className="filter-group">
-              <label htmlFor="start-date">Başlangıç Tarihi:</label>
-              <input
-                type="date"
-                id="start-date"
-                value={dateRange.startDate}
-                onChange={(e) => setDateRange({ ...dateRange, startDate: e.target.value })}
-              />
-            </div>
-            
-            <div className="filter-group">
-              <label htmlFor="end-date">Bitiş Tarihi:</label>
-              <input
-                type="date"
-                id="end-date"
-                value={dateRange.endDate}
-                onChange={(e) => setDateRange({ ...dateRange, endDate: e.target.value })}
-              />
-            </div>
-            
-            <div className="filter-group">
-              <label htmlFor="user-select">Kullanıcı Seç:</label>
-              {usersState.loading || customersState.loading ? (
-                <p>Yükleniyor...</p>
-              ) : usersState.error || customersState.error ? (
-                <p className="error">{usersState.error || customersState.error}</p>
-              ) : (
-                <select
-                  id="user-select"
-                  value={selectedUser}
-                  onChange={(e) => setSelectedUser(e.target.value)}
-                >
-                  <option value="">Tüm Kullanıcılar</option>
-                  {usersState.users.map(user => (
-                    <option key={user.id} value={user.id}>
-                      {user.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-            
-            <div className="button-group">
-              <button className="list-button" onClick={filterTasks}>
-                Talep Listele
-              </button>
-              <button className="create-button" onClick={handleCreateTask}>
-                Talep Oluştur
-              </button>
-            </div>
-          </div>
-          
+          <TitleAtom level={1} className="title">Görevler</TitleAtom>
+          <FilterComponent dateRange={dateRange}
+            setDateRange={setDateRange}
+            usersState={usersState}
+            selectedUser={selectedUser}
+            setSelectedUser={setSelectedUser}
+            filterTasks={filterTasks}
+            handleCreateTask={handleCreateTask}
+            customersState={customersState}
+          />
           <div className="tasks-list-section">
             {tasksState.loading ? (
               <p>Görevler yükleniyor...</p>
