@@ -178,6 +178,7 @@ function TasksPage() {
             filterTasks={filterTasks}
             handleCreateTask={handleCreateTask}
             customersState={customersState}
+            type='tasks'
           />
           <div className="tasks-list-section">
             {tasksState.loading ? (

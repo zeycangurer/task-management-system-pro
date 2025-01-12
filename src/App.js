@@ -13,6 +13,7 @@ import ProjectsPage from './pages/Projects/ProjectsPage';
 import NewProjectPage from './pages/Projects/NewProjectPage';
 import ProjectDetailPage from './pages/Projects/ProjectDetailPage';
 import EditProjectPage from './pages/Projects/EditProjectPage';
+import AnalyticsPage from './pages/AnalyticsPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -92,6 +93,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EditProjectPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
             </ProtectedRoute>
           }
         />

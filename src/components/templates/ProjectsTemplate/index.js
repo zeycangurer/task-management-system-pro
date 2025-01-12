@@ -54,6 +54,7 @@ function ProjectsTemplate({
         filterTasks={onFilter}
         handleCreateTask={onCreateProject}
         customersState={customersState}
+        type='project'
       />
 
       <div className="tasks-list-section">

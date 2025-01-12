@@ -19,8 +19,8 @@ function TaskInfo({
   size,
   taskCustomer
 }) {
-  const statusColor = task.status === 'completed' ? 'green' : 'blue';
-  const statusLabel = task.status === 'completed' ? 'Tamamlandı' : 'Tamamlanmadı';
+  const statusColor = task.status === 'close' ? 'green' : 'blue';
+  const statusLabel = task.status === 'close' ? 'Tamamlandı' : 'Tamamlanmadı';
   const priorityColor = task.priority === 'urgent' ? 'red' : task.priority === 'soon' ? 'orange' : 'blue';
   const priorityLabel = taskPriorities.filter(item => item.value === task.priority)[0].label || 'Belirsiz';
   const categoryLabel = taskCategories.filter(item => item.value === task.category)[0].label || 'Belirsiz';
