@@ -41,11 +41,16 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
         });
       }
     }, [initialValues, form]);
+
+    const handleFinish = (values) => {
+      console.log(values)
+      onFinish(values);
+    };
   
     const handleBack = () => navigate(-1);
   
     return (
-      <Form layout="vertical" onFinish={onFinish} form={form}>
+      <Form layout="vertical" onFinish={handleFinish} form={form} initialValues={initialValues}>
         <ButtonAtom type="link" onClick={handleBack} className="back-button">
           <FaArrowLeft /> Geri
         </ButtonAtom>
@@ -107,7 +112,7 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
           </SelectAtom>
         </FormItemMolecule>
         <Form.Item>
-          <ButtonAtom type="primary" htmlType="submit">
+          <ButtonAtom type="primary" htmlType="submit" >
             {isEditMode ? 'Güncelle' : 'Oluştur'}
           </ButtonAtom>
         </Form.Item>

@@ -5,7 +5,7 @@ import './styles.css'
 function ProjectCreationTemplate({ onFinish, initialValues, isEditMode}) {
     return (
     <div className="project-creation-template">
-      <h1>{isEditMode ? 'Görevi Düzenle' : 'Yeni Proje Oluştur'}</h1>
+      <h1>{isEditMode ? 'Projeyi Düzenle' : 'Yeni Proje Oluştur'}</h1>
       <div className="project-creation-form">
         <ProjectCreationFormOrganism
           onFinish={onFinish}
