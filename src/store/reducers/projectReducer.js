@@ -26,12 +26,13 @@ const projectReducer = (state = initialState, action) => {
         loading: false,
         projects: action.payload,
       };
-    case types.ADD_PROJECT_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        projects: [...state.projects, action.payload],
-      };
+      case types.ADD_PROJECT_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          projects: [...state.projects, action.payload],
+        };
+  
       case types.ASSIGN_TASK_TO_PROJECT_SUCCESS:
         return {
           ...state,

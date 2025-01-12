@@ -31,20 +31,28 @@ export const addProject = (projectData) => {
   return async (dispatch) => {
     dispatch({ type: types.ADD_PROJECT_REQUEST });
     try {
+
       const data = {
         ...projectData,
+        status:'open',
         assignedUsers: projectData.assignedUsers || [],
         assignedTasks: projectData.assignedTasks || [],
-        startDate: Timestamp.fromDate(projectData.startDate),
-        endDate: Timestamp.fromDate(projectData.endDate),
+        startDate: projectData.startDate ? Timestamp.fromDate(new Date(projectData.startDate)) : null,
+        endDate: projectData.endDate ? Timestamp.fromDate(new Date(projectData.endDate)) : null,
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
       };
 
       const docRef = await addDoc(collection(db, 'projects'), data);
+
       const newProject = { id: docRef.id, ...data };
+
+      // console.log('Proje Verisi:', projectData);
+      // console.log('Proje Verisi new:', newProject);
       dispatch({ type: types.ADD_PROJECT_SUCCESS, payload: newProject });
+
     } catch (error) {
+      console.error('Hata:', error.message);
       dispatch({ type: types.ADD_PROJECT_FAILURE, payload: error.message });
     }
   };
@@ -144,7 +152,7 @@ export const addProject = (projectData) => {
 //         });
 //       }
 
-      
+
 //       await batch.commit();
 
 //       const updatedProjectSnap = await getDoc(projectRef);
@@ -278,7 +286,7 @@ export const updateProject = (projectId, updatedData) => {
         });
       }
 
-      
+
       await batch.commit();
 
       const updatedProjectSnap = await getDoc(projectRef);
@@ -443,77 +451,77 @@ export const addComment = (projectId, comment, currentUserId, attachments) => {
 
 export const assignTaskToProject = (projectId, selectedTaskIds, changedBy) => {
   return async (dispatch, getState) => {
-      dispatch({ type: types.ASSIGN_TASK_TO_PROJECT_REQUEST });
+    dispatch({ type: types.ASSIGN_TASK_TO_PROJECT_REQUEST });
 
-      try {
-          const state = getState();
-          const project = state.projects.projects.find((proj) => proj.id === projectId);
-          const tasks = state.tasks.tasks;
+    try {
+      const state = getState();
+      const project = state.projects.projects.find((proj) => proj.id === projectId);
+      const tasks = state.tasks.tasks;
 
-          if (!project) {
-              throw new Error('Proje bulunamadı.');
-          }
-
-          const previouslyAssignedTasks = project.assignedTasks || [];
-          const tasksToAdd = selectedTaskIds.filter((taskId) => !previouslyAssignedTasks.includes(taskId));
-          const tasksToRemove = previouslyAssignedTasks.filter((taskId) => !selectedTaskIds.includes(taskId));
-
-          const projectRef = doc(db, 'projects', projectId);
-          const batch = writeBatch(db);
-
-          const updatedAssignedTasks = selectedTaskIds;
-
-          batch.update(projectRef, {
-            assignedTasks: updatedAssignedTasks,
-            history: arrayUnion({
-              changeType: 'taskupdate',
-              description: `Görev atamaları güncellendi: ${tasksToAdd
-                .map((taskId) => {
-                  const task = tasks.find((t) => t.id === taskId);
-                  return task ? task.title : taskId; 
-                })
-                .join(', ')}`,
-              timestamp: Timestamp.fromDate(new Date()),
-              changedBy,
-            }),
-            updatedAt: Timestamp.fromDate(new Date()),
-          });
-          tasksToAdd.forEach((taskId) => {
-              const taskRef = doc(db, 'tasks', taskId);
-              batch.update(taskRef, {
-                  projectId,
-                  updatedAt: Timestamp.fromDate(new Date()),
-              });
-          });
-
-          tasksToRemove.forEach((taskId) => {
-              const taskRef = doc(db, 'tasks', taskId);
-              batch.update(taskRef, {
-                  projectId: null,
-                  updatedAt: Timestamp.fromDate(new Date()),
-              });
-          });
-
-          await batch.commit();
-
-          const updatedProjectSnap = await getDoc(projectRef);
-          const updatedProjectData = { id: updatedProjectSnap.id, ...updatedProjectSnap.data() };
-
-          const updatedState = getState();
-          // console.log('Güncellenen state dispatch öncesi :', updatedState.projects.projects);
-          // console.log('updated project data',updatedProjectData)
-          dispatch({
-              type: types.ASSIGN_TASK_TO_PROJECT_SUCCESS,
-              payload: updatedProjectData,
-          });
-
-          // console.log('Güncellenen state:', updatedState.projects.projects);
-          
-      } catch (error) {
-          dispatch({ type: types.ASSIGN_TASK_TO_PROJECT_FAILURE, payload: error.message });
-          console.error('Görev güncelleme hatası:', error);
-          throw error;
+      if (!project) {
+        throw new Error('Proje bulunamadı.');
       }
+
+      const previouslyAssignedTasks = project.assignedTasks || [];
+      const tasksToAdd = selectedTaskIds.filter((taskId) => !previouslyAssignedTasks.includes(taskId));
+      const tasksToRemove = previouslyAssignedTasks.filter((taskId) => !selectedTaskIds.includes(taskId));
+
+      const projectRef = doc(db, 'projects', projectId);
+      const batch = writeBatch(db);
+
+      const updatedAssignedTasks = selectedTaskIds;
+
+      batch.update(projectRef, {
+        assignedTasks: updatedAssignedTasks,
+        history: arrayUnion({
+          changeType: 'taskupdate',
+          description: `Görev atamaları güncellendi: ${tasksToAdd
+            .map((taskId) => {
+              const task = tasks.find((t) => t.id === taskId);
+              return task ? task.title : taskId;
+            })
+            .join(', ')}`,
+          timestamp: Timestamp.fromDate(new Date()),
+          changedBy,
+        }),
+        updatedAt: Timestamp.fromDate(new Date()),
+      });
+      tasksToAdd.forEach((taskId) => {
+        const taskRef = doc(db, 'tasks', taskId);
+        batch.update(taskRef, {
+          projectId,
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
+      });
+
+      tasksToRemove.forEach((taskId) => {
+        const taskRef = doc(db, 'tasks', taskId);
+        batch.update(taskRef, {
+          projectId: null,
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
+      });
+
+      await batch.commit();
+
+      const updatedProjectSnap = await getDoc(projectRef);
+      const updatedProjectData = { id: updatedProjectSnap.id, ...updatedProjectSnap.data() };
+
+      const updatedState = getState();
+      // console.log('Güncellenen state dispatch öncesi :', updatedState.projects.projects);
+      // console.log('updated project data',updatedProjectData)
+      dispatch({
+        type: types.ASSIGN_TASK_TO_PROJECT_SUCCESS,
+        payload: updatedProjectData,
+      });
+
+      // console.log('Güncellenen state:', updatedState.projects.projects);
+
+    } catch (error) {
+      dispatch({ type: types.ASSIGN_TASK_TO_PROJECT_FAILURE, payload: error.message });
+      console.error('Görev güncelleme hatası:', error);
+      throw error;
+    }
   };
 };
 
