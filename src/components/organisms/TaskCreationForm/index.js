@@ -8,8 +8,11 @@ import ButtonAtom from '../../atoms/Button';
 import FormItemMolecule from '../../molecules/FormItem';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories, projects, initialValues }) {
+  const root = useSelector((state) => state);
+  const { users, loading: usersLoading } = root.users;
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
@@ -97,7 +100,6 @@ function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories,
       <FormItemMolecule
         label="Proje"
         name="projectId"
-        rules={[{ required: true, message: 'Lütfen bir proje seçin' }]}
       >
         <SelectAtom placeholder="Bir proje seçin">
           {projects.map((project) => (
@@ -107,6 +109,15 @@ function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories,
           ))}
         </SelectAtom>
       </FormItemMolecule>
+      <FormItemMolecule label="Kullanıcılar" name="assignedTo" rules={[{ required: true, message: 'Lütfen en az bir kullanıcı seçin' }]}>
+          <SelectAtom mode="multiple" placeholder="Kullanıcıları seçin" loading={usersLoading}>
+            {users.map((user) => (
+              <SelectAtom.Option key={user.id} value={user.id}>
+                {user.name || user.email}
+              </SelectAtom.Option>
+            ))}
+          </SelectAtom>
+        </FormItemMolecule>
       <FormItemMolecule>
         <ButtonAtom type="primary" htmlType="submit">
           Görevi Oluştur

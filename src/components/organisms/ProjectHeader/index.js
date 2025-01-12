@@ -47,7 +47,7 @@ function ProjectHeader({
           type="danger"
         />
         <ActionButton
-          tooltipTitle={project.completed ? 'Görevi Geri Al' : 'Görevi Tamamla'}
+          tooltipTitle={project.status === 'close' ? 'Görevi Geri Al' : 'Görevi Tamamla'}
           icon={FaCheck}
           onClick={onToggleComplete}
           className="action-button save-button"

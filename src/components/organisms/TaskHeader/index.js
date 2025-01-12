@@ -69,7 +69,7 @@ function TaskHeader({
           type="danger"
         />
         <ActionButton
-          tooltipTitle={task.completed ? 'Görevi Geri Al' : 'Görevi Tamamla'}
+          tooltipTitle={task.status === 'close' ? 'Görevi Geri Al' : 'Görevi Tamamla'}
           icon={FaCheck}
           onClick={handleToggleComplete}
           className="action-button save-button"

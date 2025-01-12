@@ -9,7 +9,8 @@ export default function FilterComponent({
     setSelectedUser,
     filterTasks,
     handleCreateTask,
-    customersState
+    customersState,
+    type
 }) {
     return (
         <div className="filters-section">
@@ -57,10 +58,10 @@ export default function FilterComponent({
 
             <div className="button-group">
                 <button className="list-button" onClick={filterTasks}>
-                    Talep Listele
+                    {type === 'tasks' ? 'Talep Listele' : 'Proje Listele'}
                 </button>
                 <button className="create-button" onClick={handleCreateTask}>
-                    Talep Oluştur
+                    {type === 'tasks' ? 'Talep Oluştur' : 'Proje Oluştur'}
                 </button>
             </div>
         </div>

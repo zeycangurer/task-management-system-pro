@@ -43,11 +43,28 @@ export const addTask = (taskData, currentUserId) => {
         attachmentURLs = await Promise.all(uploadPromises);
       }
 
+      const calculateDueDate = (priority) => {
+        const now = new Date();
+        switch (priority) {
+          case 'urgent':
+            return new Date(now.setDate(now.getDate() + 1));
+          case 'soon':
+            return new Date(now.setDate(now.getDate() + 3));
+          case 'can wait':
+            return new Date(now.setMonth(now.getMonth() + 6));
+          default:
+            return null; 
+        }
+      };
+
+      const dueDate = calculateDueDate(taskData.priority);
+
       const newTask = {
         ...taskInfo,
         attachments: attachmentURLs,
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
+        dueDate: dueDate ? Timestamp.fromDate(dueDate) : null,
         createdUser: currentUserId,
         history: [
           {
@@ -185,8 +202,8 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
       if (updatedData.title) {
         description += `Başlık '${updatedData.title}' olarak değiştirildi. `;
       }
-      if (updatedData.completed !== undefined) {
-        description += `Görev ${updatedData.completed ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi. `;
+      if (updatedData.status !== undefined) {
+        description += `Görev ${updatedData.status === 'close' ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi. `;
       }
       if (updatedData.description) {
         description += `Açıklama güncellendi. `;

@@ -200,15 +200,18 @@ function TaskDetailPage() {
       });
   };
 
+  
   const handleToggleComplete = () => {
-    dispatch(action.updateTask(task.id, { completed: !task.completed }, currentUser.uid))
-      .then(() => {
-        message.success('Görev durumu güncellendi.');
-      })
-      .catch((error) => {
-        message.error('Görev durumu güncellenirken bir hata oluştu.');
-      });
-  };
+    const newStatus = task.status === 'close' ? 'open' : 'close';
+
+    dispatch(action.updateTask(task.id, {status: newStatus}, currentUser.uid))
+        .then(() => {
+            message.success('Görev durumu güncellendi');
+        })
+        .catch((error) => {
+            message.error('Görev durumu güncellenemedi: ' + error.message);
+        });
+};
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
