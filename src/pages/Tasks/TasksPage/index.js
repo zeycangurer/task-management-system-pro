@@ -19,6 +19,7 @@ function TasksPage() {
   const tasksState = root.tasks;
   const usersState = root.users;
   const customersState = root.customers;
+  const currentUser = useSelector(state => state.profiles.user);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -50,22 +51,35 @@ function TasksPage() {
   };
 
   const filterTasks = () => {
-    console.log("Filtering tasks with selectedUser:", selectedUser);
+    // console.log("Filtering tasks with selectedUser:", selectedUser);
     let filtered = tasksState.tasks;
+
+    if (currentUser?.role === 'customer') {
+      filtered = filtered.filter(task => task.customer === currentUser.id);
+    }
 
     if (dateRange.startDate && dateRange.endDate) {
       const start = new Date(dateRange.startDate);
       const end = new Date(dateRange.endDate);
-      end.setHours(23, 59, 59, 999);
+      const fixedEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999);
+
+      // console.log("Start Date:", start, "Fixed End Date:", fixedEnd);
+
       filtered = filtered.filter(task => {
-        const taskDate = getTaskDate(task);
+        const taskDate = task.createdAt 
+          ? new Date(task.createdAt.seconds * 1000)  
+          : null;
+
         if (!taskDate) {
-          console.log("Task excluded due to missing date:", task.id);
+          // console.log("Task excluded due to missing createdAt date:", task.id);
           return false;
         }
-        const isWithinRange = taskDate >= start && taskDate <= end;
+
+        taskDate.setHours(0, 0, 0, 0); 
+        const isWithinRange = taskDate >= start && taskDate <= fixedEnd;
+        
         if (!isWithinRange) {
-          console.log(`Task excluded due to date: ${task.id}, Date: ${taskDate}`);
+          // console.log(`Task excluded due to date: ${task.id}, Created At: ${taskDate}`);
         }
         return isWithinRange;
       });
@@ -75,14 +89,15 @@ function TasksPage() {
       filtered = filtered.filter(task => {
         const assignedTo = Array.isArray(task.assignedTo) ? task.assignedTo : [];
         const hasUser = assignedTo.includes(selectedUser);
-        console.log(`Task ID: ${task.id}, has selected user: ${hasUser}`);
+        // console.log(`Task ID: ${task.id}, has selected user: ${hasUser}`);
         return hasUser;
       });
     }
 
-    console.log("Filtered tasks count:", filtered.length);
+    // console.log("Filtered tasks count:", filtered.length);
     setFilteredTasks(filtered);
-  };
+};
+
 
   const handleCreateTask = () => {
     navigate('/createTask');
@@ -96,17 +111,17 @@ function TasksPage() {
 
   useEffect(() => {
     if (tasksState.loading || usersState.loading || customersState.loading) {
-      console.log("Veriler yükleniyor...");
+      // console.log("Veriler yükleniyor...");
       return;
     }
 
     if (tasksState.error || usersState.error || customersState.error) {
-      console.log("Veri yükleme hatası:", tasksState.error, usersState.error, customersState.error);
+      // console.log("Veri yükleme hatası:", tasksState.error, usersState.error, customersState.error);
       return;
     }
 
     if (!Array.isArray(tasksState.tasks) || !Array.isArray(usersState.users) || !Array.isArray(customersState.customers)) {
-      console.log("Veriler doğru formatta değil");
+      // console.log("Veriler doğru formatta değil");
       return;
     }
 
@@ -152,11 +167,11 @@ function TasksPage() {
   }, [filteredTasks, usersState.users, customersState.customers]);
 
   useEffect(() => {
-    console.log("Tasks:", tasksState.tasks);
-    console.log("Users:", usersState.users);
-    console.log("Customers:", customersState.customers);
-    console.log("Filtered Tasks:", filteredTasks);
-    console.log("Tasks with User Names:", tasksWithUserNames);
+    // console.log("Tasks:", tasksState.tasks);
+    // console.log("Users:", usersState.users);
+    // console.log("Customers:", customersState.customers);
+    // console.log("Filtered Tasks:", filteredTasks);
+    // console.log("Tasks with User Names:", tasksWithUserNames);
   }, [tasksState.tasks, usersState.users, customersState.customers, filteredTasks, tasksWithUserNames]);
 
   const handleTaskClick = (taskId) => {

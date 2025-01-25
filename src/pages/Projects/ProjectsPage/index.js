@@ -17,6 +17,7 @@ function ProjectsPage() {
   const { projects, loading, error } = useSelector((state) => state.projects);
   const { users, loading: usersLoading, error: usersError } = useSelector((state) => state.users);
   const { customers, loading: customersLoading, error: customersError } = useSelector((state) => state.customers);
+  const currentUser = useSelector(state => state.profiles.user);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -52,6 +53,9 @@ function ProjectsPage() {
   const filterProjects = () => {
     let filtered = projects;
 
+    if (currentUser?.role === 'customer') {
+      filtered = filtered.filter(project => project.customerId === currentUser.id);
+    }
 
     if (dateRange.startDate && dateRange.endDate) {
       const start = new Date(dateRange.startDate);

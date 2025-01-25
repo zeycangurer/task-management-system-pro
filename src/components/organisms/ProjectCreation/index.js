@@ -23,7 +23,8 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
     const { users, loading: usersLoading } = root.users;
     const { tasks, loading: tasksLoading } = root.tasks;
     const { customers, loading: customersLoading } = root.customers;
-  
+    const currentUser = useSelector(state => state.profiles.user);
+
     useEffect(() => {
       if (!users.length) dispatch(userAction.fetchUsers());
       if (!tasks.length) dispatch(taskAction.fetchTasks());
@@ -38,9 +39,21 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
           ...initialValues,
           startDate: initialValues.startDate ? dayjs(initialValues.startDate.toDate()) : null,
           endDate: initialValues.endDate ? dayjs(initialValues.endDate.toDate()) : null,
+          customerId: currentUser.role === 'customer' ? currentUser.id : initialValues.customerId
+
         });
       }
     }, [initialValues, form]);
+
+    useEffect(() => {
+      if (currentUser && currentUser.role === 'customer') {
+          form.setFieldsValue({
+              customerId: currentUser.id 
+          });
+      }
+  }, [currentUser, form]);
+
+
 
     const handleFinish = (values) => {
       console.log(values)
@@ -85,7 +98,7 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
           </SelectAtom>
         </FormItemMolecule>
         <FormItemMolecule label="Müşteri" name="customerId" rules={[{ required: true, message: 'Lütfen bir müşteri seçin' }]}>
-          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading}>
+          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading} disabled={currentUser.role === 'customer'}>
             {customers.map((customer) => (
               <SelectAtom.Option key={customer.id} value={customer.id}>
                 {customer.name}

@@ -35,7 +35,7 @@ function ChartsSection({ tasks, users, projects }) {
     ),
   };
 
-  console.log('userPerformanceByTaskData', userPerformanceByTaskData)
+  // console.log('userPerformanceByTaskData', userPerformanceByTaskData)
   
 
   return (
