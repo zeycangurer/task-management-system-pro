@@ -2,7 +2,6 @@ import React from 'react';
 import './styles.css';
 
 function TableAtom({ data, onDataClick, dataType }) {
-  console.log(data)
   const renderColumns = () => {
     if (dataType === 'analytics') {
       return (
@@ -67,7 +66,7 @@ function TableAtom({ data, onDataClick, dataType }) {
   return (
     <div className="data-list-container">
       {data.length === 0 ? (
-        <p>{dataType} bulunmamaktadır.</p>
+        <p>{dataType === 'project' ? 'Proje' : dataType === 'task' ? 'Görev' : 'Analiz' } bulunmamaktadır.</p>
       ) : (
         <table className="data-table">
           <thead>

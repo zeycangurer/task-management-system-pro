@@ -13,7 +13,8 @@ function DashboardPage() {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks.tasks);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const user = useSelector(state => state.profiles.user);
+  console.log(user)
   useEffect(() => {
     dispatch(fetchTasks()); 
   }, [dispatch]);

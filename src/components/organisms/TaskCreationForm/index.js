@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form } from 'antd';
 import InputAtom from '../../atoms/Input';
 import TextAreaAtom from '../../atoms/TextArea';
@@ -13,6 +13,8 @@ import { useSelector } from 'react-redux';
 function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories, projects, initialValues }) {
   const root = useSelector((state) => state);
   const { users, loading: usersLoading } = root.users;
+  const currentUser = useSelector(state => state.profiles.user);
+
   const navigate = useNavigate();
   const [form] = Form.useForm();
 
@@ -20,6 +22,14 @@ function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories,
     console.log(values)
     onSubmit(values);
   };
+
+  useEffect(() => {
+    if (currentUser && currentUser.role === 'customer') {
+        form.setFieldsValue({
+            customer: currentUser.id 
+        });
+    }
+}, [currentUser, form]);
 
   const handleBack = () => {
     navigate(-1);
@@ -52,7 +62,7 @@ function TaskCreationFormOrganism({ onSubmit, customers, priorities, categories,
         rules={[{ required: true, message: 'Lütfen bir müşteri seçin.' }]}
       >
         <SelectAtom placeholder="Müşteri seçin" loading={!customers || customers.length === 0}
-          disabled={!customers || customers.length === 0}>
+         disabled={currentUser.role === 'customer'}>
           {customers.map((customer) => (
             <SelectAtom.Option key={customer.id} value={customer.id}>
               {customer.name}

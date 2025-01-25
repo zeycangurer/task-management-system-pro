@@ -9,30 +9,26 @@ export const fetchUserDetails = (userId) => {
     dispatch({ type: types.FETCH_USER_REQUEST });
 
     try {
-      // console.log(`Firestore'dan ${userId} için kullanıcı bilgisi çekiliyor...`);
+      let userDocRef = doc(db, "users", userId);
+      let userDoc = await getDoc(userDocRef);
 
-      let userDoc = await getDoc(doc(db, "users", userId));
-      
       if (!userDoc.exists()) {
-        // console.log(`${userId} 'users' koleksiyonunda bulunamadı. 'customers' koleksiyonuna bakılıyor...`);
-        userDoc = await getDoc(doc(db, "customers", userId));
+        userDocRef = doc(db, "customers", userId);
+        userDoc = await getDoc(userDocRef);
       }
 
       if (userDoc.exists()) {
         const userData = { id: userId, ...userDoc.data() };
-        // console.log("Firestore'dan gelen kullanıcı bilgisi:", userData);
-
         dispatch({ type: types.FETCH_USER_SUCCESS, payload: userData });
       } else {
-        // console.log("Firestore'da bu ID'ye sahip kullanıcı bulunamadı.");
-        throw new Error("Kullanıcı bilgileri bulunamadı.");
+        dispatch({ type: types.FETCH_USER_FAILURE, payload: "Kullanıcı bilgileri bulunamadı." });
       }
     } catch (error) {
       dispatch({ type: types.FETCH_USER_FAILURE, payload: error.message });
-      // console.error("Kullanıcı bilgisi alınırken hata oluştu:", error);
     }
   };
 };
+
 
 export const changePassword = (userId, newPassword, userRole) => {
   return async (dispatch) => {
