@@ -14,6 +14,7 @@ import NewProjectPage from './pages/Projects/NewProjectPage';
 import ProjectDetailPage from './pages/Projects/ProjectDetailPage';
 import EditProjectPage from './pages/Projects/EditProjectPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   const dispatch = useDispatch();
@@ -101,6 +102,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

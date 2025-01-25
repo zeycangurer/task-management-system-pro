@@ -1,6 +1,7 @@
 import { message } from 'antd';
 import { auth } from '../../firebaseConfig';
 import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
+import { fetchUserDetails } from './profileActions';
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
@@ -14,6 +15,7 @@ export const loginUser = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         dispatch({ type: LOGIN_SUCCESS, payload: userCredential.user });
+        dispatch(fetchUserDetails( userCredential.user.uid));
       })
       .catch((error) => {  
         let errorMessage = '';  
@@ -29,7 +31,6 @@ export const loginUser = (email, password) => {
           default:
             errorMessage = 'Giriş başarısız. Lütfen tekrar deneyin.';
         }
-
         dispatch({ type: LOGIN_ERROR, payload: errorMessage });
         return Promise.reject(error);
       });
