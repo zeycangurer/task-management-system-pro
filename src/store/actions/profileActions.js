@@ -45,13 +45,13 @@ export const changePassword = (userId, newPassword, userRole) => {
       }
 
       await updatePassword(user, newPassword);
-      console.log('✅ Şifre Firebase Auth üzerinde güncellendi.');
+      // console.log('Şifre Firebase Auth üzerinde güncellendi.');
 
       const collectionName = userRole === 'customer' ? 'customers' : 'users';
       const userRef = doc(db, collectionName, userId);
 
       await updateDoc(userRef, { password:newPassword, updatedAt: new Date() });
-      console.log(`✅ Şifre değişikliği Firestore'daki ${collectionName} koleksiyonunda güncellendi.`);
+      // console.log(`Şifre değişikliği Firestore'daki ${collectionName} koleksiyonunda güncellendi.`);
 
       dispatch({
         type: types.CHANGE_PASSWORD_SUCCESS,
@@ -60,7 +60,7 @@ export const changePassword = (userId, newPassword, userRole) => {
 
       message.success('Şifreniz başarıyla güncellendi.');
     } catch (error) {
-      console.error('❌ Şifre değiştirme hatası:', error);
+      console.error('Şifre değiştirme hatası:', error);
       dispatch({ type: types.CHANGE_PASSWORD_FAILURE, payload: error.message });
       message.error('Şifre değiştirme sırasında bir hata oluştu.');
     }
