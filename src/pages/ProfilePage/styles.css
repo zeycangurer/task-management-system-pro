@@ -1,0 +1,77 @@
+.dashboard-container {
+  flex: 1;
+  background-color: var(--background-color);
+}
+
+.profile-page {
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.profile-info-field {
+  display: flex;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px var(--box-shadow-color);
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.5rem;
+}
+
+.profile-info {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--background-color);
+  text-align: center;
+  
+}
+
+.profile-info p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.profile-form {
+  padding: 20px;
+  border-radius: 8px;
+  background-color: var(--background-color);
+  text-align: left;
+  /* box-shadow: 0 2px 8px var(--box-shadow-color); */
+}
+
+.full-width-button {
+  width: 100%;
+}
+
+.full-width-button button {
+  width: 100%;
+}
+
+.profile-form h3 {
+  margin-bottom: 15px;
+}
+
+.error-text {
+  color: red;
+  margin-top: 10px;
+}
+
+.user-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
