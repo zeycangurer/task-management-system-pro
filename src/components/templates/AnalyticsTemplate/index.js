@@ -29,7 +29,7 @@ function AnalyticsTemplate({
         filterAnalytics={filterAnalytics}
       /> */}
 
-            <ChartsSection tasks={tasks} users={users} projects={projects} viewType="analytics"/>
+            <ChartsSection tasks={tasks} users={users} projects={projects}/>
             <DetailsTable tasks={tasks} users={users} />
         </div>
     );
