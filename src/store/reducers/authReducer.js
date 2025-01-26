@@ -1,4 +1,4 @@
-import * as types from '../actions/authActions';
+import * as types from '../constants/authActionType';
 
 const initialState = {
   user: null,
@@ -7,6 +7,8 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
+    case types.REGISTER_REQUEST:
+      return { ...state, loading: true, error: null };
     case types.LOGIN_SUCCESS:
     case types.REGISTER_SUCCESS:
       return {

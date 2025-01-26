@@ -2,6 +2,8 @@
 .dashboard-container {
   display: flex;
   height: 100vh; 
+  margin-top: 60px !important;
+
 }
 
 .dashboard-main {

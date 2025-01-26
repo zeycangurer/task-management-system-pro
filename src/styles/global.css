@@ -40,14 +40,22 @@
   --history-color: #8e44ad;
 }
 
-body {
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  flex:1;
+  margin: 0;
+  padding: 0 !important;
   font-family: var(--font-family);
   background-color: var(--background-color);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
   padding-top: 60px;
+  box-sizing: border-box;
 }
 
 /* buttons */

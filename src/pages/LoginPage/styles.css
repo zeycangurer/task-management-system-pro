@@ -1,42 +1,48 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-body, html {
-  background-image: url('../../assets/login.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+
+
 .login-page {
   height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: url('../../assets/login.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 0 20px;
 }
 
 .login-container {
-  background-size: cover;
-  background-position: center;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center; 
+  align-items: center;
 }
 
 .login-wrapper {
   display: flex;
-  align-items: center;
   justify-content: flex-end;
-  height: 100%;
-  padding-right: 100px;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px; 
+  padding-right: 80px;
+  transition: all 0.3s ease-in-out;
 }
 
 .login-box {
   text-align: center;
+  /* max-width: 400px;
+  width: 100%;
+  max-width: 400px; 
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
 }
 
 .app-title {
-  color: #fff;
+  color:var(--text-light);
   font-size: 32px;
   margin-bottom: 20px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -64,8 +70,20 @@ body, html {
   margin-bottom: 20px;
 }
 
-.login-button {
-  width: 100%;
+.login-buttons-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.login-button .register-button {
+  flex: 1;  
+  height: 45px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+
 }
 
 .login-input input {
@@ -80,10 +98,11 @@ body, html {
   outline: none;
 }
 
-.login-button button {
+.login-button .register-button button {
   height: 40px;
   font-size: 16px;
   font-weight: bold;
+  width: 100%;
 }
 
 .error-container {
@@ -93,15 +112,60 @@ body, html {
 }
 
 @media (max-width: 480px) {
+  .login-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    padding: 0;
+  }
+
+  .login-box {
+    max-width: 95%; 
+    margin: auto; 
+  }
+
   .login-form {
-    padding: 20px;
+    padding: 20px !important;
+    justify-content: center !important;
   }
 
   .app-title {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .login-form-title {
     font-size: 20px;
   }
 }
+
+
+@media (max-width: 768px) {
+  .login-wrapper {
+    justify-content: center; 
+    padding-right: 0;
+  }
+
+  .login-box {
+    max-width: 90%; 
+    margin: auto;
+  }
+  .app-title {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .login-wrapper {
+    justify-content: center; 
+    padding-right: 0;
+  }
+
+  .login-box {
+    max-width: 380px;
+  }
+  .app-title {
+    font-size: 28px;
+  }
+}
+ 

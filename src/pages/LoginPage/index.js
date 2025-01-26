@@ -23,9 +23,7 @@ function LoginPage() {
   return (
     <div className="login-page">
       <div
-        className="login-container"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      >
+        className="login-container">
         <div className="login-wrapper">
           <div className="login-box">
             <h1 className="app-title">Görev Takip Sistemi Pro</h1>
