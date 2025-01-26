@@ -1,0 +1,46 @@
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 20px 0px;
+}
+
+.action-button {
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+}
+
+.action-button.primary {
+  background-color:var(--primary-color);
+  color:white;
+  border: none;
+}
+
+.action-button.default {
+  background-color:var(--edit-color);
+  color:white;
+  border: none;
+}
+
+.action-button.dashed {
+  background-color:var(--save-color);
+  color:white;
+  border: none;
+}
+
+
+@media screen and (max-width: 768px) {
+  .quick-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .action-button {
+    width: 100%;
+    max-width: 300px;
+  }
+}

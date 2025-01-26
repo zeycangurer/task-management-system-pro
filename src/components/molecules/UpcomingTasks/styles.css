@@ -1,0 +1,27 @@
+.upcoming-tasks {
+  background: linear-gradient(to right, #f8fafc, #eef2ff);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0px;
+  box-shadow: 0px 4px 10px var(--box-shadow-color);
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color:var(--history-color);
+  margin-bottom: 12px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.no-tasks {
+  color: #6b7280;
+  font-size: 1rem;
+  text-align: center;
+  padding: 10px;
+}
