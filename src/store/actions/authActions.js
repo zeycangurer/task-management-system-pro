@@ -1,20 +1,16 @@
 import { message } from 'antd';
-import { auth } from '../../firebaseConfig';
+import { auth, db } from '../../firebaseConfig';
 import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
 import { fetchUserDetails } from './profileActions';
+import { doc, setDoc } from 'firebase/firestore';
 
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGIN_ERROR = 'LOGIN_ERROR';
-export const LOGOUT = 'LOGOUT';
-
-export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
-export const REGISTER_ERROR = 'REGISTER_ERROR';
+import * as types from '../constants/authActionType'
 
 export const loginUser = (email, password) => {
   return (dispatch) => {
     return signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        dispatch({ type: LOGIN_SUCCESS, payload: userCredential.user });
+        dispatch({ type: types.LOGIN_SUCCESS, payload: userCredential.user });
         dispatch(fetchUserDetails( userCredential.user.uid));
       })
       .catch((error) => {  
@@ -31,7 +27,7 @@ export const loginUser = (email, password) => {
           default:
             errorMessage = 'Giriş başarısız. Lütfen tekrar deneyin.';
         }
-        dispatch({ type: LOGIN_ERROR, payload: errorMessage });
+        dispatch({ type: types.LOGIN_ERROR, payload: errorMessage });
         return Promise.reject(error);
       });
   };
@@ -42,7 +38,7 @@ export const logout = () => {
   return (dispatch) => {
     signOut(auth)
       .then(() => {
-        dispatch({ type: LOGOUT });
+        dispatch({ type: types.LOGOUT });
         message.success('Başarıyla çıkış yapıldı.');
       })
       .catch((error) => {
@@ -50,32 +46,39 @@ export const logout = () => {
       });
   };
 };
-export const registerUser = (email, password) => {
-  return (dispatch) => {
-    return createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        dispatch({ type: REGISTER_SUCCESS, payload: userCredential.user });
-        dispatch({ type: LOGIN_SUCCESS, payload: userCredential.user });
-      })
-      .catch((error) => {
-        let errorMessage = '';
+export const registerUser = (userData) => {
+  return async (dispatch) => {
+    dispatch({ type: types.REGISTER_REQUEST });
 
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            errorMessage = 'Bu email zaten kullanımda.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Geçersiz email adresi.';
-            break;
-          case 'auth/weak-password':
-            errorMessage = 'Şifre çok zayıf. Lütfen daha güçlü bir şifre seçin.';
-            break;
-          default:
-            errorMessage = 'Kayıt başarısız. Lütfen tekrar deneyin.';
-        }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+      const userId = userCredential.user.uid;
 
-        dispatch({ type: REGISTER_ERROR, payload: errorMessage });
-        return Promise.reject(error);
-      });
+      const collectionName = userData.role === 'customer' ? 'customers' : 'users';
+
+      const userDocData = {
+        name: userData.name,
+        email: userData.email,
+        contactNumber: userData.contactNumber,
+        role: userData.role,
+        password:userData.password
+      };
+
+      if (userData.role === 'customer') {
+        userDocData.company = userData.company;
+        userDocData.createdTasks = [];
+        userDocData.projects = [];
+      } else if (userData.role === 'user') {
+        userDocData.assignedProjects = [];
+        userDocData.assignedTasks = [];
+      }
+
+      await setDoc(doc(db, collectionName, userId), userDocData);
+
+      console.log(userDocData)
+      dispatch({ type: types.REGISTER_SUCCESS, payload: { id: userId, ...userDocData } });
+    } catch (error) {
+      dispatch({ type: types.REGISTER_ERROR, payload: error.message });
+    }
   };
 };

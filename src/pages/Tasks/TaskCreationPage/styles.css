@@ -3,6 +3,7 @@ main {
   background-color: var(--background-color);
   overflow-y: auto;
   flex: 1;
+
 }
 
 .task-creation-container {

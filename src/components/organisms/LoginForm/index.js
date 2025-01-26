@@ -3,12 +3,13 @@ import InputAtom from '../../atoms/Input';
 import ButtonAtom from '../../atoms/Button';
 import ErrorContainerMolecule from '../../molecules/ErrorContainerMolecule';
 import { useSelector } from 'react-redux';
-import './styles.css'; 
+import { useNavigate } from 'react-router-dom';
 
 function LoginFormOrganism({ onSubmit }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const authError = useSelector((state) => state.auth.authError);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,9 +36,14 @@ function LoginFormOrganism({ onSubmit }) {
         className="login-input"
       />
       <ErrorContainerMolecule error={authError} />
-      <ButtonAtom type="primary" htmlType="submit" className="login-button">
-        Giriş Yap
-      </ButtonAtom>
+      <div className='login-buttons-container'>
+        <ButtonAtom type="primary" htmlType="submit" className="login-button">
+          Giriş Yap
+        </ButtonAtom>
+        <ButtonAtom type="primary" onClick={() => navigate('/register')} className="register-button">
+          Kayıt Ol
+        </ButtonAtom>
+      </div>
     </form>
   );
 }

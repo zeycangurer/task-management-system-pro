@@ -7,6 +7,8 @@ import SpinAtom from '../../../components/atoms/Spin';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 import './styles.css'
 import ProjectCreationTemplate from '../../../components/templates/ProjectCreationTemplate';
+import dayjs from 'dayjs';
+
 function EditProjectPage() {
   const { projectId } = useParams();
   const dispatch = useDispatch();
@@ -29,13 +31,11 @@ function EditProjectPage() {
 
   const onFinish = (values) => {
     const { startDate, endDate, ...otherValues } = values;
-    const startDateAsDate = startDate ? startDate.toDate() : null;
-    const endDateAsDate = endDate ? endDate.toDate() : null;
 
     const projectData = {
       ...otherValues,
-      startDate: startDateAsDate,
-      endDate: endDateAsDate,
+      startDate: startDate ? dayjs(startDate).toDate() : null, 
+      endDate: endDate ? dayjs(endDate).toDate() : null,
     };
 
     dispatch(projectActions.updateProject(projectId, projectData))
@@ -54,8 +54,8 @@ function EditProjectPage() {
 
   const initialValues = {
     ...project,
-    startDate: project.startDate ? project.startDate : null,
-    endDate: project.endDate ? project.endDate : null,
+    startDate: project.startDate ? dayjs(project.startDate.toDate()) : null,
+    endDate: project.endDate ? dayjs(project.endDate.toDate()) : null,
   };
 
   return (
