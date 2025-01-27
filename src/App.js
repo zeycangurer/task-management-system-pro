@@ -19,6 +19,7 @@ import RegisterPage from './pages/RegisterPage';
 import AdminPanelPage from './pages/AdminPanelPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import EditTaskPage from './pages/Tasks/EditTaskPage';
+import EditUserPage from './pages/EditUserPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -139,6 +140,14 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={['admin']}>
               <RegisterPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/:userId/edit"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <EditUserPage />
             </ProtectedRoute>
           }
         />

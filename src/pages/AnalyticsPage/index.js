@@ -6,6 +6,7 @@ import { fetchUsers } from '../../store/actions/userActions';
 import { fetchTasks } from '../../store/actions/taskActions';
 import { fetchProjects } from '../../store/actions/projectActions';
 import HeaderSideBarTemplate from '../../components/templates/HeaderSideBarTemplate';
+import { fetchCustomers } from '../../store/actions/customerActions';
 
 function AnalyticsPage() {
   const root = useSelector(state => state);
@@ -13,6 +14,7 @@ function AnalyticsPage() {
   const users = root.users.users || [];
   const tasks = root.tasks.tasks || [];
   const projects = root.projects.projects || [];
+  const customers = root.customers.customers || [];
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -24,6 +26,7 @@ function AnalyticsPage() {
     dispatch(fetchUsers());
     dispatch(fetchTasks());
     dispatch(fetchProjects());
+    dispatch(fetchCustomers())
   }, [dispatch]);
 
   if (root.users.loading || root.tasks.loading || root.projects.loading) {
@@ -43,6 +46,7 @@ function AnalyticsPage() {
           users={users}
           tasks={tasks}
           projects={projects}
+          customers={customers}
         />
       </HeaderSideBarTemplate>
     </div>
