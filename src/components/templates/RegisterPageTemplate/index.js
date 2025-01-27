@@ -4,7 +4,7 @@ import RegisterFormOrganism from '../../organisms/RegisterForm';
 function RegisterPageTemplate() {
   return (
     <div className="register-page">
-    <h1>Kayıt Ol</h1>
+    <h1>Kullanıcı Kayıt</h1>
       <RegisterFormOrganism />
     </div>
   );
