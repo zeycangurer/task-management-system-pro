@@ -3,23 +3,22 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
 import { assignTaskToProject, fetchProjects } from '../../../store/actions/projectActions';
+import { useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
 
 function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
     const dispatch = useDispatch();
-
+    const navigate = useNavigate()
     const [selectedTaskIds, setSelectedTaskIds] = useState(project.assignedTasks || []);
     const [loading, setLoading] = useState(false);
 
-   
+    const projectCustomerId = project.customerId;
+
+    const filteredTasks = allTasks.filter(task => task.customer === projectCustomerId);
+
       
     const handleTaskAssign = () => {
-        if (selectedTaskIds.length === 0) {
-            message.error('Lütfen en az bir görev seçin.');
-            return;
-        }
-    
         setLoading(true);
         dispatch(assignTaskToProject(project.id, selectedTaskIds, currentUser.uid))
             .then(() => {
@@ -32,7 +31,10 @@ function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
             .finally(() => setLoading(false));
     };
     
-    
+    const handleClearTasks = () => {
+        setSelectedTaskIds([]); 
+        message.info('Tüm görevler kaldırıldı.');
+    };
     
     return loading ? (
         <Spin size="large" />
@@ -48,11 +50,15 @@ function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
                 showSearch
                 optionFilterProp="children"
             >
-                {allTasks.map((task) => (
-                    <Option key={task.id} value={task.id}>
-                        {task.title}
-                    </Option>
-                ))}
+                {filteredTasks.length > 0 ? (
+                    filteredTasks.map((task) => (
+                        <Option key={task.id} value={task.id}>
+                            {task.title}
+                        </Option>
+                    ))
+                ) : (
+                    <Option disabled>Bu proje için uygun görev yok</Option>
+                )}
             </Select>
 
             <ButtonAtom type="primary" onClick={handleTaskAssign} style={{ marginTop: '1rem' }}>
@@ -64,7 +70,7 @@ function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
                 dataSource={tasks}
                 renderItem={(task) => (
                     <List.Item>
-                        <List.Item.Meta title={<span>&bull; {task.title}</span>} description={task.description} />
+                        <List.Item.Meta onClick={() => navigate(`/tasks/${task.id}`)} title={<span>&bull; {task.title}</span>} description={task.description} />
                     </List.Item>
                 )}
             />

@@ -1,0 +1,38 @@
+.task-creation-template {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .task-creation-template h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+  }
+  
+  .task-creation-form {
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    border-radius: 8px;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--box-shadow-color);
+  }
+  
+  @media (max-width: 768px) {
+    .task-creation-template {
+      padding: 10px;
+    }
+  
+    .task-creation-template h1 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+    }
+  
+    .task-creation-form {
+      padding: 20px;
+    }
+  }
+  

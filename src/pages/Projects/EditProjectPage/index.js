@@ -57,7 +57,6 @@ function EditProjectPage() {
     startDate: project.startDate ? dayjs(project.startDate.toDate()) : null,
     endDate: project.endDate ? dayjs(project.endDate.toDate()) : null,
   };
-
   return (
     <div className="dashboard-container">
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>

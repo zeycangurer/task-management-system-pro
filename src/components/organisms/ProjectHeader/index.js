@@ -4,6 +4,7 @@ import { MdCreateNewFolder } from "react-icons/md";
 import ActionButton from '../../molecules/ActionButton';
 
 import './styles.css';
+import { useSelector } from 'react-redux';
 
 function ProjectHeader({
   project,
@@ -15,6 +16,7 @@ function ProjectHeader({
   showHistoryModal,
   size
 }) {
+  const userRole = useSelector(state => state.profiles.user?.role)
 
   return (
     <div className="project-header">
@@ -22,7 +24,7 @@ function ProjectHeader({
         <h2 className="project-title">{project.title}</h2>
       </div>
       <div className="buttons-container">
-      <ActionButton
+        <ActionButton
           tooltipTitle="Tarihçe"
           icon={FaHistory}
           onClick={showHistoryModal}
@@ -30,22 +32,26 @@ function ProjectHeader({
           size={size}
           type="primary"
         />
-        <ActionButton
-          tooltipTitle="Düzenle"
-          icon={FaEdit}
-          onClick={onEditProject}
-          className="action-button edit-button"
-          size={size}
-          type="primary"
-        />
-        <ActionButton
-          tooltipTitle="Sil"
-          icon={FaTrash}
-          onClick={onDeleteProject}
-          className="action-button delete-button"
-          size={size}
-          type="danger"
-        />
+        {userRole === 'admin' ?
+          <>
+            <ActionButton
+              tooltipTitle="Düzenle"
+              icon={FaEdit}
+              onClick={onEditProject}
+              className="action-button edit-button"
+              size={size}
+              type="primary"
+            />
+            <ActionButton
+              tooltipTitle="Sil"
+              icon={FaTrash}
+              onClick={onDeleteProject}
+              className="action-button delete-button"
+              size={size}
+              type="danger"
+            />
+          </> : null}
+
         <ActionButton
           tooltipTitle={project.status === 'close' ? 'Görevi Geri Al' : 'Görevi Tamamla'}
           icon={FaCheck}
