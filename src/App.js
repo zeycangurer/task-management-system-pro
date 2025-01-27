@@ -16,6 +16,9 @@ import EditProjectPage from './pages/Projects/EditProjectPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import ProfilePage from './pages/ProfilePage';
 import RegisterPage from './pages/RegisterPage';
+import AdminPanelPage from './pages/AdminPanelPage';
+import UnauthorizedPage from './pages/UnauthorizedPage';
+import EditTaskPage from './pages/Tasks/EditTaskPage';
 
 function App() {
   const dispatch = useDispatch();
@@ -33,19 +36,19 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/unauthorized" element={<UnauthorizedPage />} />
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <DashboardPage />
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/createTask"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <TaskCreationPage />
             </ProtectedRoute>
           }
@@ -53,24 +56,32 @@ function App() {
         <Route
           path="/tasks/:taskId"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <TaskDetailPage />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/tasks/:taskId/edit"
+          element={
+            <ProtectedRoute allowedRoles={['admin', 'customer']}>
+              <EditTaskPage />
             </ProtectedRoute>
           }
         />
         <Route
           path="/tasks"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <TasksPage />
             </ProtectedRoute>
           }
         />
-       
+
         <Route
           path="/projects"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <ProjectsPage />
             </ProtectedRoute>
           }
@@ -78,7 +89,7 @@ function App() {
         <Route
           path="/projects/new"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <NewProjectPage />
             </ProtectedRoute>
           }
@@ -86,7 +97,7 @@ function App() {
         <Route
           path="/projects/:projectId"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <ProjectDetailPage />
             </ProtectedRoute>
           }
@@ -94,7 +105,7 @@ function App() {
         <Route
           path="/projects/:projectId/edit"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'customer']}>
               <EditProjectPage />
             </ProtectedRoute>
           }
@@ -102,7 +113,7 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <AnalyticsPage />
             </ProtectedRoute>
           }
@@ -110,8 +121,24 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <AdminPanelPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/register"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <RegisterPage />
             </ProtectedRoute>
           }
         />

@@ -4,12 +4,10 @@ import TitleEditMolecule from '../../molecules/TitleEditMolecule';
 import ActionButton from '../../molecules/ActionButton';
 import { FaEdit, FaCheck, FaTrash, FaHistory, FaRegTimesCircle } from 'react-icons/fa';
 import './styles.css';
+import { useSelector } from 'react-redux';
 
 function TaskHeader({
-  isEditing,
-  editTitle,
-  setEditTitle,
-  handleEditTitle,
+  onEditTask,
   setIsEditing,
   showHistoryModal,
   handleDeleteTask,
@@ -17,21 +15,14 @@ function TaskHeader({
   size,
   task,
 }) {
+  const userRole = useSelector(state => state.profiles.user?.role)
+
   return (
     <div className="task-header">
       <div className="title-section">
-        {isEditing ? (
-          <TitleEditMolecule
-            value={editTitle}
-            onChange={(e) => setEditTitle(e.target.value)}
-            onSave={handleEditTitle}
-            size={size}
-          />
-        ) : (
-          <div className="title-container">
-            <h2 className="task-title">{task.title}</h2>
-          </div>
-        )}
+        <div className="title-container">
+          <h2 className="task-title">{task.title}</h2>
+        </div>
       </div>
       <div className="buttons-container">
         <ActionButton
@@ -41,33 +32,26 @@ function TaskHeader({
           className="action-button history-button"
           size={size}
         />
-        {isEditing ? (
-          <ActionButton
-            tooltipTitle="İptal"
-            icon={FaRegTimesCircle}
-            onClick={() => setIsEditing(false)}
-            className="action-button cancel-button"
-            size={size}
-            type="primary"
-          />
-        ) : (
-          <ActionButton
-            tooltipTitle="Düzenle"
-            icon={FaEdit}
-            onClick={() => setIsEditing(true)}
-            className="action-button edit-button"
-            size={size}
-            type="default"
-          />
-        )}
-        <ActionButton
-          tooltipTitle="Sil"
-          icon={FaTrash}
-          onClick={handleDeleteTask}
-          className="action-button delete-button"
-          size={size}
-          type="danger"
-        />
+        {userRole === 'admin' ?
+          <>
+            <ActionButton
+              tooltipTitle="Düzenle"
+              icon={FaEdit}
+              onClick={onEditTask}
+              className="action-button edit-button"
+              size={size}
+              type="default"
+            />
+            <ActionButton
+              tooltipTitle="Sil"
+              icon={FaTrash}
+              onClick={handleDeleteTask}
+              className="action-button delete-button"
+              size={size}
+              type="danger"
+            />
+          </> : null}
+
         <ActionButton
           tooltipTitle={task.status === 'close' ? 'Görevi Geri Al' : 'Görevi Tamamla'}
           icon={FaCheck}

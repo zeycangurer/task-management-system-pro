@@ -4,6 +4,9 @@ import ActionButton from '../../molecules/ActionButton';
 import { FaCheck } from 'react-icons/fa'
 import TooltipAtom from '../../atoms/Tooltip';
 import { taskCategories, taskPriorities } from '../../../utils/arrays';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import './styles.css'
 
 const { Option } = Select;
 
@@ -19,21 +22,44 @@ function TaskInfo({
   size,
   taskCustomer
 }) {
+  const navigate = useNavigate()
   const statusColor = task.status === 'close' ? 'green' : 'blue';
   const statusLabel = task.status === 'close' ? 'Tamamlandı' : 'Tamamlanmadı';
   const priorityColor = task.priority === 'urgent' ? 'red' : task.priority === 'soon' ? 'orange' : 'blue';
   const priorityLabel = taskPriorities.filter(item => item.value === task.priority)[0].label || 'Belirsiz';
   const categoryLabel = taskCategories.filter(item => item.value === task.category)[0].label || 'Belirsiz';
-  
+
+  const startDateStr = task.createdAt ? task.createdAt.toDate().toLocaleDateString() : 'Belirtilmemiş';
+  const endDateStr = task.dueDate ? task.dueDate.toDate().toLocaleDateString() : 'Belirtilmemiş';
+
+  const projects = useSelector((state) => state.projects.projects);
+  const project = projects.find(p => p.id === task.projectId);
+
+  const handleProjectClick = () => {
+    if (task.projectId) {
+      navigate(`/projects/${task.projectId}`); 
+    }
+  };
+
   return (
     <div className="task-info">
-    <p><strong>Açıklama: </strong>{task.description}</p>
+      <p><strong>Açıklama: </strong>{task.description}</p>
       <p><strong>Oluşturan Kişi: </strong>{createdUserName}</p>
       <p><strong>Kategori: </strong>{categoryLabel}</p>
       <p><strong>Müşteri: </strong>{taskCustomer[0].name || 'Belirsiz'}</p>
       <p><strong>Durum: </strong><Tag color={statusColor}>{statusLabel}</Tag></p>
       <p><strong>Öncelik: </strong><Tag color={priorityColor}>{priorityLabel}</Tag></p>
-    
+      <p><strong>Başlangıç Tarihi: </strong>{startDateStr}</p>
+      <p><strong>Bitiş Tarihi: </strong>{endDateStr}</p>
+      <p><strong>Bağlı Olduğu Proje: </strong>{task.projectId ? (
+          <span className="project-link" onClick={handleProjectClick}>
+            {project.title || 'Yükleniyor...'}
+          </span>
+        ) : (
+          'Bu görev bir projeye bağlı değil.'
+        )}</p>
+      
+
       {task.attachments && task.attachments.length > 0 && (
         <div>
           <p><strong>Ekler:</strong></p>

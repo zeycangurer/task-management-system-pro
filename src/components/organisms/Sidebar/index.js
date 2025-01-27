@@ -7,9 +7,13 @@ import {
   FaUser, 
   FaChartPie 
 } from 'react-icons/fa';
+import { RiAdminFill } from "react-icons/ri";
+
 import './styles.css';
+import { useSelector } from 'react-redux';
 
 function Sidebar({ isOpen, toggleSidebar }) {
+  const userRole = useSelector(state => state.profiles.user?.role)
 
   const handleLinkClick = () => {
     if (isOpen) toggleSidebar();
@@ -74,6 +78,17 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 <FaUser className="sidebar-icon" /> Profil
               </NavLink>
             </li>
+            {userRole === 'admin' ? 
+            <li>
+              <NavLink 
+                to="/admin" 
+                className={({ isActive }) => isActive ? 'active' : ''} 
+                onClick={handleLinkClick}
+              >
+                <RiAdminFill className="sidebar-icon" /> Admin Panel
+              </NavLink>
+            </li> : null}
+            
           </ul>
         </nav>
       </aside>

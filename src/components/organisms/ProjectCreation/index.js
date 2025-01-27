@@ -56,7 +56,7 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
 
 
     const handleFinish = (values) => {
-      console.log(values)
+      // console.log(values)
       onFinish(values);
     };
   
@@ -98,7 +98,7 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
           </SelectAtom>
         </FormItemMolecule>
         <FormItemMolecule label="Müşteri" name="customerId" rules={[{ required: true, message: 'Lütfen bir müşteri seçin' }]}>
-          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading} disabled={currentUser.role === 'customer'}>
+          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading} disabled={currentUser.role === 'customer'} style={{ background: 'white', borderRadius: '6px' }}>
             {customers.map((customer) => (
               <SelectAtom.Option key={customer.id} value={customer.id}>
                 {customer.name}

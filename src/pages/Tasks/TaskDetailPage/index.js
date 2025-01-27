@@ -200,18 +200,18 @@ function TaskDetailPage() {
       });
   };
 
-  
+
   const handleToggleComplete = () => {
     const newStatus = task.status === 'close' ? 'open' : 'close';
 
-    dispatch(action.updateTask(task.id, {status: newStatus}, currentUser.uid))
-        .then(() => {
-            message.success('Görev durumu güncellendi');
-        })
-        .catch((error) => {
-            message.error('Görev durumu güncellenemedi: ' + error.message);
-        });
-};
+    dispatch(action.updateTask(task.id, { status: newStatus }, currentUser.uid))
+      .then(() => {
+        message.success('Görev durumu güncellendi');
+      })
+      .catch((error) => {
+        message.error('Görev durumu güncellenemedi: ' + error.message);
+      });
+  };
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -227,6 +227,10 @@ function TaskDetailPage() {
 
   const handleHistoryModalClose = () => {
     setIsHistoryModalVisible(false);
+  };
+
+  const handleEdit = () => {
+    navigate(`/tasks/${taskId}/edit`);
   };
 
   const filteredHistory = useMemo(() => {
@@ -281,7 +285,7 @@ function TaskDetailPage() {
               editTitle={editTitle}
               setEditTitle={setEditTitle}
               handleEditTitle={handleEditTitle}
-              setIsEditing={setIsEditing}
+              onEditTask={handleEdit}
               showHistoryModal={showHistoryModal}
               handleDeleteTask={handleDeleteTask}
               handleToggleComplete={handleToggleComplete}

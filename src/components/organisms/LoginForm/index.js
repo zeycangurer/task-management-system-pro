@@ -40,9 +40,6 @@ function LoginFormOrganism({ onSubmit }) {
         <ButtonAtom type="primary" htmlType="submit" className="login-button">
           Giriş Yap
         </ButtonAtom>
-        <ButtonAtom type="primary" onClick={() => navigate('/register')} className="register-button">
-          Kayıt Ol
-        </ButtonAtom>
       </div>
     </form>
   );
