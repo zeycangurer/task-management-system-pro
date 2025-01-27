@@ -1,11 +1,11 @@
 import React from 'react';
 import RegisterFormOrganism from '../../organisms/RegisterForm';
 
-function RegisterPageTemplate() {
+function RegisterPageTemplate({ isEditMode, initialValues }) {
   return (
     <div className="register-page">
-    <h1>Kullanıcı Kayıt</h1>
-      <RegisterFormOrganism />
+      <h1>{isEditMode ? 'Kullanıcıyı Düzenle' : 'Yeni Kullanıcı Kaydı'}</h1>
+      <RegisterFormOrganism isEditMode={isEditMode} initialValues={initialValues} />
     </div>
   );
 }

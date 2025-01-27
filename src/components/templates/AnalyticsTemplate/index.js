@@ -10,6 +10,7 @@ function AnalyticsTemplate({
     users,
     tasks,
     projects,
+    customers
 }) {
     return (
         <div className="analytics-template">
@@ -17,7 +18,7 @@ function AnalyticsTemplate({
                 title="Proje Analizleri"
                 subtitle="Proje ve görevlerle ilgili detaylı analiz"
             />
-            <StatsCards projects={projects} tasks={tasks} users={users} />
+            <StatsCards projects={projects} tasks={tasks} users={users} customers={customers} />
             {/* <FilterSection
         dateRange={dateRange}
         setDateRange={setDateRange}
@@ -29,7 +30,7 @@ function AnalyticsTemplate({
         filterAnalytics={filterAnalytics}
       /> */}
 
-            <ChartsSection tasks={tasks} users={users} projects={projects}/>
+            <ChartsSection tasks={tasks} users={users} projects={projects} />
             <DetailsTable tasks={tasks} users={users} />
         </div>
     );

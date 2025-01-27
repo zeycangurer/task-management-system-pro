@@ -1,10 +1,11 @@
-.upcoming-tasks {
+ .upcoming-tasks {
   background: linear-gradient(to right, #f8fafc, #eef2ff);
   border-radius: 12px;
   padding: 20px;
   margin: 20px 0px;
   box-shadow: 0px 4px 10px var(--box-shadow-color);
-}
+  min-height: 400px;
+} 
 
 .section-title {
   font-size: 1.4rem;
@@ -17,11 +18,40 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-}
+  flex-grow: 1;
+} 
 
 .no-tasks {
   color: #6b7280;
   font-size: 1rem;
   text-align: center;
   padding: 10px;
+}
+
+/* .upcoming-tasks {
+  margin-top: 20px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+} */
+
+.custom-pagination {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.custom-pagination .ant-pagination-item-active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.custom-pagination .ant-pagination-item a {
+  color: var(--text-color);
+}
+
+.custom-pagination .ant-pagination-item-active a {
+  color: white;
 }

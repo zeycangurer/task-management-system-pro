@@ -8,9 +8,9 @@ import FormItemMolecule from '../../molecules/FormItem';
 import ErrorContainerMolecule from '../../molecules/ErrorContainerMolecule';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaMoon, FaSun } from 'react-icons/fa';
-import { registerUser } from '../../../store/actions/authActions';
+import { moveUserBetweenCollections, registerUser, updateUser } from '../../../store/actions/authActions';
 
-function RegisterFormOrganism() {
+function RegisterFormOrganism({ isEditMode, initialValues }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -31,27 +31,43 @@ function RegisterFormOrganism() {
     localStorage.setItem('theme', newTheme);
   };
 
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(initialValues);
+    }
+  }, [initialValues, form]);
+
   const handleSubmit = async (values) => {
     if (!userType) {
       setError('Lütfen kullanıcı tipini seçin!');
       return;
     }
-  
-    const userData = {
+
+    const updatedUserData = {
+      ...initialValues,
       ...values,
       role: userType,
     };
-  
-    console.log('Kayıt verisi:', userData);
-  
+
     try {
-      await dispatch(registerUser(userData));
-      form.resetFields();
+      if (isEditMode) {
+        if (initialValues.role !== userType) {
+          await dispatch(moveUserBetweenCollections(initialValues, updatedUserData));
+        } else {
+          await dispatch(updateUser(updatedUserData));
+        }
+      } else {
+        await dispatch(registerUser(updatedUserData));
+      }
+
+      navigate('/admin');
     } catch (err) {
-      setError('Kayıt sırasında hata oluştu.');
+      setError('İşlem sırasında hata oluştu.');
     }
   };
-  
+
+
+
 
   return (
     <div className="register-form">
@@ -97,7 +113,7 @@ function RegisterFormOrganism() {
 
         <Form.Item>
           <ButtonAtom type="primary" htmlType="submit">
-            Kayıt Ol
+            {isEditMode ? 'Kaydet' : 'Kayıt Ol'}
           </ButtonAtom>
         </Form.Item>
       </Form>
