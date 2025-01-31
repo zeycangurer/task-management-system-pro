@@ -1,35 +1,104 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Select } from 'antd';
 import AdminUserTable from '../../molecules/AdminUserTable';
 import AdminProjectTable from '../../molecules/AdminProjectTable';
 import AdminTaskTable from '../../molecules/AdminTaskTable';
 import ButtonAtom from '../../atoms/Button';
 import { useNavigate } from 'react-router-dom';
-import './styles.css'
+import './styles.css';
+
+const { Option } = Select;
 
 function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditProject, onDeleteProject, onEditTask, onDeleteTask }) {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+
+    // Filtreleme için state değişkenleri
+    const [selectedUserRole, setSelectedUserRole] = useState('all');
+    const [selectedCustomer, setSelectedCustomer] = useState('all');
+    const [selectedAssignedUser, setSelectedAssignedUser] = useState('all');
+    const [selectedProject, setSelectedProject] = useState('all');
+
+    // Kullanıcıları role göre filtrele
+    const filteredUsers = selectedUserRole === 'all' ? users : users.filter(user => user.role === selectedUserRole);
+
+    // Projeleri müşteri ID'ye göre filtrele
+    const filteredProjects = selectedCustomer === 'all' ? projects : projects.filter(project => project.customerId === selectedCustomer);
+
+    // Görevleri kullanıcıya ve projeye göre filtrele
+    let filteredTasks = tasks;
+    if (selectedAssignedUser !== 'all') {
+        filteredTasks = filteredTasks.filter(task => task.assignedTo.includes(selectedAssignedUser));
+    }
+    if (selectedProject !== 'all') {
+        filteredTasks = filteredTasks.filter(task => task.projectId === selectedProject);
+    }
+
     return (
         <div className="admin-panel">
             <div className="admin-action-container">
                 <h2>Kullanıcı Yönetimi</h2>
-                <ButtonAtom className="action-button primary" onClick={() => navigate('/admin/register')}>Kullanıcı Oluştur</ButtonAtom>
+                <div className='admin-filter-button'>
+                    <Select className="filter-dropdown" value={selectedUserRole} onChange={setSelectedUserRole}>
+                        <Option value="all">Tüm Kullanıcılar</Option>
+                        <Option value="admin">Yöneticiler</Option>
+                        <Option value="user">Çalışanlar</Option>
+                        <Option value="customer">Müşteriler</Option>
+                    </Select>
+                    <ButtonAtom className="action-button secondary" onClick={() => navigate('/admin/register')}>Kullanıcı Oluştur</ButtonAtom>
+                </div>
+
             </div>
-            <AdminUserTable users={users} onEdit={onEditUser} onDelete={onDeleteUser} />
+            {filteredUsers.length > 0 ? (
+                <AdminUserTable users={filteredUsers} onEdit={onEditUser} onDelete={onDeleteUser} />
+            ) : (
+                <p className="no-data">Kullanıcı bulunmamaktadır.</p>
+            )}
+
             <div className="admin-action-container">
                 <h2>Proje Yönetimi</h2>
-                <ButtonAtom className="action-button default" onClick={() => navigate('/projects/new')}>
-                    Proje Oluştur
-                </ButtonAtom>
+                <div className='admin-filter-button'>
+                    <Select className="filter-dropdown" value={selectedCustomer} onChange={setSelectedCustomer}>
+                        <Option value="all">Tüm Projeler</Option>
+                        {users.filter(user => user.role === 'customer').map(customer => (
+                            <Option key={customer.id} value={customer.id}>{customer.name}</Option>
+                        ))}
+                    </Select>
+                    <ButtonAtom className="action-button default" onClick={() => navigate('/projects/new')}>
+                        Proje Oluştur
+                    </ButtonAtom>
+                </div>
             </div>
-            <AdminProjectTable projects={projects} onEdit={onEditProject} onDelete={onDeleteProject} />
+            {filteredProjects.length > 0 ? (
+                <AdminProjectTable projects={filteredProjects} onEdit={onEditProject} onDelete={onDeleteProject} />
+            ) : (
+                <p className="no-data">Proje bulunmamaktadır.</p>
+            )}
 
             <div className="admin-action-container">
                 <h2>Görev Yönetimi</h2>
-                <ButtonAtom className="action-button primary" onClick={() => navigate('/createTask')}>
-                    Görev Oluştur
-                </ButtonAtom>
+                <div className='admin-filter-button'>
+                    <Select className="filter-dropdown" value={selectedAssignedUser} onChange={setSelectedAssignedUser}>
+                        <Option value="all">Tüm Görevler</Option>
+                        {users.map(user => (
+                            <Option key={user.id} value={user.id}>{user.name}</Option>
+                        ))}
+                    </Select>
+                    <Select className="filter-dropdown" value={selectedProject} onChange={setSelectedProject}>
+                        <Option value="all">Tüm Projeler</Option>
+                        {projects.map(project => (
+                            <Option key={project.id} value={project.id}>{project.title}</Option>
+                        ))}
+                    </Select>
+                    <ButtonAtom className="action-button primary" onClick={() => navigate('/createTask')}>
+                        Görev Oluştur
+                    </ButtonAtom>
+                </div>
             </div>
-            <AdminTaskTable tasks={tasks} onEdit={onEditTask} onDelete={onDeleteTask} />
+            {filteredTasks.length > 0 ? (
+                <AdminTaskTable tasks={filteredTasks} onEdit={onEditTask} onDelete={onDeleteTask} />
+            ) : (
+                <p className="no-data">Görev bulunmamaktadır.</p>
+            )}
         </div>
     );
 }

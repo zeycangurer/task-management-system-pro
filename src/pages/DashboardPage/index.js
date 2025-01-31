@@ -20,7 +20,7 @@ function Dashboard() {
   const projects = root.projects.projects || []; 
   const customers = root.customers.customers || []; 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };

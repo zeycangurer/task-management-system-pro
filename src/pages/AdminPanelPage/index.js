@@ -8,24 +8,24 @@ import HeaderSideBarTemplate from '../../components/templates/HeaderSideBarTempl
 import './styles.css';
 import { useNavigate } from 'react-router-dom';
 import { deleteUser } from '../../store/actions/authActions';
+import { fetchCustomers } from '../../store/actions/customerActions';
 
 function AdminPanelPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector(state => state.profiles.user);
+    // const currentUser = useSelector(state => state.profiles.user);
+    // const isAdmin = useSelector(state => state.auth.user?.isAdmin);
     const users = useSelector(state => state.users.users);
     const projects = useSelector(state => state.projects.projects);
     const tasks = useSelector(state => state.tasks.tasks);
     const customers = useSelector(state => state.customers.customers);
-
+    const authuser = useSelector(state => state.auth)
+    // // console.log(authuser)
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-// console.log(user)
-    useEffect(() => {
-        if (!user || user.role !== 'admin') {
-            navigate('/unauthorized');
-        }
-    }, [user, navigate]);
+    // console.log(currentUser)
+    // console.log(isAdmin)
 
+ 
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -35,6 +35,7 @@ function AdminPanelPage() {
         dispatch(fetchUsers());
         dispatch(fetchProjects());
         dispatch(fetchTasks());
+        dispatch(fetchCustomers())
     }, [dispatch]);
 
     const handleEditProject = (projectId) => {
@@ -57,8 +58,14 @@ function AdminPanelPage() {
             .catch((err) => console.error(err));
     };
 
+    const handleDeleteUser = async (userId) => {
+        dispatch(deleteUser(userId))
+        .then(() => navigate('/admin'))
+        .catch((err) => console.error(err));
+    };
+
     const combinedUsers = [
-        ...users.map(user => ({ ...user})), 
+        ...users.map(user => ({ ...user })),
         ...customers.map(customer => ({ ...customer }))
     ];
 
@@ -69,8 +76,8 @@ function AdminPanelPage() {
                     users={combinedUsers}
                     projects={projects}
                     tasks={tasks}
-                    onEditUser={(user) => console.log('Edit user', user)}
-                    onDeleteUser={(userId) => dispatch(deleteUser(userId))}
+                    onEditUser={(user) => navigate(`/admin/${user.id}/edit`, { state: { userData: user } })}
+                    onDeleteUser={(userId) => handleDeleteUser(userId)}
                     onEditProject={(project) => handleEditProject(project.id)}
                     onDeleteProject={(projectId) => handleDeleteProject(projectId)}
                     onEditTask={(task) => handleEditTask(task.id)}
