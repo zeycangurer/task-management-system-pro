@@ -32,7 +32,7 @@ function ProjectHeader({
           size={size}
           type="primary"
         />
-        {userRole === 'admin' || userRole  === 'manager' ?
+        {userRole === 'admin' || userRole === 'manager' ?
           <>
             <ActionButton
               tooltipTitle="Düzenle"
@@ -50,6 +50,14 @@ function ProjectHeader({
               size={size}
               type="danger"
             />
+            <ActionButton
+              tooltipTitle="Görev Oluştur"
+              icon={MdCreateNewFolder}
+              onClick={onCreateTask}
+              className="action-button create-button"
+              size={size}
+              type="primary"
+            />
           </> : null}
 
         <ActionButton
@@ -60,14 +68,7 @@ function ProjectHeader({
           size={size}
           type="primary"
         />
-        <ActionButton
-          tooltipTitle="Görev Oluştur"
-          icon={MdCreateNewFolder}
-          onClick={onCreateTask}
-          className="action-button create-button"
-          size={size}
-          type="primary"
-        />
+
       </div>
     </div>
   );
