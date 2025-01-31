@@ -44,7 +44,7 @@ function LoginFormOrganism({ onSubmit }) {
         }
       />
 
-      <ErrorContainerMolecule error={authError} />
+      <ErrorContainerMolecule error={authError} type='login' />
       <div className='login-buttons-container'>
         <ButtonAtom type="primary" htmlType="submit" className="login-button">
           Giriş Yap

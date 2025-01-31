@@ -5,4 +5,14 @@
     justify-content: center;
     margin-bottom: 10px;
     font-size: small;
+    margin-top: 100px;
+  }
+
+  .error-container-login {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    font-size: small;
   }

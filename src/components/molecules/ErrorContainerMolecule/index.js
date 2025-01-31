@@ -2,9 +2,11 @@ import React from 'react';
 import ErrorMessageAtom from '../../atoms/ErrorMessage';
 import './styles.css'; 
 
-function ErrorContainerMolecule({ error }) {
+function ErrorContainerMolecule({ error, type = 'default' }) {
+  if (!error) return null;
+
   return (
-    <div className="error-container">
+    <div className={`${type === 'login' ? 'error-container-login' : 'error-container'}`}>
       <ErrorMessageAtom message={error} />
     </div>
   );

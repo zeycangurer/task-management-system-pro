@@ -9,6 +9,8 @@ function AdminUserTable({ users, onDelete }) {
   const getRoleLabel = (role) => {
     switch (role) {
       case 'admin':
+        return 'Admin';
+      case 'manager':
         return 'Yönetici';
       case 'user':
         return 'Çalışan';
@@ -39,7 +41,7 @@ function AdminUserTable({ users, onDelete }) {
   // console.log(users)
 
 
-  return <Table columns={columns} dataSource={users} rowKey="id" pagination={{ pageSize: 6 }} scroll={{ x: true }}/>;
+  return <Table columns={columns} dataSource={users} rowKey="id" pagination={{ pageSize: 6 }} scroll={{ x: true }} />;
 }
 
 export default AdminUserTable;

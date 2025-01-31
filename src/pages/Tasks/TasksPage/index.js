@@ -35,20 +35,6 @@ function TasksPage() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const getTaskDate = (task) => {
-    if (task.date) {
-      return new Date(task.date);
-    } else if (task.dueDate) {
-      return new Date(task.dueDate.seconds * 1000 + task.dueDate.nanoseconds / 1000000);
-    } else if (task.createdAt) {
-      if (typeof task.createdAt === 'string') {
-        return new Date(task.createdAt);
-      } else if (task.createdAt.seconds) {
-        return new Date(task.createdAt.seconds * 1000 + task.createdAt.nanoseconds / 1000000);
-      }
-    }
-    return null;
-  };
 
   const filterTasks = () => {
     // console.log("Filtering tasks with selectedUser:", selectedUser);
