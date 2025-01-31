@@ -200,6 +200,8 @@ function TasksPage() {
               <p>Görevler yükleniyor...</p>
             ) : tasksState.error ? (
               <p className="error">{tasksState.error}</p>
+            ) : tasksWithUserNames.length === 0 ? (
+              <p>Görev bulunmamaktadır.</p>
             ) : (
               <TaskList tasks={tasksWithUserNames} onTaskClick={handleTaskClick} />
             )}

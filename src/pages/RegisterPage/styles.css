@@ -57,3 +57,7 @@
   transition: color 0.3s;
   flex-shrink: 0; */
 }
+
+.error-message{
+  margin: 5px 0px !important;
+}

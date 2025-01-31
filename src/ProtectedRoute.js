@@ -10,7 +10,6 @@ function ProtectedRoute({ children, allowedRoles }) {
   const userProfile = useSelector(state => state.profiles.user)
   const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
 
-  // console.log(userProfile)
   if (!user) {
     return <Navigate to="/login" replace />;
   }

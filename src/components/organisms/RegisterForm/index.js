@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import InputAtom from '../../atoms/Input';
 import ButtonAtom from '../../atoms/Button';
 import SelectAtom from '../../atoms/Select';
@@ -9,15 +9,18 @@ import ErrorContainerMolecule from '../../molecules/ErrorContainerMolecule';
 import { useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaMoon, FaSun } from 'react-icons/fa';
 import { moveUserBetweenCollections, registerUser, updateUser } from '../../../store/actions/authActions';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+
 
 function RegisterFormOrganism({ isEditMode, initialValues }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
-  const [userType, setUserType] = useState('');
+  const [userType, setUserType] = useState('user');
   const [error, setError] = useState('');
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [visiblePasswords, setVisiblePasswords] = useState()
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -38,20 +41,22 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
   }, [initialValues, form]);
 
   const handleSubmit = async (values) => {
-    if (!userType) {
+    const selectedRole = userType || initialValues.role; 
+  
+    if (!selectedRole) {
       setError('Lütfen kullanıcı tipini seçin!');
       return;
     }
-
+  
     const updatedUserData = {
       ...initialValues,
       ...values,
-      role: userType,
+      role: selectedRole,
     };
-
+  
     try {
       if (isEditMode) {
-        if (initialValues.role !== userType) {
+        if (initialValues.role !== selectedRole) {
           await dispatch(moveUserBetweenCollections(initialValues, updatedUserData));
         } else {
           await dispatch(updateUser(updatedUserData));
@@ -59,12 +64,13 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
       } else {
         await dispatch(registerUser(updatedUserData));
       }
-
+  
       navigate('/admin');
     } catch (err) {
       setError('İşlem sırasında hata oluştu.');
     }
   };
+  
 
 
 
@@ -82,22 +88,32 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
       <Form layout="vertical" form={form} onFinish={handleSubmit}>
         <ErrorContainerMolecule error={error} />
 
-        <FormItemMolecule label="Kullanıcı Tipi" name="role" rules={[{ required: true, message: 'Kullanıcı tipini seçin!' }]}>
-          <SelectAtom placeholder="Kullanıcı Tipini Seçin" onChange={(value) => setUserType(value)}>
+        <FormItemMolecule label="Kullanıcı Tipi" name="role" rules={[{ required: !isEditMode, message: 'Kullanıcı tipini seçin!' }]}>
+          <SelectAtom
+            placeholder="Kullanıcı Tipini Seçin"
+            value={userType || initialValues.role} 
+            onChange={(value) => setUserType(value)}
+          >
             <SelectAtom.Option value="user">Çalışan</SelectAtom.Option>
             <SelectAtom.Option value="customer">Müşteri</SelectAtom.Option>
           </SelectAtom>
         </FormItemMolecule>
 
+
         <FormItemMolecule label="Ad Soyad" name="name" rules={[{ required: true, message: 'Adınızı girin!' }]}>
           <InputAtom placeholder="Adınızı girin" />
         </FormItemMolecule>
 
-        <FormItemMolecule label="E-Posta" name="email" rules={[{ required: true, message: 'E-posta giriniz!' }]}>
+        <FormItemMolecule label="E-Posta" name="email" rules={[
+          { required: true, message: 'E-posta zorunludur' },
+          { type: 'email', message: 'Geçerli bir e-posta adresi girin' }]}>
           <InputAtom type="email" placeholder="E-posta adresiniz" />
         </FormItemMolecule>
 
-        <FormItemMolecule label="Telefon Numarası" name="contactNumber" rules={[{ required: true, message: 'Telefon numarası giriniz!' }]}>
+        <FormItemMolecule label="Telefon Numarası" name="contactNumber" rules={[
+          { required: true, message: 'Telefon numarası zorunludur' },
+          { pattern: /^\d{10,15}$/, message: 'Telefon numarası 10-15 rakam arasında olmalıdır' }
+        ]}>
           <InputAtom type="tel" placeholder="Telefon numaranız" />
         </FormItemMolecule>
 
@@ -107,13 +123,29 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
           </FormItemMolecule>
         )}
 
-        <FormItemMolecule label="Şifre" name="password" rules={[{ required: true, message: 'Şifre giriniz!', min: 6 }]}>
-          <InputAtom type="password" placeholder="Şifreniz" />
+        <FormItemMolecule label="Şifre" name="password" rules={[
+          { required: true, message: 'Şifre giriniz' },
+          { min: 6, message: 'Şifre en az 6 karakter olmalıdır' },
+          { pattern: /[A-Z]/, message: 'Şifre en az bir büyük harf içermelidir' },
+          { pattern: /[a-z]/, message: 'Şifre en az bir küçük harf içermelidir' },
+          { pattern: /[0-9]/, message: 'Şifre en az bir rakam içermelidir' }
+        ]}>
+          <InputAtom
+            type={visiblePasswords ? 'text' : 'password'}
+            placeholder="Şifre"
+            suffix={
+              visiblePasswords ? (
+                <EyeTwoTone onClick={() => setVisiblePasswords(false)} style={{ cursor: 'pointer' }} />
+              ) : (
+                <EyeInvisibleOutlined onClick={() => setVisiblePasswords(true)} style={{ cursor: 'pointer' }} />
+              )
+            }
+          />
         </FormItemMolecule>
 
         <Form.Item>
           <ButtonAtom type="primary" htmlType="submit">
-            {isEditMode ? 'Kaydet' : 'Kayıt Ol'}
+            Kaydet
           </ButtonAtom>
         </Form.Item>
       </Form>

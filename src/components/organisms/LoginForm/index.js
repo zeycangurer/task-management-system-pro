@@ -4,12 +4,15 @@ import ButtonAtom from '../../atoms/Button';
 import ErrorContainerMolecule from '../../molecules/ErrorContainerMolecule';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 function LoginFormOrganism({ onSubmit }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const authError = useSelector((state) => state.auth.authError);
   const navigate = useNavigate();
+  const [visiblePasswords, setVisiblePasswords] = useState()
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -27,14 +30,20 @@ function LoginFormOrganism({ onSubmit }) {
         name="email"
         className="login-input"
       />
+
       <InputAtom
-        type="password"
+        type={visiblePasswords ? 'text' : 'password'}
         placeholder="Şifre"
-        value={password}
         onChange={(e) => setPassword(e.target.value)}
-        name="password"
-        className="login-input"
+        suffix={
+          visiblePasswords ? (
+            <EyeTwoTone onClick={() => setVisiblePasswords(false)} style={{ cursor: 'pointer' }} />
+          ) : (
+            <EyeInvisibleOutlined onClick={() => setVisiblePasswords(true)} style={{ cursor: 'pointer' }} />
+          )
+        }
       />
+
       <ErrorContainerMolecule error={authError} />
       <div className='login-buttons-container'>
         <ButtonAtom type="primary" htmlType="submit" className="login-button">

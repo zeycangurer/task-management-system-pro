@@ -7,29 +7,25 @@ import { deleteUser as deleteAuthUser } from 'firebase/auth';
 import * as types from '../constants/authActionType'
 
 export const loginUser = (email, password) => {
-  return (dispatch) => {
-    return signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        dispatch({ type: types.LOGIN_SUCCESS, payload: userCredential.user });
-        dispatch(fetchUserDetails( userCredential.user.uid));
-      })
-      .catch((error) => {  
-        let errorMessage = '';  
+  return async (dispatch) => {
+    dispatch({ type: types.LOGIN_REQUEST });
+    try {
 
-        switch (error.code) {
-          case 'auth/user-not-found':
-          case 'auth/wrong-password':
-            errorMessage = 'Kullanıcı adı veya şifre yanlış.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Geçersiz email adresi.';
-            break;
-          default:
-            errorMessage = 'Giriş başarısız. Lütfen tekrar deneyin.';
-        }
-        dispatch({ type: types.LOGIN_ERROR, payload: errorMessage });
-        return Promise.reject(error);
-      });
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      await dispatch(fetchUserDetails(user.uid));
+
+      dispatch({ type: types.LOGIN_SUCCESS, payload: user });
+
+    } catch (error) {
+
+      let errorMessage = 'Giriş başarısız. Lütfen tekrar deneyin.';
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        errorMessage = 'Kullanıcı adı veya şifre yanlış.';
+      }
+      dispatch({ type: types.LOGIN_ERROR, payload: errorMessage });
+    }
   };
 };
 
@@ -133,10 +129,27 @@ export const moveUserBetweenCollections = (oldUserData, newUserData) => async (d
     const oldCollection = oldUserData.role === 'customer' ? 'customers' : 'users';
     const newCollection = newUserData.role === 'customer' ? 'customers' : 'users';
 
-    await deleteDoc(doc(db, oldCollection, oldUserData.id));
-    await setDoc(doc(db, newCollection, newUserData.id), newUserData);
+    let updatedData = { ...newUserData };
 
-    dispatch({ type: 'MOVE_USER_COLLECTION', payload: newUserData });
+    if (oldUserData.role === 'user' && newUserData.role === 'customer') {
+      updatedData.projects = oldUserData.assignedProjects || []; 
+      updatedData.createdTasks = oldUserData.assignedTasks || []; 
+      delete updatedData.assignedProjects; 
+      delete updatedData.assignedTasks; 
+    }
+
+    else if (oldUserData.role === 'customer' && newUserData.role === 'user') {
+      updatedData.assignedProjects = oldUserData.projects || []; 
+      updatedData.assignedTasks = oldUserData.createdTasks || []; 
+      delete updatedData.projects;
+      delete updatedData.createdTasks;
+      delete updatedData.company;
+    }
+
+    await deleteDoc(doc(db, oldCollection, oldUserData.id));
+    await setDoc(doc(db, newCollection, newUserData.id), updatedData);
+
+    dispatch({ type: 'MOVE_USER_COLLECTION', payload: updatedData });
   } catch (error) {
     console.error('Rol değiştirme işlemi başarısız:', error);
   }

@@ -11,3 +11,56 @@
     margin-top:2px !important;
     font-size: 1.4rem;
 }
+
+.admin-filter-button{
+    display: flex;
+    align-items: center;
+    gap: 15px; 
+    flex-wrap: wrap;
+}
+.filter-dropdown {
+    min-width: 160px;
+}
+
+.action-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.action-button.primary {
+    background-color:var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.action-button.secondary {
+    background-color:var(--save-color);
+    color: white;
+    border: none;
+}
+
+.action-button.default {
+    background-color:var(--edit-color);
+    color: white;
+    border: none;
+}
+
+
+
+@media (max-width: 768px) {
+    .admin-action-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .action-button {
+        width: 100%; 
+        text-align: center;
+    }
+}

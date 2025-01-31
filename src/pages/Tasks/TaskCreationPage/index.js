@@ -10,10 +10,13 @@ import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTe
 function TaskCreationPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const currentUser = useSelector((state) => state.auth.user);
 
+  const queryParams = new URLSearchParams(location.search);
+  const projectId = queryParams.get('projectId');
 
   const handleSubmit = (values) => {
     const taskData = {

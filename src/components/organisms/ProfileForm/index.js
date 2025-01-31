@@ -20,7 +20,7 @@ function ProfileFormOrganism({ user }) {
   });
 
   const [form] = Form.useForm();
-  console.log(user)
+  // console.log(user)
 
   const handleChangePassword = async () => {
     try {
