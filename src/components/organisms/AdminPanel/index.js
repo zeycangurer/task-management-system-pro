@@ -12,19 +12,15 @@ const { Option } = Select;
 function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditProject, onDeleteProject, onEditTask, onDeleteTask }) {
     const navigate = useNavigate();
 
-    // Filtreleme için state değişkenleri
     const [selectedUserRole, setSelectedUserRole] = useState('all');
     const [selectedCustomer, setSelectedCustomer] = useState('all');
     const [selectedAssignedUser, setSelectedAssignedUser] = useState('all');
     const [selectedProject, setSelectedProject] = useState('all');
 
-    // Kullanıcıları role göre filtrele
     const filteredUsers = selectedUserRole === 'all' ? users : users.filter(user => user.role === selectedUserRole);
 
-    // Projeleri müşteri ID'ye göre filtrele
     const filteredProjects = selectedCustomer === 'all' ? projects : projects.filter(project => project.customerId === selectedCustomer);
 
-    // Görevleri kullanıcıya ve projeye göre filtrele
     let filteredTasks = tasks;
     if (selectedAssignedUser !== 'all') {
         filteredTasks = filteredTasks.filter(task => task.assignedTo.includes(selectedAssignedUser));
@@ -40,7 +36,8 @@ function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditPr
                 <div className='admin-filter-button'>
                     <Select className="filter-dropdown" value={selectedUserRole} onChange={setSelectedUserRole}>
                         <Option value="all">Tüm Kullanıcılar</Option>
-                        <Option value="admin">Yöneticiler</Option>
+                        <Option value="admin">Admin</Option>
+                        <Option value="manager">Yöneticiler</Option>
                         <Option value="user">Çalışanlar</Option>
                         <Option value="customer">Müşteriler</Option>
                     </Select>

@@ -41,7 +41,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer',  'manager']}>
               <DashboardPage />
             </ProtectedRoute>
           }
@@ -49,7 +49,7 @@ function App() {
         <Route
           path="/createTask"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer',  'manager']}>
               <TaskCreationPage />
             </ProtectedRoute>
           }
@@ -57,7 +57,7 @@ function App() {
         <Route
           path="/tasks/:taskId"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer', 'manager']}>
               <TaskDetailPage />
             </ProtectedRoute>
           }
@@ -65,7 +65,7 @@ function App() {
          <Route
           path="/tasks/:taskId/edit"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'customer', 'manager']}>
               <EditTaskPage />
             </ProtectedRoute>
           }
@@ -73,7 +73,7 @@ function App() {
         <Route
           path="/tasks"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer',  'manager']}>
               <TasksPage />
             </ProtectedRoute>
           }
@@ -82,7 +82,7 @@ function App() {
         <Route
           path="/projects"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer',  'manager']}>
               <ProjectsPage />
             </ProtectedRoute>
           }
@@ -90,7 +90,7 @@ function App() {
         <Route
           path="/projects/new"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer', 'manager']}>
               <NewProjectPage />
             </ProtectedRoute>
           }
@@ -98,7 +98,7 @@ function App() {
         <Route
           path="/projects/:projectId"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer',  'manager']}>
               <ProjectDetailPage />
             </ProtectedRoute>
           }
@@ -106,7 +106,7 @@ function App() {
         <Route
           path="/projects/:projectId/edit"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'customer', 'manager']}>
               <EditProjectPage />
             </ProtectedRoute>
           }
@@ -114,7 +114,7 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer', 'manager']}>
               <AnalyticsPage />
             </ProtectedRoute>
           }
@@ -122,7 +122,7 @@ function App() {
         <Route
           path="/profile"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'customer', 'manager']}>
               <ProfilePage />
             </ProtectedRoute>
           }

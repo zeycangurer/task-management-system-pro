@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Form } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, message } from 'antd';
 import FormItemMolecule from '../../molecules/FormItem';
 import InputAtom from '../../atoms/Input';
 import TextAreaAtom from '../../atoms/TextArea';
@@ -24,6 +24,9 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
     const { tasks, loading: tasksLoading } = root.tasks;
     const { customers, loading: customersLoading } = root.customers;
     const currentUser = useSelector(state => state.profiles.user);
+    const [filteredTasks, setFilteredTasks] = useState([]);
+    const [selectedTasks, setSelectedTasks] = useState([]);
+
 
     useEffect(() => {
       if (!users.length) dispatch(userAction.fetchUsers());
@@ -32,19 +35,29 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
     }, [dispatch, users.length, tasks.length, customers.length]);
   
     const [form] = Form.useForm();
-  
+    
+    useEffect(() => {
+      if (initialValues && initialValues.customerId) {
+        handleCustomerChange(initialValues.customerId);
+      }
+    }, [initialValues, tasks]);
+
     useEffect(() => {
       if (initialValues) {
         form.setFieldsValue({
           ...initialValues,
           startDate: initialValues.startDate ? dayjs(initialValues.startDate.toDate()) : null,
           endDate: initialValues.endDate ? dayjs(initialValues.endDate.toDate()) : null,
-          customerId: currentUser.role === 'customer' ? currentUser.id : initialValues.customerId
-
+          customerId: currentUser.role === 'customer' ? currentUser.id : initialValues.customerId,
         });
+        
+        if (initialValues.customerId) {
+          updateTaskList(initialValues.customerId, initialValues.assignedTasks || []);
+        }
       }
-    }, [initialValues, form]);
+    }, [initialValues, form, tasks]);
 
+   
     useEffect(() => {
       if (currentUser && currentUser.role === 'customer') {
           form.setFieldsValue({
@@ -53,8 +66,25 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
       }
   }, [currentUser, form]);
 
+  const updateTaskList = (customerId, assignedTasks = []) => {
+    if (!customerId) return;
+
+    const customerTasks = tasks
+      .filter(task => task.customer === customerId)
+      .map(task => ({ label: task.title, value: task.id }));
+
+    setSelectedTasks(assignedTasks);
+    setFilteredTasks(customerTasks);
+
+    message.info("Görev listesi yenilendi!");
+  };
 
 
+  const handleCustomerChange = (customerId) => {
+    updateTaskList(customerId);
+    setSelectedTasks([]); 
+    form.setFieldsValue({ assignedTasks: [] });
+  };
     const handleFinish = (values) => {
       // console.log(values)
       onFinish(values);
@@ -98,7 +128,7 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
           </SelectAtom>
         </FormItemMolecule>
         <FormItemMolecule label="Müşteri" name="customerId" rules={[{ required: true, message: 'Lütfen bir müşteri seçin' }]}>
-          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading} disabled={currentUser.role === 'customer'} style={{ background: 'white', borderRadius: '6px' }}>
+          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading} disabled={currentUser.role === 'customer'} style={{ background: 'white', borderRadius: '6px' }} onChange={handleCustomerChange}>
             {customers.map((customer) => (
               <SelectAtom.Option key={customer.id} value={customer.id}>
                 {customer.name}
@@ -116,10 +146,10 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
           </SelectAtom>
         </FormItemMolecule>
         <FormItemMolecule label="Görevler" name="assignedTasks">
-          <SelectAtom mode="multiple" placeholder="Görevleri seçin" loading={tasksLoading}>
-            {tasks.map((task) => (
-              <SelectAtom.Option key={task.id} value={task.id}>
-                {task.title}
+          <SelectAtom mode="multiple" placeholder="Görevleri seçin" loading={tasksLoading} > 
+            {filteredTasks.map((task) => (
+              <SelectAtom.Option key={task.value} value={task.value}>
+                {task.label}
               </SelectAtom.Option>
             ))}
           </SelectAtom>

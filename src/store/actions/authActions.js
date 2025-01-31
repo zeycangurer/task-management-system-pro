@@ -64,7 +64,7 @@ export const registerUser = (userData) => {
         userDocData.company = userData.company;
         userDocData.createdTasks = [];
         userDocData.projects = [];
-      } else if (userData.role === 'user') {
+      } else if (userData.role === 'user' || userData.role === 'manager') {
         userDocData.assignedProjects = [];
         userDocData.assignedTasks = [];
       }

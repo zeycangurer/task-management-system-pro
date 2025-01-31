@@ -38,8 +38,8 @@ function EditTaskPage() {
         const taskData = {
             ...otherValues,
         };
-console.log(taskData)
-console.log(taskId)
+        // console.log(taskData)
+        // console.log(taskId)
         dispatch(taskActions.updateTask(taskId, taskData, currentUser.uid))
             .then(() => {
                 message.success('Görev başarıyla güncellendi');

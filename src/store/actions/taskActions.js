@@ -194,65 +194,70 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
     try {
       const taskRef = doc(db, 'tasks', taskId);
       const taskSnap = await getDoc(taskRef);
-      const existingTask = taskSnap.data();
+      
+      if (!taskSnap.exists()) throw new Error("Görev bulunamadı!");
 
+      const existingTask = taskSnap.data();
       const updatePayload = {
         ...updatedData,
         updatedAt: Timestamp.fromDate(new Date()),
       };
 
       let description = 'Görev güncellendi: ';
-      if (updatedData.title) {
-        description += `Başlık '${updatedData.title}' olarak değiştirildi. `;
-      }
-      if (updatedData.status !== undefined) {
-        description += `Görev ${updatedData.status === 'close' ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi. `;
-      }
-      if (updatedData.description) {
-        description += `Açıklama güncellendi. `;
-      }
+      if (updatedData.title) description += `Başlık '${updatedData.title}' olarak değiştirildi. `;
+      if (updatedData.status !== undefined) description += `Görev ${updatedData.status === 'close' ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi. `;
+      if (updatedData.description) description += `Açıklama güncellendi. `;
 
       const calculateDueDate = (priority) => {
         const now = new Date();
         switch (priority) {
-          case 'urgent':
-            return new Date(now.setDate(now.getDate() + 1));
-          case 'soon':
-            return new Date(now.setDate(now.getDate() + 3));
-          case 'can wait':
-            return new Date(now.setMonth(now.getMonth() + 6));
-          default:
-            return null; 
+          case 'urgent': return new Date(now.setDate(now.getDate() + 1));
+          case 'soon': return new Date(now.setDate(now.getDate() + 3));
+          case 'can wait': return new Date(now.setMonth(now.getMonth() + 6));
+          default: return null;
         }
       };
 
-      if (updatedData.priority && updatedData.priority !== existingTask.priority) {
+      if (updatedData.priority && (!existingTask.priority || updatedData.priority !== existingTask.priority)) {
         const newDueDate = calculateDueDate(updatedData.priority);
-        updatePayload.dueDate = newDueDate ? Timestamp.fromDate(newDueDate) : existingTask.dueDate;
+        updatePayload.dueDate = newDueDate ? Timestamp.fromDate(newDueDate) : existingTask?.dueDate || null;
         description += `Öncelik değişti, bitiş tarihi güncellendi. `;
       }
 
       if (updatedData.customer && updatedData.customer !== existingTask.customer) {
         description += `Müşteri değiştirildi. `;
 
-        const oldCustomerRef = doc(db, 'customers', existingTask.customer);
+        if (existingTask.customer) {
+          const oldCustomerRef = doc(db, 'customers', existingTask.customer);
+          const oldCustomerSnap = await getDoc(oldCustomerRef);
+          
+          if (oldCustomerSnap.exists()) {
+            const oldCustomerData = oldCustomerSnap.data();
+            await updateDoc(oldCustomerRef, {
+              createdTasks: oldCustomerData.createdTasks ? arrayRemove(taskId) : [],
+            });
+          }
+        }
+
         const newCustomerRef = doc(db, 'customers', updatedData.customer);
-
-        await updateDoc(oldCustomerRef, {
-          createdTasks: arrayRemove(taskId),
-        });
-
         await updateDoc(newCustomerRef, {
           createdTasks: arrayUnion(taskId),
         });
       }
 
-      const projectRef = doc(db, 'projects', updatedData.projectId);
-      const projectSnap = await getDoc(projectRef);
-      const projectData = projectSnap.exists() ? projectSnap.data() : null;
-      
-      if (projectData && projectData.customerId !== existingTask.customerId) {
-        throw new Error('Farklı müşterinin görevi bu projeye atanamaz.');
+      if (updatedData.projectId) {
+        const projectRef = doc(db, 'projects', updatedData.projectId);
+        const projectSnap = await getDoc(projectRef);
+        
+        if (projectSnap.exists()) {
+          const projectData = projectSnap.data();
+          if (projectData?.customerId && existingTask?.customerId && projectData.customerId !== existingTask.customerId) {
+            throw new Error('Farklı müşterinin görevi bu projeye atanamaz.');
+          }
+          await updateDoc(projectRef, {
+            assignedTasks: arrayUnion(taskId)
+          });
+        }
       }
 
       await updateDoc(taskRef, {
@@ -265,13 +270,6 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
         }),
       });
 
-      if (updatedData.projectId) {
-        const projectRef = doc(db, 'projects', updatedData.projectId);
-        
-        await updateDoc(projectRef, {
-          assignedTasks: arrayUnion(taskId)
-        });
-      }
       const updatedTaskSnap = await getDoc(taskRef);
       const updatedTaskData = { id: updatedTaskSnap.id, ...updatedTaskSnap.data() };
 
@@ -279,10 +277,11 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
       message.success('Görev başarıyla güncellendi.');
     } catch (error) {
       dispatch({ type: types.UPDATE_TASK_FAILURE, payload: error.message });
-      message.error('Görev güncellenirken bir hata oluştu.');
+      message.error('Görev güncellenirken bir hata oluştu: ' + error.message);
     }
   };
 };
+
 
 
 export const addComment = (taskId, comment, currentUserId, attachments) => {

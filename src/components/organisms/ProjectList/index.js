@@ -16,7 +16,10 @@ function ProjectListOrganism({ projects, onItemClick }) {
   // }
 
   return (
-    <TableAtom data={projects} onDataClick={onItemClick}  dataType='project' />
+    <>
+      {projects.length === 0 ? (<p>Proje bulunmamaktadır.</p>) : (<TableAtom data={projects} onDataClick={onItemClick} dataType='project' />)}
+    </>
+
   );
 }
 

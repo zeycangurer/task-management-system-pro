@@ -96,6 +96,7 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
           >
             <SelectAtom.Option value="user">Çalışan</SelectAtom.Option>
             <SelectAtom.Option value="customer">Müşteri</SelectAtom.Option>
+            <SelectAtom.Option value="manager">Yönetici</SelectAtom.Option>
           </SelectAtom>
         </FormItemMolecule>
 
