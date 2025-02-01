@@ -57,7 +57,7 @@ function ProjectsTemplate({
         type='project'
       />
 
-      <div className="tasks-list-section">
+      <div className="projects-list-section">
         <ProjectListOrganism
           projects={projectsWithUserNames}
           onItemClick={onProjectClick}

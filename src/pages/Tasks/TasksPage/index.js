@@ -11,6 +11,7 @@ import { startOfYear, format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import TitleAtom from '../../../components/atoms/Title';
 import FilterComponent from '../../../components/molecules/FilterComponent';
+import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 
 function TasksPage() {
   const dispatch = useDispatch();
@@ -166,9 +167,7 @@ function TasksPage() {
 
   return (
     <div className="dashboard-container">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className={`dashboard-main ${isSidebarOpen ? 'sidebar-open' : ''}`}>
-        <Header toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+            <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <main className="tasks-main">
           <TitleAtom level={1} className="title">Görevler</TitleAtom>
           <FilterComponent dateRange={dateRange}
@@ -193,8 +192,8 @@ function TasksPage() {
             )}
           </div>
         </main>
+        </HeaderSideBarTemplate>
       </div>
-    </div>
   );
 }
 

@@ -66,6 +66,7 @@ export const addTask = (taskData, currentUserId) => {
         updatedAt: Timestamp.fromDate(new Date()),
         dueDate: dueDate ? Timestamp.fromDate(dueDate) : null,
         createdUser: currentUserId,
+        status: 'open',
         history: [
           {
             changeType: 'update',

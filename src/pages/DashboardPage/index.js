@@ -17,10 +17,18 @@ function Dashboard() {
   const dispatch = useDispatch();
   const users = root.users.users || [];
   const tasks = root.tasks.tasks || [];
-  const projects = root.projects.projects || []; 
-  const customers = root.customers.customers || []; 
+  const projects = root.projects.projects || [];
+  const customers = root.customers.customers || [];
+  const currentUser = useSelector(state => state.profiles.user)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
+  const filteredTasks = currentUser?.role === 'customer'
+    ? tasks.filter(task => task.customer === currentUser.id)
+    : tasks;
+
+  const filteredProjects = currentUser?.role === 'customer'
+    ? projects.filter(project => project.customerId === currentUser.id)
+    : projects;
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -36,11 +44,24 @@ function Dashboard() {
     <div className="dashboard-container">
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <div className="dashboard-content">
-          <StatsOverview tasks={tasks} users={users} projects={projects} customers={customers} />
+          <StatsOverview
+            tasks={filteredTasks}
+            users={users}
+            projects={filteredProjects}
+            customers={customers}
+          />
           <QuickActions />
-          <ChartsSection tasks={tasks} users={users} projects={projects} viewType="dashboard"/>
+          <ChartsSection
+            tasks={filteredTasks}
+            users={users}
+            projects={filteredProjects}
+            viewType="dashboard"
+          />
           <UpcomingTasks tasks={tasks} />
-          <LatestItemsSection latestTasks={tasks} latestProjects={projects} />
+          <LatestItemsSection
+            latestTasks={filteredTasks}
+            latestProjects={filteredProjects}
+          />
         </div>
       </HeaderSideBarTemplate>
     </div>

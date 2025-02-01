@@ -47,6 +47,7 @@ function AnalyticsPage() {
           tasks={tasks}
           projects={projects}
           customers={customers}
+          viewType='analytics'
         />
       </HeaderSideBarTemplate>
     </div>

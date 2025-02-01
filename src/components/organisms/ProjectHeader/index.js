@@ -32,7 +32,7 @@ function ProjectHeader({
           size={size}
           type="primary"
         />
-        {userRole === 'admin' || userRole === 'manager' ?
+        {userRole === 'admin' || userRole === 'manager' || userRole === 'customer' ?
           <>
             <ActionButton
               tooltipTitle="Düzenle"

@@ -157,7 +157,7 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
         label="Proje"
         name="projectId"
       >
-        <SelectAtom placeholder="Bir proje seçin" disabled={!!projectId} style={{ background: 'white', borderRadius: '6px' }}>
+        <SelectAtom placeholder="Bir proje seçin" allowClear disabled={!!projectId} style={{ background: 'white', borderRadius: '6px' }}>
           {projects.map((project) => (
             <SelectAtom.Option key={project.id} value={project.id}>
               {project.title}

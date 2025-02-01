@@ -2,7 +2,6 @@ import React from 'react';
 import DashboardHeader from '../../organisms/DashboardHeader';
 import StatsCards from '../../organisms/StatsCards';
 import ChartsSection from '../../organisms/ChartsSection';
-import FilterSection from '../../organisms/FilterSection';
 import DetailsTable from '../../organisms/DetailsTable';
 import './styles.css';
 
@@ -10,7 +9,8 @@ function AnalyticsTemplate({
     users,
     tasks,
     projects,
-    customers
+    customers,
+    viewType
 }) {
     return (
         <div className="analytics-template">
@@ -30,7 +30,7 @@ function AnalyticsTemplate({
         filterAnalytics={filterAnalytics}
       /> */}
 
-            <ChartsSection tasks={tasks} users={users} projects={projects} />
+            <ChartsSection tasks={tasks} users={users} projects={projects} viewType={viewType} />
             <DetailsTable tasks={tasks} users={users} />
         </div>
     );

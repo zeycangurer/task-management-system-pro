@@ -32,7 +32,7 @@ function TaskHeader({
           className="action-button history-button"
           size={size}
         />
-        {userRole === 'admin' || userRole === 'manager' ?
+        {userRole === 'admin' || userRole === 'manager' || userRole === 'customer' ?
           <>
             <ActionButton
               tooltipTitle="Düzenle"
