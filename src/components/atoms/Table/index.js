@@ -46,7 +46,7 @@ function TableAtom({ data, onDataClick, dataType }) {
       }
     );
   }
-
+console.log(data)
   return (
     <div className="data-list-container">
       <Table

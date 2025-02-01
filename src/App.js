@@ -114,7 +114,7 @@ function App() {
         <Route
           path="/analytics"
           element={
-            <ProtectedRoute allowedRoles={['admin', 'user', 'customer', 'manager']}>
+            <ProtectedRoute allowedRoles={['admin', 'user', 'manager']}>
               <AnalyticsPage />
             </ProtectedRoute>
           }

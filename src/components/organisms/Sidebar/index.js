@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  FaTachometerAlt, 
-  FaTasks, 
-  FaProjectDiagram, 
-  FaUser, 
-  FaChartPie 
+import {
+  FaTachometerAlt,
+  FaTasks,
+  FaProjectDiagram,
+  FaUser,
+  FaChartPie
 } from 'react-icons/fa';
 import { RiAdminFill } from "react-icons/ri";
 
@@ -34,61 +34,62 @@ function Sidebar({ isOpen, toggleSidebar }) {
         <nav>
           <ul>
             <li>
-              <NavLink 
-                to="/dashboard" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
+              <NavLink
+                to="/dashboard"
+                className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
                 <FaTachometerAlt className="sidebar-icon" /> Dashboard
               </NavLink>
             </li>
             <li>
-              <NavLink 
-                to="/tasks" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
+              <NavLink
+                to="/tasks"
+                className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
                 <FaTasks className="sidebar-icon" /> Görevler
               </NavLink>
             </li>
             <li>
-              <NavLink 
-                to="/projects" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
+              <NavLink
+                to="/projects"
+                className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
                 <FaProjectDiagram className="sidebar-icon" /> Projeler
               </NavLink>
             </li>
+            {userRole === 'admin' || userRole === 'user' || userRole === 'manager' ?
+              <li>
+                <NavLink
+                  to="/analytics"
+                  className={({ isActive }) => isActive ? 'active' : ''}
+                  onClick={handleLinkClick}
+                >
+                  <FaChartPie className="sidebar-icon" /> Analitik
+                </NavLink>
+              </li> : null}
             <li>
-              <NavLink 
-                to="/analytics" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
-                onClick={handleLinkClick}
-              >
-                <FaChartPie className="sidebar-icon" /> Analitik
-              </NavLink>
-            </li>
-            <li>
-              <NavLink 
-                to="/profile" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
+              <NavLink
+                to="/profile"
+                className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
                 <FaUser className="sidebar-icon" /> Profil
               </NavLink>
             </li>
-            {userRole === 'admin' ? 
-            <li>
-              <NavLink 
-                to="/admin" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
-                onClick={handleLinkClick}
-              >
-                <RiAdminFill className="sidebar-icon" /> Admin Panel
-              </NavLink>
-            </li> : null}
-            
+            {userRole === 'admin' ?
+              <li>
+                <NavLink
+                  to="/admin"
+                  className={({ isActive }) => isActive ? 'active' : ''}
+                  onClick={handleLinkClick}
+                >
+                  <RiAdminFill className="sidebar-icon" /> Admin Panel
+                </NavLink>
+              </li> : null}
+
           </ul>
         </nav>
       </aside>

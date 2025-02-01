@@ -146,7 +146,7 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
           </SelectAtom>
         </FormItemMolecule>
         <FormItemMolecule label="Görevler" name="assignedTasks">
-          <SelectAtom mode="multiple" placeholder="Görevleri seçin" loading={tasksLoading} > 
+          <SelectAtom mode="multiple" placeholder="Görevleri seçin" loading={tasksLoading} allowClear > 
             {filteredTasks.map((task) => (
               <SelectAtom.Option key={task.value} value={task.value}>
                 {task.label}
