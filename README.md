@@ -1,147 +1,400 @@
 
-# Task Management System Project
+# Task Management Pro
 
-This project is a task management system where users can create tasks, assign them, add comments, and upload files. It is developed using modern web technologies and is designed to be scalable and efficient.
+This project is an application called **Task Management Pro**, built on React and Firebase technologies. It includes features such as role-based permission management, project and task tracking, adding comments/files, and analytics screens.
 
-Note: The project is under development.
+## Table of Contents
 
-## **Table of Contents**
+1.  [Overview](#overview)
+    
+2.  [Features and Screens](#features-and-screens)
+    
+    -   [Task Screens](#task-screens)
+        
+    -   [Project Screens](#project-screens)
+        
+    -   [Analysis Screen](#analysis-screen)
+        
+    -   [Profile Screen](#profile-screen)
+        
+    -   [Dashboard Screen](#dashboard-screen)
+        
+    -   [Admin Panel](#admin-panel)
+        
+3.  [Role and Permission Management](#role-and-permission-management)
+    
+4.  [Design and User Experience](#design-and-user-experience)
+    
+5.  [Used Technologies and Dependencies](#used-technologies-and-dependencies)
+    
+6.  [Installation](#installation)
+    
+7.  [Environment Variables](#environment-variables)
+    
+8.  [Usage](#usage)
+9. [License](#license)
+    
 
--   [Features](#features)
--   [Technologies Used](#technologies-used)
--   [Installation and Setup](#installation-and-setup)
-    -   [Prerequisites](#prerequisites)
-    -   [Cloning the Project](#cloning-the-project)
-    -   [Setting Up Environment Variables](#setting-up-environment-variables)
-    -   [Installing Dependencies](#installing-dependencies)
-    -   [Running the Application](#running-the-application)
--   [Usage](#usage)
--   [License](#license)
 
-## **Features**
+## Overview
 
--   **Task Creation and Editing:**
-    -   Create new tasks with titles, descriptions, and assign them to users.
-    -   Edit tasks, mark them as completed, or delete them.
--   **File Attachment to Tasks:**
-    -   Add file attachments when creating or editing tasks.
-    -   Uploaded files are stored on Cloudinary and displayed in task details.
--   **Adding Comments and File Uploads:**
-    -   Add comments to tasks and attach files to comments.
-    -   Comments are displayed with timestamps and author information.
--   **User and Customer Management:**
-    -   Assign tasks to users or customers.
-    -   Dynamic loading and selection of user and customer lists.
--   **History Tracking:**
-    -   All changes to tasks are logged and viewable through the history module.
--   **Responsive Design:**
-    -   The application is responsive and adapts to different screen sizes.
--   **Secure Authentication:**
-    -   User login and security are managed using Firebase Authentication.
--   **Dark and Light Mode Support:**
-    -   Users can switch between dark and light themes for better visual comfort.
-    -   The theme preference is saved and persists across sessions.
+This project is designed to facilitate task and project tracking within a team or in environments where there is a customer-employee relationship. Users can access different screens and use different permissions (creating, editing, deleting, assigning projects/tasks, etc.) depending on the role they have.
 
-## **Technologies Used**
+**Main Goals:**
+
+-   Manage tasks and projects in a central structure
+    
+-   Organize user access with a role-based permission system
+    
+-   Facilitate collaboration with interactive features such as file uploading and adding comments
+    
+-   Reflect changes quickly with a real-time database (Firebase)
+    
+-   Visualize project status with analysis screens showing statistical data and charts
+    
+
+
+## Features and Screens
+
+### Task Screens
+
+1.  **Task List Screen**
+    
+    -   List tasks in a specific date range
+        
+    -   List tasks assigned to the selected users
+        
+    -   A button for creating a new task (request)
+        
+    -   The list shows the title, description, assigned person, creator, creation date, and completion status
+        
+    -   Each customer can only see their own tasks
+        
+2.  **Task Creation Screen**
+    
+    -   Title, description, file upload, customer, priority level, category, project (optional), assigning a user
+        
+    -   If the priority is “urgent,” the end date is automatically set to 1 day later; if it is “soon,” 3 days later; and if it can “wait,” 6 months later
+        
+    -   If a task is created from the project screen, the project selection is automatically made, and the customer becomes the customer of that project
+        
+3.  **Task Editing Screen**
+    
+    -   Title, description, file upload, priority level, category, project (optional), and user assignment can be edited
+        
+    -   If a task is linked to a project, the project and customer cannot be changed
+        
+4.  **Task Detail Screen**
+    
+    -   Title, description, category, customer, completion status, priority, start-end dates, the linked project (if any), file attachments, assigned users, and comments
+        
+    -   Adding comments, uploading files
+        
+    -   Viewing the task’s history
+        
+    -   Depending on permission, the task can be edited, deleted, or completed
+        
+
+### Project Screens
+
+1.  **Project List Screen**
+    
+    -   List projects in a specific date range
+        
+    -   List projects assigned to the selected users
+        
+    -   A button for creating a new project
+        
+    -   The list shows the title, description, assigned person, creator, creation date, and completion status
+        
+    -   Each customer can only see their own projects
+        
+2.  **Project Creation Screen**
+    
+    -   Title, description, file upload, customer, priority level, category, user assignment, task assignment (optional), selection of start and end dates
+        
+    -   Task assignment is only done from the list of tasks linked to that customer
+        
+3.  **Project Editing Screen**
+    
+    -   Title, description, file upload, priority level, category, user assignment, selection of start and end dates, task assignment (optional)
+        
+    -   When the customer changes, previously assigned tasks are automatically removed, and a list of tasks linked to the new customer is displayed
+        
+4.  **Project Detail Screen**
+    
+    -   Title, description, category, customer, completion status, priority, start-end dates, assigned tasks (if any), file attachments, assigned users, and comments
+        
+    -   Adding comments, uploading files
+        
+    -   Viewing the project’s history
+        
+    -   Depending on permission, the project can be edited, deleted, or completed
+        
+    -   Assigning tasks belonging to that customer to the project and creating a new task linked to the project
+        
+
+### Analysis Screen
+
+-   Accessible to all roles except the customer
+    
+-   Statistical distributions of projects and tasks (numbers of completed/ongoing, etc.)
+    
+-   Total number of users (excluding the Customer role)
+    
+-   Distributions of task and project statuses (Pie Chart)
+    
+-   User performances (Bar Chart)
+    
+-   A list of all tasks: completion status, start and end dates, with an option to filter by assigned users
+    
+
+### Profile Screen
+
+-   Displays the user’s name, email, and role information
+    
+-   Users can change their password
+    
+
+### Dashboard Screen
+
+-   Total number of tasks (if the user has the Customer role, only their own tasks)
+    
+-   Number of completed tasks (if the user has the Customer role, only their own tasks)
+    
+-   Number of projects (if the user has the Customer role, only their own projects)
+    
+-   Total number of users (viewable by roles other than customer)
+    
+-   Distributions of task and project statuses (Pie Chart)
+    
+-   A list of tasks with approaching end dates (if the user has the Customer role, only their own tasks)
+    
+-   Recently added tasks (if the user has the Customer role, only their own tasks)
+    
+-   Recently added projects (if the user has the Customer role, only their own projects)
+    
+-   Buttons to create tasks and projects
+    
+-   Button to go to the analysis screen (excluding the customer)
+    
+
+### Admin Panel
+
+-   **User List**
+    
+    -   Filtering by role
+        
+    -   Deleting a user (only in Firestore)
+        
+    -   Editing user information (only in Firestore)
+        
+    -   Changing the user’s role: when the role changes, the user’s data is moved to the relevant Firestore collection
+        
+    -   Creating a user
+        
+-   **Project List**
+    
+    -   The project name, customer, and buttons that perform actions (editing or deleting the project)
+        
+    -   Creating a new project
+        
+    -   Filtering projects by customer
+        
+-   **Task List**
+    
+    -   The task name, assigned employee, and buttons that perform actions (editing or deleting the task)
+        
+    -   Creating a new task
+        
+    -   Filtering tasks by employee
+        
+
+> Deletion and editing operations occur on Firestore.  
+> To make changes on Firebase Authentication, the `firebase-admin` feature is required.
+
+----------
+
+## Role and Permission Management
+
+1.  **Admin**
+    
+    -   User: Creating, editing, listing
+        
+    -   Project: Listing, creating, editing, deleting, completing, assigning tasks, assigning people, commenting, uploading files, viewing history
+        
+    -   Task: Listing, creating, editing, deleting, completing, assigning people, commenting, uploading files, viewing history
+        
+    -   Access to the admin panel
+        
+    -   Access to the analysis screen
+        
+    -   Change password
+        
+2.  **Manager**
+    
+    -   User: Creating, editing
+        
+    -   Project: Listing, creating, editing, deleting, completing, assigning tasks, assigning people, commenting, uploading files, viewing history
+        
+    -   Task: Listing, creating, editing, deleting, completing, assigning people, commenting, uploading files, viewing history
+        
+    -   Access to the analysis screen
+        
+    -   Change password
+        
+3.  **Employee**
+    
+    -   Project: Listing, assigning tasks, commenting, uploading files, assigning people, completing, viewing history
+        
+    -   Task: Listing, commenting, uploading files, assigning people, completing, viewing history
+        
+    -   Access to the analysis screen
+        
+    -   Change password
+        
+4.  **Customer**
+    
+    -   Project: Listing, creating, editing, deleting, completing, assigning tasks, assigning people, commenting, uploading files, viewing history
+        
+    -   Task: Listing, creating, editing, deleting, completing, assigning people, commenting, uploading files, viewing history
+        
+    -   Access to the analysis screen
+        
+    -   Change password
+        
+
+----------
+
+## Design and User Experience
+
+The design and user experience of this application have been addressed with the following approaches:
+
+1.  **Ant Design Components**
+    
+    -   **Ant Design** library is used in the application interface. Forms, tables (Table), buttons (Button), and other UI elements provide a standard look and consistency.
+        
+    -   A **responsive** design has been implemented using Ant Design’s grid system and ready-made design elements.
+        
+2.  **Dark/Light Mode**
+    
+    -   Users can switch between **dark or light themes** based on their preference. The themes update design elements (background, text colors, etc.) instantly.
+        
+3.  **Responsive Design**
+    
+    -   **Media queries** and Ant Design’s grid system are used to ensure an optimal view on desktop, tablet, and mobile devices.
+        
+    -   Tables, cards, and charts adapt to the screen size.
+        
+4.  **User-Friendly Forms and Validation**
+    
+    -   **Ant Design**’s `Form` component and `rules` prop are used for validation in task and project creation/edit forms.
+        
+    -   Real-time feedback is provided for incorrect or missing fields.
+        
+5.  **Data Visualization with Charts**
+    
+    -   **Chart.js** and **react-chartjs-2** are used to visually track the status of tasks and projects, as well as user performance, through pie charts and bar charts.
+        
+6.  **Clear and Consistent Navigation**
+    
+    -   Through a side or top menu bar, **menu items** (Tasks, Projects, Analysis, Admin Panel, etc.) are shown dynamically based on the user’s role, ensuring comfortable navigation.
+        
+7.  **Notifications and Feedback**
+    
+    -   By using Ant Design’s `notification` or `message` components, the user is instantly informed of the results of actions (successful operation, error, warning, etc.).
+        
+8.  **Performance-Focused Approach**
+    
+    -   Asynchronous operations are managed with Redux Thunk, avoiding unnecessary re-renders.
+        
+    -   Real-time updates with Firebase provide **fast data changes**.
+        
+
+Thus, the user interface is both **visually satisfactory** and provides a **comfortable experience** across different device sizes.
+
+----------
+
+## Used Technologies and Dependencies
+
 
 -   **Frontend:**
     -   [React](https://reactjs.org/): For building user interfaces.
-    -   Redux: For state management.
+    -   [Redux](https://react-redux.js.org/): For state management.
+    -   [Chart.js](https://www.chartjs.org/) and [react-chartjs-2](https://react-chartjs-2.js.org/): For charts.
     -   [Redux Thunk](https://github.com/reduxjs/redux-thunk): Middleware for handling asynchronous actions.
     -   [Ant Design](https://ant.design/): UI components and design system.
     -   [React Router](https://reactrouter.com/): For client-side routing.
 -   **Backend Services:**
-    -   Firebase Firestore: Realtime database.
-    -   Firebase Authentication: User authentication.
+    -   [Firebase Firestore](https://firebase.google.com/): Realtime database.
+    -   [Firebase Authentication](https://firebase.google.com/): User authentication.
     -   [Cloudinary](https://cloudinary.com/): File upload and storage service.
 -   **Other Tools and Libraries:**
     -   [Axios](https://axios-http.com/): For HTTP requests.
-    -   React Icons: For icons.
+    -   [React Icons](https://react-icons.github.io/react-icons/): For icons.
     -   [Formik](https://formik.org/): For form management.
- 
-## **Installation and Setup**
 
-### **Prerequisites**
+## Installation
 
--   **Node.js and NPM:** [Node.js](https://nodejs.org/) version 14 or higher.
--   **Firebase Account:** Create a project on Firebase Console.
--   **Cloudinary Account:** Sign up for a free account at Cloudinary.
+1.  **Clone the source:**
+    
+    git clone https://github.com/kullanici/task-management-pro.git
+    
+2.  **Go to the directory:**
+    
+    cd task-management-pro
+    
+3.  **Install the dependencies:**
+    
+    npm install
+    
+4.  **Edit the environment variables (.env)** (See the Environment Variables section below).
+    
+5.  **Start the development environment:**
+    
+    npm start
+    
+    By default, the project will run at `http://localhost:3000`.
+    
 
-### **Cloning the Project**
+## Environment Variables
 
-bash
+In this project, environment variables are used for Firebase and Cloudinary service credentials, defined in a `.env` file. An example `.env` template might look like this:
 
-Kodu kopyala
+```
+REACT_APP_FIREBASE_API_KEY=...
+REACT_APP_FIREBASE_AUTH_DOMAIN=...
+REACT_APP_FIREBASE_PROJECT_ID=...
+REACT_APP_FIREBASE_STORAGE_BUCKET=...
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=...
+REACT_APP_FIREBASE_APP_ID=...
 
-`git clone https://github.com/yourusername/task-management-system-pro.git
-cd task-management-system-pro` 
+REACT_APP_CLOUDINARY_CLOUD_NAME=...
+REACT_APP_CLOUDINARY_UPLOAD_PRESET=...
+```
 
-### **Setting Up Environment Variables**
+> **Note**: The service account file or token information used by `firebase-admin` should not be shared within the project for security reasons. It is recommended to keep it on the server side or in a secure environment.
 
-Create a `.env` file in the root directory of the project and add the following configurations:
+## Usage
 
-env
+1.  **Log in to the application** (you can register or create a user through the admin panel).
+    
+2.  The **menus and permissions** you see will vary according to your role.
+    
+3.  Go to the relevant menu to **create a Task or Project** and click the “Create” button.
+    
+4.  To **edit**, select the relevant record from the list screen and click the edit button.
+    
+5.  Actions such as **completion** or **deletion** are also displayed based on your role.
+    
+6.  In the **Admin Panel**, you can manage users, projects, and tasks (create a user, change roles, delete, etc.).
+    
+7.  Through the **Analysis Screen**, you can view statistics of projects and tasks with charts (only users other than the customer role).
+    
+8.  You can **switch between Dark/Light mode** by pressing the relevant button.
+    
+9.  For a **responsive** experience, you can test the application on mobile or different screen sizes.
 
-Kodu kopyala
+## License
 
-`REACT_APP_FIREBASE_API_KEY=your_firebase_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
-
-REACT_APP_CLOUDINARY_CLOUD_NAME=your_cloud_name
-REACT_APP_CLOUDINARY_UPLOAD_PRESET=your_unsigned_upload_preset` 
-
-**Note:** Replace the `your_*` placeholders with your actual Firebase and Cloudinary account details.
-
-### **Installing Dependencies**
-
-bash
-
-Kodu kopyala
-
-`npm install` 
-
-### **Running the Application**
-
-bash
-
-Kodu kopyala
-
-`npm start` 
-
-Visit [http://localhost:3000](http://localhost:3000) in your browser.
-
-## **Usage**
-
-### **1. User Login and Registration**
-
--   On the homepage, log in if you have an existing account or create a new one.
-
-### **2. Creating a Task**
-
--   Navigate to the **Tasks** page and click on the **Create New Task** button.
--   Fill in the task title, description, assignees, and file attachments.
--   Click the **Create** button to add the task.
-
-### **3. Task Details**
-
--   Click on a task from the task list to view its details.
--   You can view, edit, or delete task information.
--   Add comments and upload files within the task details.
-
-### **4. Adding Comments**
-
--   In the task detail page, use the **Add Comment** section to write your comment.
--   Attach files if needed.
--   Click **Submit** to add your comment.
-
-### **5. Viewing Task History**
-
--   In the task detail page, click on the history button to view all changes and comments related to the task.
-
-## **License**
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+For detailed information about this project’s license, please see the LICENSE file (if not available, adding one is recommended).
