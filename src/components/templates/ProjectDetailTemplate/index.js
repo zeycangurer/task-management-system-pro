@@ -125,8 +125,8 @@ function ProjectDetailTemplate({
             .catch((error) => {
                 message.error('Yorum eklenirken bir hata oluştu.');
             });
-        console.log(values)
-        console.log('Proje ID:', project.id);
+        // console.log(values)
+        // console.log('Proje ID:', project.id);
 
     };
 
