@@ -3,6 +3,7 @@
 
 This project is an application called **Task Management Pro**, built on React and Firebase technologies. It includes features such as role-based permission management, project and task tracking, adding comments/files, and analytics screens.
 
+**Note**: Screenshots are in the screens folder.
 ## Table of Contents
 
 1.  [Overview](#overview)
