@@ -6,6 +6,8 @@ import userReducer from './reducers/userReducer'
 import customerReducer from './reducers/customerReducer';
 import projectReducer from './reducers/projectReducer';
 import profileReducer from './reducers/profileReducer';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -16,7 +18,17 @@ const rootReducer = combineReducers({
   profiles: profileReducer
 });
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
+const persistConfig = {
+  key: 'root',
+  storage,
+  whitelist: ['auth', 'profiles'] 
+};
 
-export default store;
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = createStore(persistedReducer, applyMiddleware(thunk));
+const persistor = persistStore(store);
+
+
+export  {store, persistor};
 

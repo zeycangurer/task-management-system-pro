@@ -53,7 +53,7 @@ export const addTask = (taskData, currentUserId) => {
           case 'can wait':
             return new Date(now.setMonth(now.getMonth() + 6));
           default:
-            return null; 
+            return null;
         }
       };
 
@@ -78,7 +78,21 @@ export const addTask = (taskData, currentUserId) => {
       };
 
       const docRef = await addDoc(collection(db, 'tasks'), newTask);
+      const taskId = docRef.id;
 
+      if (taskData.customer) {
+        const customerRef = doc(db, 'customers', taskData.customer);
+        await updateDoc(customerRef, {
+          createdTasks: arrayUnion(taskId)
+        });
+      }
+
+      if (taskData.projectId) {
+        const projectRef = doc(db, 'projects', taskData.projectId);
+        await updateDoc(projectRef, {
+          assignedTasks: arrayUnion(taskId) 
+        });
+      }
       dispatch({ type: types.CREATE_TASK_SUCCESS, payload: { id: docRef.id, ...newTask } });
       message.success('Görev başarıyla oluşturuldu.');
     } catch (error) {
@@ -101,7 +115,7 @@ export const fetchTasks = () => {
         dispatch({ type: types.FETCH_TASKS_SUCCESS, payload: tasks });
       });
 
-      return unsubscribe; 
+      return unsubscribe;
     } catch (error) {
       dispatch({ type: types.FETCH_TASKS_FAILURE, payload: error.message });
       console.error("Görevler alınırken hata oluştu:", error);
@@ -195,7 +209,7 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
     try {
       const taskRef = doc(db, 'tasks', taskId);
       const taskSnap = await getDoc(taskRef);
-      
+
       if (!taskSnap.exists()) throw new Error("Görev bulunamadı!");
 
       const existingTask = taskSnap.data();
@@ -231,7 +245,7 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
         if (existingTask.customer) {
           const oldCustomerRef = doc(db, 'customers', existingTask.customer);
           const oldCustomerSnap = await getDoc(oldCustomerRef);
-          
+
           if (oldCustomerSnap.exists()) {
             const oldCustomerData = oldCustomerSnap.data();
             await updateDoc(oldCustomerRef, {
@@ -249,7 +263,7 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
       if (updatedData.projectId) {
         const projectRef = doc(db, 'projects', updatedData.projectId);
         const projectSnap = await getDoc(projectRef);
-        
+
         if (projectSnap.exists()) {
           const projectData = projectSnap.data();
           if (projectData?.customerId && existingTask?.customerId && projectData.customerId !== existingTask.customerId) {

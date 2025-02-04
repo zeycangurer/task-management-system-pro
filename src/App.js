@@ -20,6 +20,7 @@ import AdminPanelPage from './pages/AdminPanelPage';
 import UnauthorizedPage from './pages/UnauthorizedPage';
 import EditTaskPage from './pages/Tasks/EditTaskPage';
 import EditUserPage from './pages/EditUserPage';
+import useAuthPersistence from './hooks/useAuthPersistence';
 
 function App() {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ function App() {
       dispatch(fetchCustomers());
     }
   }, [dispatch, user]);
-
+useAuthPersistence()
   return (
     <Router>
       <Routes>

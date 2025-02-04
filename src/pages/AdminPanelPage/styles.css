@@ -2,5 +2,9 @@
     flex: 1;
     background-color: var(--background-color);
     margin-top: 60px !important;
+    padding-bottom: 100px !important;
   }
   
+  .admin-panel-alert{
+    padding: 10px 0 ;
+  }

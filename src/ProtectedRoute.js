@@ -2,11 +2,10 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import SpinAtom from './components/atoms/Spin';
-
-
+import { auth } from './firebaseConfig';
 
 function ProtectedRoute({ children, allowedRoles }) {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user) || auth.currentUser;;
   const userProfile = useSelector(state => state.profiles.user)
   const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
 

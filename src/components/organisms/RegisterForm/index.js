@@ -17,7 +17,7 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
-  const [userType, setUserType] = useState('user');
+  const [userType, setUserType] = useState(initialValues?.role || 'user');
   const [error, setError] = useState('');
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
   const [visiblePasswords, setVisiblePasswords] = useState()
