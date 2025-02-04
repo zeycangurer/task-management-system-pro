@@ -3,6 +3,7 @@ import { Select } from 'antd';
 import AdminUserTable from '../../molecules/AdminUserTable';
 import AdminProjectTable from '../../molecules/AdminProjectTable';
 import AdminTaskTable from '../../molecules/AdminTaskTable';
+import ErrorContainerMolecule from '../../molecules/ErrorContainerMolecule';
 import ButtonAtom from '../../atoms/Button';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
@@ -16,6 +17,7 @@ function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditPr
     const [selectedCustomer, setSelectedCustomer] = useState('all');
     const [selectedAssignedUser, setSelectedAssignedUser] = useState('all');
     const [selectedProject, setSelectedProject] = useState('all');
+    const message = `Silme ve düzenleme işlemleri Firestore'da gerçekleşir. Firebase Kimlik Doğrulamasında değişiklik yapmak için firebase-admin özelliği gereklidir. Bu özellik bu projede şu an için aktif değildir.`
 
     const filteredUsers = selectedUserRole === 'all' ? users : users.filter(user => user.role === selectedUserRole);
 
@@ -31,6 +33,9 @@ function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditPr
 
     return (
         <div className="admin-panel">
+            <div className='admin-panel-alert'>
+                <ErrorContainerMolecule error={message} type='login' />
+            </div>
             <div className="admin-action-container">
                 <h2>Kullanıcı Yönetimi</h2>
                 <div className='admin-filter-button'>

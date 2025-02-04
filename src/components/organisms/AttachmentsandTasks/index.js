@@ -1,4 +1,4 @@
-import { Card, List, Select, Spin, message } from 'antd';
+import { Card, List, Select, Spin, message,Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import ButtonAtom from '../../atoms/Button';
@@ -16,26 +16,41 @@ function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
     const projectCustomerId = project.customerId;
 
     const filteredTasks = allTasks.filter(task => task.customer === projectCustomerId);
+    const tasksWithStatus = filteredTasks.map(task => ({
+        ...task,
+        isAssigned: task.projectId !== null && task.projectId !== project.id, 
+    }));
 
-      
     const handleTaskAssign = () => {
+        const alreadyAssignedTasks = selectedTaskIds.filter(taskId => {
+            const task = tasksWithStatus.find(t => t.id === taskId);
+            return task && task.isAssigned; 
+        });
+
+        if (alreadyAssignedTasks.length > 0) {
+            message.warning('Bazı görevler zaten başka bir projeye atanmış.');
+            return;
+        }
+
         setLoading(true);
         dispatch(assignTaskToProject(project.id, selectedTaskIds, currentUser.uid))
             .then(() => {
                 message.success('Görev atama işlemi başarıyla tamamlandı.');
                 dispatch(fetchProjects());
+                setSelectedTaskIds([]); 
             })
             .catch((error) => {
                 message.error('Görev atama işlemi sırasında bir hata oluştu: ' + error.message);
             })
             .finally(() => setLoading(false));
     };
-    
+
+
     const handleClearTasks = () => {
-        setSelectedTaskIds([]); 
+        setSelectedTaskIds([]);
         message.info('Tüm görevler kaldırıldı.');
     };
-    
+
     return loading ? (
         <Spin size="large" />
     ) : (
@@ -43,17 +58,17 @@ function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
             <p><strong>Tüm Görevler</strong></p>
             <Select
                 mode="multiple"
-                style={{ width: '100%' }}
+                style={{ width: '100%', paddingHorizontal:20 }}
                 placeholder="Görev seçiniz"
                 value={selectedTaskIds}
                 onChange={(values) => setSelectedTaskIds(values)}
                 showSearch
                 optionFilterProp="children"
             >
-                {filteredTasks.length > 0 ? (
-                    filteredTasks.map((task) => (
-                        <Option key={task.id} value={task.id}>
-                            {task.title}
+                {tasksWithStatus.length > 0 ? (
+                    tasksWithStatus.map((task) => (
+                        <Option key={task.id} value={task.id} disabled={task.isAssigned}>
+                            {task.title} {task.isAssigned && <Tag color="red">📌 Zaten atanmış</Tag>}
                         </Option>
                     ))
                 ) : (

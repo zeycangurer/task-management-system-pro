@@ -1,10 +1,15 @@
 import { message } from 'antd';
 import { auth, db } from '../../firebaseConfig';
-import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { fetchUserDetails } from './profileActions';
 import { doc, getDoc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { deleteUser as deleteAuthUser } from 'firebase/auth';
 import * as types from '../constants/authActionType'
+
+export const setUser = (user) => ({
+  type: types.LOGIN_SUCCESS,
+  payload: user
+});
 
 export const loginUser = (email, password) => {
   return async (dispatch) => {
@@ -15,6 +20,7 @@ export const loginUser = (email, password) => {
       const user = userCredential.user;
 
       await dispatch(fetchUserDetails(user.uid));
+      localStorage.setItem('user', JSON.stringify(user));
 
       dispatch({ type: types.LOGIN_SUCCESS, payload: user });
 
@@ -35,6 +41,7 @@ export const logout = () => {
     signOut(auth)
       .then(() => {
         dispatch({ type: types.LOGOUT });
+        localStorage.removeItem('user');
         message.success('Başarıyla çıkış yapıldı.');
       })
       .catch((error) => {
@@ -42,6 +49,20 @@ export const logout = () => {
       });
   };
 };
+
+export const restoreUser = () => {
+  return (dispatch) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(setUser(user)); 
+      } else {
+        dispatch({ type: types.LOGOUT });
+      }
+    });
+  };
+};
+
+
 export const registerUser = (userData) => {
   return async (dispatch) => {
     dispatch({ type: types.REGISTER_REQUEST });
@@ -79,8 +100,10 @@ export const registerUser = (userData) => {
   };
 };
 
-export const deleteUser = (userId) => {
+export const deleteUser = (userId, getState) => {
   return async (dispatch) => {
+    const state = getState();
+    const currentUser = state.auth.user;
     dispatch({ type: types.DELETE_USER_REQUEST });
 
     try {
@@ -107,6 +130,9 @@ export const deleteUser = (userId) => {
       }
 
       dispatch({ type: types.DELETE_USER_SUCCESS, payload: userId });
+      if (currentUser && currentUser.uid !== userId) {
+        dispatch({ type: types.LOGIN_SUCCESS, payload: currentUser }); 
+      }
     } catch (error) {
       dispatch({ type: types.DELETE_USER_ERROR, payload: error.message });
       console.error('Kullanıcı silinirken hata oluştu:', error);
@@ -114,11 +140,16 @@ export const deleteUser = (userId) => {
   };
 };
 
-export const updateUser = (userData) => async (dispatch) => {
+export const updateUser = (userData, getState) => async (dispatch) => {
   try {
+    const state = getState();
+    const currentUser = state.auth.user;
     const collectionName = userData.role === 'customer' ? 'customers' : 'users';
     await updateDoc(doc(db, collectionName, userData.id), userData);
     dispatch({ type: 'UPDATE_USER_SUCCESS', payload: userData });
+    if (currentUser && currentUser.uid !== userData.id) {
+      dispatch({ type: types.LOGIN_SUCCESS, payload: currentUser }); 
+    }
   } catch (error) {
     console.error('Kullanıcı güncellenirken hata oluştu:', error);
   }
