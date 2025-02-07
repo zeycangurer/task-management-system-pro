@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import TaskItem from '../../atoms/TaskItem';
 import { Pagination } from 'antd';
 import './styles.css';
+import { useTranslation } from 'react-i18next';
 
 function UpcomingTasks({ tasks }) {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 3;
 
@@ -15,14 +17,14 @@ function UpcomingTasks({ tasks }) {
 
   return (
     <div className="upcoming-tasks">
-      <h2>Yaklaşan Görevler</h2>
+      <h2>{t("Upcoming Tasks")}</h2>
       <div className="task-list">
         {paginatedTasks.length > 0 ? (
           paginatedTasks.map(task => (
             <TaskItem key={task.id} id={task.id} title={task.title} dueDate={new Date(task.dueDate.seconds * 1000)} />
           ))
         ) : (
-          <p>Yaklaşan görev bulunmamaktadır.</p>
+          <p>{t("No upcoming tasks.")}</p>
         )}
       </div>
       

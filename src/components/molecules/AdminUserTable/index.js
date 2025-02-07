@@ -2,35 +2,39 @@ import React from 'react';
 import { Table } from 'antd';
 import AdminActionButtons from '../AdminActionButtons';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function AdminUserTable({ users, onDelete }) {
+  const { t } = useTranslation();
+
   const navigate = useNavigate()
 
   const getRoleLabel = (role) => {
     switch (role) {
       case 'admin':
-        return 'Admin';
+        return t('Admin');
       case 'manager':
-        return 'Yönetici';
+        return t('Manager');
       case 'user':
-        return 'Çalışan';
+        return t('Employees');
       case 'customer':
-        return 'Müşteri';
+        return t('Customers');
       default:
-        return 'Bilinmiyor';
+        return t('Unknown');
     }
   };
+
 
   const handleEdit = (user) => {
     navigate(`/admin/${user.id}/edit`, { state: { userData: user } });
   };
 
   const columns = [
-    { title: 'Ad', dataIndex: 'name', key: 'name' },
-    { title: 'E-posta', dataIndex: 'email', key: 'email' },
-    { title: 'Rol', dataIndex: 'role', key: 'role', render: (role) => getRoleLabel(role) },
+    { title: t('Name'), dataIndex: 'name', key: 'name' },
+    { title: t('Email'), dataIndex: 'email', key: 'email' },
+    { title: t('Role'), dataIndex: 'role', key: 'role', render: (role) => getRoleLabel(role) },
     {
-      title: 'İşlemler',
+      title: t('Operations'),
       key: 'actions',
       render: (_, record) => (
         <AdminActionButtons onEdit={() => handleEdit(record)} onDelete={() => onDelete(record.id)} />

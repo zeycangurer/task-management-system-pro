@@ -7,8 +7,10 @@ import { fetchTasks } from '../../store/actions/taskActions';
 import { fetchProjects } from '../../store/actions/projectActions';
 import HeaderSideBarTemplate from '../../components/templates/HeaderSideBarTemplate';
 import { fetchCustomers } from '../../store/actions/customerActions';
+import { useTranslation } from 'react-i18next';
 
 function AnalyticsPage() {
+  const { t } = useTranslation();
   const root = useSelector(state => state);
   const dispatch = useDispatch();
   const users = root.users.users || [];
@@ -30,12 +32,12 @@ function AnalyticsPage() {
   }, [dispatch]);
 
   if (root.users.loading || root.tasks.loading || root.projects.loading) {
-    return <p>Yükleniyor...</p>;
+    return <p>{t('Loading...')}</p>;
   }
 
   if (root.users.error || root.tasks.error || root.projects.error) {
     return (
-      <p>Hata: {root.users.error || root.tasks.error || root.projects.error}</p>
+      <p>{t('Error occurred')}: {root.users.error || root.tasks.error || root.projects.error}</p>
     );
   }
 

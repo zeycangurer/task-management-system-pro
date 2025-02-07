@@ -15,55 +15,58 @@ import { projectCategories, projectPriorities } from '../../../utils/arrays';
 import './styles.css'
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = false }) {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const root = useSelector((state) => state);
-    const { users, loading: usersLoading } = root.users;
-    const { tasks, loading: tasksLoading } = root.tasks;
-    const { customers, loading: customersLoading } = root.customers;
-    const currentUser = useSelector(state => state.profiles.user);
-    const [filteredTasks, setFilteredTasks] = useState([]);
-    const [selectedTasks, setSelectedTasks] = useState([]);
+  const { t } = useTranslation();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const root = useSelector((state) => state);
+  const { users, loading: usersLoading } = root.users;
+  const { tasks, loading: tasksLoading } = root.tasks;
+  const { customers, loading: customersLoading } = root.customers;
+  const currentUser = useSelector(state => state.profiles.user);
+  const [filteredTasks, setFilteredTasks] = useState([]);
+  const [selectedTasks, setSelectedTasks] = useState([]);
 
 
-    useEffect(() => {
-      if (!users.length) dispatch(userAction.fetchUsers());
-      if (!tasks.length) dispatch(taskAction.fetchTasks());
-      if (!customers.length) dispatch(customerAction.fetchCustomers());
-    }, [dispatch, users.length, tasks.length, customers.length]);
-  
-    const [form] = Form.useForm();
-    
-    useEffect(() => {
-      if (initialValues && initialValues.customerId) {
-        handleCustomerChange(initialValues.customerId);
+  useEffect(() => {
+    if (!users.length) dispatch(userAction.fetchUsers());
+    if (!tasks.length) dispatch(taskAction.fetchTasks());
+    if (!customers.length) dispatch(customerAction.fetchCustomers());
+  }, [dispatch, users.length, tasks.length, customers.length]);
+
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (initialValues && initialValues.customerId) {
+      handleCustomerChange(initialValues.customerId);
+    }
+  }, [initialValues, tasks]);
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue({
+        ...initialValues,
+        startDate: initialValues.startDate ? dayjs(initialValues.startDate.toDate()) : null,
+        endDate: initialValues.endDate ? dayjs(initialValues.endDate.toDate()) : null,
+        customerId: currentUser.role === 'customer' ? currentUser.id : initialValues.customerId,
+      });
+
+      if (initialValues.customerId) {
+        updateTaskList(initialValues.customerId, initialValues.assignedTasks || []);
       }
-    }, [initialValues, tasks]);
+    }
+  }, [initialValues, form, tasks]);
 
-    useEffect(() => {
-      if (initialValues) {
-        form.setFieldsValue({
-          ...initialValues,
-          startDate: initialValues.startDate ? dayjs(initialValues.startDate.toDate()) : null,
-          endDate: initialValues.endDate ? dayjs(initialValues.endDate.toDate()) : null,
-          customerId: currentUser.role === 'customer' ? currentUser.id : initialValues.customerId,
-        });
-        
-        if (initialValues.customerId) {
-          updateTaskList(initialValues.customerId, initialValues.assignedTasks || []);
-        }
-      }
-    }, [initialValues, form, tasks]);
 
-   
-    useEffect(() => {
-      if (currentUser && currentUser.role === 'customer') {
-          form.setFieldsValue({
-              customerId: currentUser.id 
-          });
-      }
+  useEffect(() => {
+    if (currentUser && currentUser.role === 'customer') {
+      form.setFieldsValue({
+        customerId: currentUser.id
+      });
+    }
   }, [currentUser, form]);
 
   const updateTaskList = (customerId, assignedTasks = []) => {
@@ -76,92 +79,92 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
     setSelectedTasks(assignedTasks);
     setFilteredTasks(customerTasks);
 
-    message.info("Görev listesi yenilendi!");
+    message.info(t('Task list updated!'));
   };
 
 
   const handleCustomerChange = (customerId) => {
     updateTaskList(customerId);
-    setSelectedTasks([]); 
+    setSelectedTasks([]);
     form.setFieldsValue({ assignedTasks: [] });
   };
-    const handleFinish = (values) => {
-      // console.log(values)
-      onFinish(values);
-    };
-  
-    const handleBack = () => navigate(-1);
-  
-    return (
-      <Form layout="vertical" onFinish={handleFinish} form={form} initialValues={initialValues}>
-        <ButtonAtom type="link" onClick={handleBack} className="back-button">
-          <FaArrowLeft /> Geri
+  const handleFinish = (values) => {
+    // console.log(values)
+    onFinish(values);
+  };
+
+  const handleBack = () => navigate(-1);
+
+  return (
+    <Form layout="vertical" onFinish={handleFinish} form={form} initialValues={initialValues}>
+      <ButtonAtom type="link" onClick={handleBack} className="back-button">
+        <FaArrowLeft /> {t('Back')}
+      </ButtonAtom>
+      <FormItemMolecule label={t('Project Title')} name="title" rules={[{ required: true, message: t('Please enter a project title.') }]}>
+        <InputAtom placeholder={t('Project Title')} />
+      </FormItemMolecule>
+      <FormItemMolecule label={t('Project Description')} name="description">
+        <TextAreaAtom rows={4} placeholder={t('Project Description')} />
+      </FormItemMolecule>
+      <FormItemMolecule label={t('Start Date')} name="startDate" rules={[{ required: true, message: t('Please select start date') }]}>
+        <DatePickerAtom placeholder={t('Start Date')} style={{ width: '100%' }} />
+      </FormItemMolecule>
+      <FormItemMolecule label={t('End Date')} name="endDate" rules={[{ required: true, message: t('Please select end date') }]}>
+        <DatePickerAtom placeholder={t('End Date')} style={{ width: '100%' }} />
+      </FormItemMolecule>
+      <FormItemMolecule label={t('Priority Level')} name="priority" rules={[{ required: true, message: t('Please select a priority level.') }]}>
+        <SelectAtom placeholder={t('Priority Level')}>
+          {projectPriorities.map((priority) => (
+            <SelectAtom.Option key={priority.value} value={priority.value}>
+              {priority.label}
+            </SelectAtom.Option>
+          ))}
+        </SelectAtom>
+      </FormItemMolecule>
+      <FormItemMolecule label={t('Category Level')} name="category" rules={[{ required: true, message: t('Please select a category.')}]}>
+        <SelectAtom placeholder={t('Category Level')}>
+          {projectCategories.map((category) => (
+            <SelectAtom.Option key={category.value} value={category.value}>
+              {category.label}
+            </SelectAtom.Option>
+          ))}
+        </SelectAtom>
+      </FormItemMolecule>
+      <FormItemMolecule label={t('Customer')} name="customerId" rules={[{ required: true, message:t('Please select a customer.') }]}>
+        <SelectAtom placeholder={t('Customer')} loading={customersLoading} disabled={currentUser.role === 'customer'} style={{ background: 'white', borderRadius: '6px' }} onChange={handleCustomerChange}>
+          {customers.map((customer) => (
+            <SelectAtom.Option key={customer.id} value={customer.id}>
+              {customer.name}
+            </SelectAtom.Option>
+          ))}
+        </SelectAtom>
+      </FormItemMolecule>
+      <FormItemMolecule label={t('Users (Assignees)')} name="assignedUsers" rules={[{ required: true, message: t('Please select at least one user.') }]}>
+        <SelectAtom mode="multiple" placeholder={t('Users (Assignees)')} loading={usersLoading}>
+          {users.map((user) => (
+            <SelectAtom.Option key={user.id} value={user.id}>
+              {user.name || user.email}
+            </SelectAtom.Option>
+          ))}
+        </SelectAtom>
+      </FormItemMolecule>
+      <FormItemMolecule label={t('Tasks')} name="assignedTasks">
+        <SelectAtom mode="multiple" placeholder={t('Tasks')} loading={tasksLoading} allowClear >
+          {filteredTasks.map((task) => (
+            <SelectAtom.Option key={task.value} value={task.value}>
+              {task.label}
+            </SelectAtom.Option>
+          ))}
+        </SelectAtom>
+      </FormItemMolecule>
+      <Form.Item>
+        <ButtonAtom type="primary" htmlType="submit" >
+          {isEditMode ? t('Edit') : t('Create')}
         </ButtonAtom>
-        <FormItemMolecule label="Proje Başlığı" name="title" rules={[{ required: true, message: 'Lütfen proje başlığını girin' }]}>
-          <InputAtom placeholder="Proje başlığı" />
-        </FormItemMolecule>
-        <FormItemMolecule label="Proje Açıklaması" name="description">
-          <TextAreaAtom rows={4} placeholder="Proje açıklaması" />
-        </FormItemMolecule>
-        <FormItemMolecule label="Başlangıç Tarihi" name="startDate" rules={[{ required: true, message: 'Lütfen başlangıç tarihini girin' }]}>
-          <DatePickerAtom placeholder="Başlangıç tarihi seçin" style={{ width: '100%' }} />
-        </FormItemMolecule>
-        <FormItemMolecule label="Bitiş Tarihi" name="endDate" rules={[{ required: true, message: 'Lütfen bitiş tarihini girin' }]}>
-          <DatePickerAtom placeholder="Bitiş tarihi seçin" style={{ width: '100%' }} />
-        </FormItemMolecule>
-        <FormItemMolecule label="Öncelik" name="priority" rules={[{ required: true, message: 'Lütfen öncelik seçin' }]}>
-          <SelectAtom placeholder="Öncelik seçin">
-            {projectPriorities.map((priority) => (
-              <SelectAtom.Option key={priority.value} value={priority.value}>
-                {priority.label}
-              </SelectAtom.Option>
-            ))}
-          </SelectAtom>
-        </FormItemMolecule>
-        <FormItemMolecule label="Kategori" name="category" rules={[{ required: true, message: 'Lütfen bir kategori seçin' }]}>
-          <SelectAtom placeholder="Kategori seçin">
-            {projectCategories.map((category) => (
-              <SelectAtom.Option key={category.value} value={category.value}>
-                {category.label}
-              </SelectAtom.Option>
-            ))}
-          </SelectAtom>
-        </FormItemMolecule>
-        <FormItemMolecule label="Müşteri" name="customerId" rules={[{ required: true, message: 'Lütfen bir müşteri seçin' }]}>
-          <SelectAtom placeholder="Müşteri seçin" loading={customersLoading} disabled={currentUser.role === 'customer'} style={{ background: 'white', borderRadius: '6px' }} onChange={handleCustomerChange}>
-            {customers.map((customer) => (
-              <SelectAtom.Option key={customer.id} value={customer.id}>
-                {customer.name}
-              </SelectAtom.Option>
-            ))}
-          </SelectAtom>
-        </FormItemMolecule>
-        <FormItemMolecule label="Kullanıcılar" name="assignedUsers" rules={[{ required: true, message: 'Lütfen en az bir kullanıcı seçin' }]}>
-          <SelectAtom mode="multiple" placeholder="Kullanıcıları seçin" loading={usersLoading}>
-            {users.map((user) => (
-              <SelectAtom.Option key={user.id} value={user.id}>
-                {user.name || user.email}
-              </SelectAtom.Option>
-            ))}
-          </SelectAtom>
-        </FormItemMolecule>
-        <FormItemMolecule label="Görevler" name="assignedTasks">
-          <SelectAtom mode="multiple" placeholder="Görevleri seçin" loading={tasksLoading} allowClear > 
-            {filteredTasks.map((task) => (
-              <SelectAtom.Option key={task.value} value={task.value}>
-                {task.label}
-              </SelectAtom.Option>
-            ))}
-          </SelectAtom>
-        </FormItemMolecule>
-        <Form.Item>
-          <ButtonAtom type="primary" htmlType="submit" >
-            {isEditMode ? 'Güncelle' : 'Oluştur'}
-          </ButtonAtom>
-        </Form.Item>
-      </Form>
-    );
-  }
-  
+      </Form.Item>
+    </Form>
+  );
+}
+
 
 export default ProjectCreationFormOrganism;

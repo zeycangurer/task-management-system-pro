@@ -9,8 +9,11 @@ import ProjectDetailTemplate from '../../../components/templates/ProjectDetailTe
 import { message } from 'antd';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 import './styles.css'
+import { useTranslation } from 'react-i18next';
 
 function ProjectDetailPage() {
+  const { t } = useTranslation();
+
   const { projectId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -90,10 +93,10 @@ function ProjectDetailPage() {
 
     dispatch(projectAction.updateProject(projectId, updatedProject))
         .then(() => {
-            message.success('Proje durumu güncellendi');
+            message.success(t('Project status updated'));
         })
         .catch((error) => {
-            message.error('Proje durumu güncellenemedi: ' + error.message);
+            message.error(t('Project status could not be updated') + ': ' + error.message);
         });
 };
 
@@ -111,7 +114,7 @@ function ProjectDetailPage() {
     }
 
     if (newAssignees.length === 0) {
-      message.error('Atama yapabilmek için en az bir kullanıcı seçmelisiniz.');
+      message.error(t('At least one user must be selected'));
       return;
     }
 
@@ -119,16 +122,16 @@ function ProjectDetailPage() {
 
     dispatch(projectAction.assignProject(project.id, newAssignees, currentUser.uid))
       .catch((error) => {
-        console.error('Görev atama hatası:', error);
+        console.error(t('Assignment error'), error);
       });
   };
 
   if (loading || !project) {
-    return <div>Yükleniyor...</div>;
+    return <div>{t('Loading...')}</div>;
   }
 
   if (error) {
-    return <div>Hata: {error}</div>;
+    return <div>{t('Error')}{error}</div>;
   }
 
 

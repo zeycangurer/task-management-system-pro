@@ -4,6 +4,7 @@ import StatsCards from '../../organisms/StatsCards';
 import ChartsSection from '../../organisms/ChartsSection';
 import DetailsTable from '../../organisms/DetailsTable';
 import './styles.css';
+import { useTranslation } from 'react-i18next';
 
 function AnalyticsTemplate({
     users,
@@ -12,11 +13,13 @@ function AnalyticsTemplate({
     customers,
     viewType
 }) {
+    const { t } = useTranslation();
+
     return (
         <div className="analytics-template">
             <DashboardHeader
-                title="Proje Analizleri"
-                subtitle="Proje ve görevlerle ilgili detaylı analiz"
+                title={t('Projects Analysis')}
+                subtitle={t('Projects and tasks detailed analysis')}
             />
             <StatsCards projects={projects} tasks={tasks} users={users} customers={customers} />
             {/* <FilterSection

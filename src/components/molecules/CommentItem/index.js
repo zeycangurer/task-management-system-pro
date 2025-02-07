@@ -1,7 +1,10 @@
 import React from 'react';
 import { List, Avatar } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 function CommentItem({ authorName, timestamp, description, attachments }) {
+  const { t } = useTranslation();
+
   return (
     <List.Item>
       <List.Item.Meta
@@ -11,13 +14,13 @@ function CommentItem({ authorName, timestamp, description, attachments }) {
           <p>{description}</p>
           {attachments && attachments.length > 0 && (
             <div>
-              <strong>Ekler:</strong>
+              <strong>{t('Attachments')}</strong>
               <List
                 dataSource={attachments}
                 renderItem={(item, index) => (
                   <List.Item key={index}>
                     <a href={item} target="_blank" rel="noopener noreferrer">
-                      Dosya {index + 1}
+                    {t('File')} {index + 1}
                     </a>
                   </List.Item>
                 )}

@@ -13,8 +13,11 @@ import { taskPriorities, taskCategories } from '../../../utils/arrays';
 import * as projectAction from '../../../store/actions/projectActions';
 import * as customerAction from '../../../store/actions/customerActions';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
+  const { t } = useTranslation();
+
   const root = useSelector((state) => state);
   const dispatch = useDispatch()
   const location = useLocation();
@@ -83,30 +86,30 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
   return (
     <Form form={form} onFinish={handleFinish} layout="vertical" initialValues={initialValues}>
       <ButtonAtom type="link" onClick={handleBack} className="back-button">
-        <FaArrowLeft /> Geri
+        <FaArrowLeft /> {t('Back')}
       </ButtonAtom>
       <FormItemMolecule
-        label="Görev Başlığı"
+        label={t('Task Title')}
         name="title"
-        rules={[{ required: true, message: 'Lütfen görev başlığını girin.' }]}
+        rules={[{ required: true, message: t('Please enter a task title.') }]}
       >
-        <InputAtom placeholder="Görev başlığı girin" />
+        <InputAtom placeholder={t('Task Title')} />
       </FormItemMolecule>
 
       <FormItemMolecule
-        label="Açıklama"
+        label={t('Description')}
         name="description"
-        rules={[{ required: true, message: 'Lütfen görev açıklamasını girin.' }]}
+        rules={[{ required: true, message: t('Please enter a task description.') }]}
       >
-        <TextAreaAtom placeholder="Görev açıklamasını girin" rows={4} />
+        <TextAreaAtom placeholder={t('Description')} rows={4} />
       </FormItemMolecule>
 
       <FormItemMolecule
-        label="Müşteri"
+        label={t('Customer')}
         name="customer"
-        rules={[{ required: true, message: 'Lütfen bir müşteri seçin.' }]}
+        rules={[{ required: true, message: t('Please select a customer.') }]}
       >
-        <SelectAtom placeholder="Müşteri seçin" loading={!customers || customers.length === 0}
+        <SelectAtom placeholder={t('Customer')} loading={!customers || customers.length === 0}
           disabled={currentUser.role === 'customer' || projectId !== null}
           style={{ background: 'white', borderRadius: '6px' }}>
           {customers.map((customer) => (
@@ -117,19 +120,19 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
         </SelectAtom>
       </FormItemMolecule>
 
-      <FormItemMolecule label="Dosya Yükleme" name="attachments">
+      <FormItemMolecule label={t('File Upload')} name="attachments">
         <UploadAtom multiple beforeUpload={() => false}>
-          <ButtonAtom>Dosya Seç</ButtonAtom>
+          <ButtonAtom>{t('Select file')}</ButtonAtom>
         </UploadAtom>
       </FormItemMolecule>
 
       <FormItemMolecule
-        label="Öncelik Seviyesi"
+        label={t('Priority Level')}
         name="priority"
-        rules={[{ required: true, message: 'Lütfen öncelik seviyesini seçin.' }]}
+        rules={[{ required: true, message: t('Please select a priority level.') }]}
 
       >
-        <SelectAtom placeholder="Öncelik seviyesi seçin" loading={!taskPriorities || taskPriorities.length === 0}
+        <SelectAtom placeholder={t('Priority Level')} loading={!taskPriorities || taskPriorities.length === 0}
           disabled={!taskPriorities || taskPriorities.length === 0}>
           {taskPriorities.map((priority) => (
             <SelectAtom.Option key={priority.value} value={priority.value}>
@@ -140,11 +143,11 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
       </FormItemMolecule>
 
       <FormItemMolecule
-        label="Kategori"
+        label={t('Category')}
         name="category"
-        rules={[{ required: true, message: 'Lütfen bir kategori seçin.' }]}
+        rules={[{ required: true, message: t('Please select a category.')}]}
       >
-        <SelectAtom placeholder="Kategori seçin" loading={!taskCategories || taskCategories.length === 0}
+        <SelectAtom placeholder={t('Category')} loading={!taskCategories || taskCategories.length === 0}
           disabled={!taskCategories || taskCategories.length === 0}>
           {taskCategories.map((category) => (
             <SelectAtom.Option key={category.value} value={category.value}>
@@ -154,10 +157,10 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
         </SelectAtom>
       </FormItemMolecule>
       <FormItemMolecule
-        label="Proje"
+        label={t('Project')}
         name="projectId"
       >
-        <SelectAtom placeholder="Bir proje seçin" allowClear disabled={!!projectId} style={{ background: 'white', borderRadius: '6px' }}>
+        <SelectAtom placeholder={t('Project')} allowClear disabled={!!projectId} style={{ background: 'white', borderRadius: '6px' }}>
           {projects.map((project) => (
             <SelectAtom.Option key={project.id} value={project.id}>
               {project.title}
@@ -165,8 +168,8 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
           ))}
         </SelectAtom>
       </FormItemMolecule>
-      <FormItemMolecule label="Kullanıcılar" name="assignedTo" rules={[{ required: true, message: 'Lütfen en az bir kullanıcı seçin' }]}>
-        <SelectAtom mode="multiple" placeholder="Kullanıcıları seçin" loading={usersLoading}>
+      <FormItemMolecule label={t('Users (Assignees)')} name="assignedTo" rules={[{ required: true, message: t('Please select at least one user.')}]}>
+        <SelectAtom mode="multiple" placeholder={t('Users (Assignees)')} loading={usersLoading}>
           {users.map((user) => (
             <SelectAtom.Option key={user.id} value={user.id}>
               {user.name || user.email}
@@ -176,7 +179,7 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
       </FormItemMolecule>
       <FormItemMolecule>
         <ButtonAtom type="primary" htmlType="submit">
-          {isEditMode ? 'Güncelle' : 'Oluştur'}
+          {isEditMode ? t('Update') : t('Create')}
         </ButtonAtom>
       </FormItemMolecule>
     </Form>

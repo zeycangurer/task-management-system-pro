@@ -12,8 +12,11 @@ import { useNavigate } from 'react-router-dom';
 import TitleAtom from '../../../components/atoms/Title';
 import FilterComponent from '../../../components/molecules/FilterComponent';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
+import { useTranslation } from 'react-i18next';
 
 function TasksPage() {
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const root = useSelector(state => state)
@@ -53,8 +56,8 @@ function TasksPage() {
       // console.log("Start Date:", start, "Fixed End Date:", fixedEnd);
 
       filtered = filtered.filter(task => {
-        const taskDate = task.createdAt 
-          ? new Date(task.createdAt.seconds * 1000)  
+        const taskDate = task.createdAt
+          ? new Date(task.createdAt.seconds * 1000)
           : null;
 
         if (!taskDate) {
@@ -62,9 +65,9 @@ function TasksPage() {
           return false;
         }
 
-        taskDate.setHours(0, 0, 0, 0); 
+        taskDate.setHours(0, 0, 0, 0);
         const isWithinRange = taskDate >= start && taskDate <= fixedEnd;
-        
+
         if (!isWithinRange) {
           // console.log(`Task excluded due to date: ${task.id}, Created At: ${taskDate}`);
         }
@@ -83,7 +86,7 @@ function TasksPage() {
 
     // console.log("Filtered tasks count:", filtered.length);
     setFilteredTasks(filtered);
-};
+  };
 
 
   const handleCreateTask = () => {
@@ -136,11 +139,11 @@ function TasksPage() {
       const assignedUserNames = Array.isArray(task.assignedTo) && task.assignedTo.length > 0
         ? task.assignedTo.map(userId => {
           const user = usersState.users.find(user => user.id === userId);
-          return user ? user.name : 'Bilinmiyor';
+          return user ? user.name : t('Unknown');
         }).join(', ')
-        : 'Bilinmiyor';
+        : t('Unknown');
 
-      let createdUserName = 'Bilinmiyor';
+      let createdUserName = t('Unknown');
       const createdUserInUsers = usersState.users.find(user => user.id === task.createdUser);
       const createdUserInCustomers = customersState.customers.find(customer => customer.id === task.createdUser);
       if (createdUserInUsers) {
@@ -167,9 +170,9 @@ function TasksPage() {
 
   return (
     <div className="dashboard-container">
-            <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <main className="tasks-main">
-          <TitleAtom level={1} className="title">Görevler</TitleAtom>
+          <TitleAtom level={1} className="title">{t('Tasks')}</TitleAtom>
           <FilterComponent dateRange={dateRange}
             setDateRange={setDateRange}
             usersState={usersState}
@@ -182,18 +185,18 @@ function TasksPage() {
           />
           <div className="tasks-list-section">
             {tasksState.loading ? (
-              <p>Görevler yükleniyor...</p>
+              <p>{t('Loading tasks...')}</p>
             ) : tasksState.error ? (
               <p className="error">{tasksState.error}</p>
             ) : tasksWithUserNames.length === 0 ? (
-              <p>Görev bulunmamaktadır.</p>
+              <p>{t('There are no task to list.')}</p>
             ) : (
               <TaskList tasks={tasksWithUserNames} onTaskClick={handleTaskClick} />
             )}
           </div>
         </main>
-        </HeaderSideBarTemplate>
-      </div>
+      </HeaderSideBarTemplate>
+    </div>
   );
 }
 

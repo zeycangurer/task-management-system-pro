@@ -8,8 +8,10 @@ import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTe
 import './styles.css'
 import TaskCreationTemplate from '../../../components/templates/TaskCreationTemplate';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 function EditTaskPage() {
+    const { t } = useTranslation();
     const { taskId } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -42,11 +44,11 @@ function EditTaskPage() {
         // console.log(taskId)
         dispatch(taskActions.updateTask(taskId, taskData, currentUser.uid))
             .then(() => {
-                message.success('Görev başarıyla güncellendi');
+                message.success(t('Task successfully updated'));
                 navigate(`/tasks/${taskId}`);
             })
             .catch((error) => {
-                message.error('Görev güncellenemedi: ' + error.message);
+                message.error(t('Task could not be updated') + ': ' + error.message);
             });
     };
 
@@ -57,7 +59,7 @@ function EditTaskPage() {
     const initialValues = {
         ...task,
     };
-    console.log(initialValues)
+    // console.log(initialValues)
 
     return (
         <div className="dashboard-container">
@@ -67,7 +69,6 @@ function EditTaskPage() {
                     isEditMode={true}
                     initialValues={initialValues}
                 />
-
             </HeaderSideBarTemplate>
         </div>
     );

@@ -8,6 +8,7 @@ import './styles/global.css';
 import './index.css';
 import 'antd/dist/reset.css'
 import { PersistGate } from 'redux-persist/integration/react';
+import './i18n'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -2,8 +2,11 @@
 import React from 'react';
 import './styles.css';
 import TableAtom from '../../atoms/Table';
+import { useTranslation } from 'react-i18next';
 
 function ProjectListOrganism({ projects, onItemClick }) {
+  const { t } = useTranslation();
+
   // console.log("ProjectList received projects:", projects); 
 
   // if (!Array.isArray(projects)) {
@@ -17,7 +20,7 @@ function ProjectListOrganism({ projects, onItemClick }) {
 
   return (
     <>
-      {projects.length === 0 ? (<p>Proje bulunmamaktadır.</p>) : (<TableAtom data={projects} onDataClick={onItemClick} dataType='project' />)}
+      {projects.length === 0 ? (<p>{t('There are no project to list.')}</p>) : (<TableAtom data={projects} onDataClick={onItemClick} dataType='project' />)}
     </>
 
   );

@@ -5,6 +5,7 @@ import ActionButton from '../../molecules/ActionButton';
 
 import './styles.css';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 function ProjectHeader({
   project,
@@ -17,6 +18,7 @@ function ProjectHeader({
   size
 }) {
   const userRole = useSelector(state => state.profiles.user?.role)
+  const { t } = useTranslation();
 
   return (
     <div className="project-header">
@@ -25,7 +27,7 @@ function ProjectHeader({
       </div>
       <div className="buttons-container">
         <ActionButton
-          tooltipTitle="Tarihçe"
+          tooltipTitle={t('History')}
           icon={FaHistory}
           onClick={showHistoryModal}
           className="action-button history-button"
@@ -35,7 +37,7 @@ function ProjectHeader({
         {userRole === 'admin' || userRole === 'manager' || userRole === 'customer' ?
           <>
             <ActionButton
-              tooltipTitle="Düzenle"
+              tooltipTitle={t('Edit')}
               icon={FaEdit}
               onClick={onEditProject}
               className="action-button edit-button"
@@ -43,7 +45,7 @@ function ProjectHeader({
               type="primary"
             />
             <ActionButton
-              tooltipTitle="Sil"
+              tooltipTitle={t('Delete')}
               icon={FaTrash}
               onClick={onDeleteProject}
               className="action-button delete-button"
@@ -51,7 +53,7 @@ function ProjectHeader({
               type="danger"
             />
             <ActionButton
-              tooltipTitle="Görev Oluştur"
+              tooltipTitle={t('Create Task')}
               icon={MdCreateNewFolder}
               onClick={onCreateTask}
               className="action-button create-button"
@@ -61,7 +63,7 @@ function ProjectHeader({
           </> : null}
 
         <ActionButton
-          tooltipTitle={project.status === 'close' ? 'Görevi Geri Al' : 'Görevi Tamamla'}
+          tooltipTitle={project.status === 'close' ? t('Reopen Project') : t('Complete Project')}
           icon={FaCheck}
           onClick={onToggleComplete}
           className="action-button save-button"

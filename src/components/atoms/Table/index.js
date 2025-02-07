@@ -1,32 +1,35 @@
 import React from 'react';
 import { Table } from 'antd';
 import './styles.css';
+import { useTranslation } from 'react-i18next';
 
 function TableAtom({ data, onDataClick, dataType }) {
+  const { t } = useTranslation();
+
   const columns = [
-    { title: 'Başlık', dataIndex: 'title', key: 'title' },
+    { title: t('Title'), dataIndex: 'title', key: 'title' },
   ];
 
   if (dataType === 'analytics') {
     columns.push(
-      { title: 'Atanan Kullanıcılar', dataIndex: 'assignedToName', key: 'assignedToName' },
+      { title: t('Assignee'), dataIndex: 'assignedToName', key: 'assignedToName' },
       {
-        title: 'Durum',
+        title: t('Status'),
         dataIndex: 'status',
         key: 'status',
         render: (status) => (
           <span className={`status ${status === 'close' ? 'completed' : 'pending'}`}>
-            {status === 'close' ? 'Tamamlandı' : 'Bekliyor'}
+            {status === 'close' ? t('Completed') : t('Pending')}
           </span>
         ),
       },
-      { title: 'Bitiş Tarihi', dataIndex: 'dueDate', key: 'dueDate', defaultSortOrder: 'ascend' }
+      { title: t('End Date'), dataIndex: 'dueDate', key: 'dueDate', defaultSortOrder: 'ascend' }
     );
   } else {
     columns.push(
-      { title: 'Tanım', dataIndex: 'description', key: 'description' },
-      { title: 'Atanan Kişi', dataIndex: 'assignedToName', key: 'assignedToName' },
-      { title: 'Oluşturan Kişi', dataIndex: 'createdUserName', key: 'createdUserName' },
+      { title: t('Description'), dataIndex: 'description', key: 'description' },
+      { title: t('Assignee'), dataIndex: 'assignedToName', key: 'assignedToName' },
+      { title: t('Creator'), dataIndex: 'createdUserName', key: 'createdUserName' },
       {
         title: 'Oluşturulma Tarihi',
         dataIndex: 'createdAt',
@@ -35,12 +38,12 @@ function TableAtom({ data, onDataClick, dataType }) {
           createdAt ? new Date(createdAt.seconds * 1000).toLocaleDateString() : 'N/A',
       },
       {
-        title: 'Durum',
+        title: t('Creation Date'),
         dataIndex: 'status',
         key: 'status',
         render: (status) => (
           <span className={`status ${status === 'close' ? 'completed' : 'pending'}`}>
-            {status === 'close' ? 'Tamamlandı' : 'Bekliyor'}
+            {status === 'close' ? t('Completed') : t('Pending')}
           </span>
         ),
       }

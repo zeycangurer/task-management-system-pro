@@ -5,6 +5,7 @@ import ProjectListOrganism from '../../organisms/ProjectList';
 import './styles.css';
 import { useSelector } from 'react-redux';
 import FilterComponent from '../../molecules/FilterComponent';
+import { useTranslation } from 'react-i18next';
 
 function ProjectsTemplate({
   projects,
@@ -17,6 +18,8 @@ function ProjectsTemplate({
   setSelectedUser,
   onFilter
 }) {
+  const { t } = useTranslation();
+
   const root = useSelector(state => state)
   const usersState = root.users;
   const customersState = root.customers;
@@ -26,11 +29,11 @@ function ProjectsTemplate({
       const assignedUserNames = Array.isArray(project.assignedUsers) && project.assignedUsers.length > 0
         ? project.assignedUsers.map(userId => {
           const user = usersState.users.find(user => user.id === userId);
-          return user ? user.name : 'Bilinmiyor';
+          return user ? user.name : t('Unknown');
         }).join(', ')
-        : 'Bilinmiyor';
+        : t('Unknown');
 
-      let createdUserName = 'Bilinmiyor';
+      let createdUserName = t('Unknown');
       const createdUserInUsers = usersState.users.find(user => user.id === project.createdBy);
       const createdUserInCustomers = customersState.customers.find(customer => customer.id === project.createdBy);
       if (createdUserInUsers) {
@@ -44,7 +47,7 @@ function ProjectsTemplate({
   }, [projects, usersState.users, customersState.customers]);
   return (
     <div className='projects-main'>
-      <TitleAtom level={1} className="title">Projeler</TitleAtom>
+      <TitleAtom level={1} className="title">{t('Projects')}</TitleAtom>
       <FilterComponent
         dateRange={dateRange}
         setDateRange={setDateRange}

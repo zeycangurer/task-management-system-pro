@@ -4,8 +4,11 @@ import TextAreaAtom from '../../atoms/TextArea';
 import ButtonAtom from '../../atoms/Button';
 import UploadAtom from '../../atoms/Upload';
 import FormItemMolecule from '../../molecules/FormItem';
+import { useTranslation } from 'react-i18next';
 
 function AddCommentForm({ handleCommentSubmit, size }) {
+  const { t } = useTranslation();
+
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -16,17 +19,17 @@ function AddCommentForm({ handleCommentSubmit, size }) {
   return (
     <Card bordered={false} className="add-comment-card">
       <Form layout="vertical" onFinish={onFinish} form={form}>
-      <FormItemMolecule label="Dosya Ekle" name="attachments">
+      <FormItemMolecule label={t('Add File')} name="attachments">
           <UploadAtom multiple beforeUpload={() => false}>
-            <ButtonAtom>Dosya Seç</ButtonAtom>
+            <ButtonAtom>{t('Choose File')}</ButtonAtom>
           </UploadAtom>
         </FormItemMolecule>
         <Form.Item
           name="comment"
-          label="Açıklama"
-          rules={[{ required: true, message: 'Yorumunuz boş olamaz!' }]}
+          label={t('Comment')}
+          rules={[{ required: true, message: t('Comment cannot be empty') }]}
         >
-          <TextAreaAtom rows={4} placeholder="Yorumunuzu buraya yazın..." />
+          <TextAreaAtom rows={4} placeholder={t('Your comment here...')} />
         </Form.Item>
         <Form.Item>
           <ButtonAtom
@@ -35,7 +38,7 @@ function AddCommentForm({ handleCommentSubmit, size }) {
             className="action-button submit-button"
             size={size}
           >
-            Gönder
+            {t('Submit')}
           </ButtonAtom>
         </Form.Item>
       </Form>

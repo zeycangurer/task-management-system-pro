@@ -12,6 +12,7 @@ import AddCommentForm from '../../organisms/AddCommentForm';
 import * as action from '../../../store/actions/projectActions';
 import HistoryModal from '../../organisms/HistoryModal';
 import AttachmentsandTasks from '../../organisms/AttachmentsandTasks';
+import { useTranslation } from 'react-i18next';
 
 
 function ProjectDetailTemplate({
@@ -30,6 +31,8 @@ function ProjectDetailTemplate({
     size,
     projectCustomer,
 }) {
+    const { t } = useTranslation();
+
     const navigate = useNavigate();
     const dispatch = useDispatch()
     const root = useSelector(state => state)
@@ -42,7 +45,7 @@ function ProjectDetailTemplate({
     const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
 
     const createdUserName = useMemo(() => {
-        if (!project) return 'Bilinmiyor';
+        if (!project) return t('Unknown');
         // console.log('Task createdUser ID:', task.createdUser);
         const user = users.find(u => u.id === project.createdBy);
         if (user) {
@@ -55,7 +58,7 @@ function ProjectDetailTemplate({
             return customer.name;
         }
         // console.log('User veya customer bulunamadı.');
-        return 'Bilinmiyor';
+        return t('Unknown');
     }, [project, users, customers]);
 
     const showHistoryModal = () => {
@@ -95,10 +98,10 @@ function ProjectDetailTemplate({
         const user = users.find(u => u.id === changedById);
         if (user) return user.name;
         const customer = customers.find(c => c.id === changedById);
-        return customer ? customer.name : 'Bilinmiyor';
+        return customer ? customer.name : t('Unknown');
     };
 
-   
+
 
     const formattedComments = useMemo(() => {
         if (!project || !Array.isArray(project.history)) return [];
@@ -115,15 +118,15 @@ function ProjectDetailTemplate({
     const handleCommentSubmit = (values) => {
         const { comment, attachments } = values;
         if (comment.trim() === '') {
-            message.error('Yorum boş olamaz.');
+            message.error(t('Comment cannot be empty'));
             return;
         }
         dispatch(action.addComment(project.id, comment, currentUser.uid, attachments))
             .then(() => {
-                message.success('Yorum başarıyla eklendi.');
+                message.success(t('Comment added successfully'));
             })
             .catch((error) => {
-                message.error('Yorum eklenirken bir hata oluştu.');
+                message.error(t('An error occurred while adding the comment'));
             });
         // console.log(values)
         // console.log('Proje ID:', project.id);
@@ -140,7 +143,7 @@ function ProjectDetailTemplate({
             <Card className="project-info-card" bordered={false}>
                 <div className="detail-header-info">
                     <ButtonAtom type="link" onClick={handleBack} className="back-button">
-                        <FaArrowLeft /> Geri
+                        <FaArrowLeft /> {t('Back')}
                     </ButtonAtom>
                     <ProjectHeader
                         project={project}

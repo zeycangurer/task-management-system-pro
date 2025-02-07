@@ -1,8 +1,11 @@
 import React from 'react';
 import StatisticCard from '../../molecules/StatisticCard';
 import './styles.css';
+import { useTranslation } from 'react-i18next';
 
 function StatsCards({ projects, tasks, users, customers }) {
+  const { t } = useTranslation();
+
   const completedTasks = tasks.filter((task) => task.status === 'close').length;
   const ongoingTasks = tasks.filter((task) => task.status === 'open').length;
   const completedProjects = projects.filter((project) => project.status === 'close').length;
@@ -13,16 +16,40 @@ function StatsCards({ projects, tasks, users, customers }) {
   return (
     <div className="stats-cards">
       <StatisticCard
-        title="Projeler"
+        title={t('Projects')}
         value={projects.length}
-        description="Başlangıç ve bitiş tarihleri"
+        description={t('Start and end dates')}
       />
-      <StatisticCard title="Tamamlanan Proje" value={completedProjects} description="Tamamlanan Proje" />
-      <StatisticCard title="Devam Eden Proje" value={ongoingProjects} description="Devam Eden Proje" />
-      <StatisticCard title="Toplam Görev" value={tasks.length} description="Görev sayısı" />
-      <StatisticCard title="Tamamlanan Görev" value={completedTasks} description="Tamamlananlar" />
-      <StatisticCard title="Devam Eden Görev" value={ongoingTasks} description="Devam edenler" />
-      <StatisticCard title="Kullanıcılar" value={totalRegisteredUsers} description="Kayıtlı kullanıcılar" />
+      <StatisticCard
+        title={t('Completed Projects')}
+        value={completedProjects}
+        description={t('Completed Projects')}
+      />
+      <StatisticCard
+        title={t('Ongoing Projects')}
+        value={ongoingProjects}
+        description={t('Ongoing Projects')}
+      />
+      <StatisticCard
+        title={t('Total Tasks')}
+        value={tasks.length}
+        description={t('Task Count')}
+      />
+      <StatisticCard
+        title={t('Completed Tasks')}
+        value={completedTasks}
+        description={t('Completed Tasks')}
+      />
+      <StatisticCard
+        title={t('Ongoing Tasks')}
+        value={ongoingTasks}
+        description={t('Ongoing Tasks')}
+      />
+      <StatisticCard
+        title={t('Users')}
+        value={totalRegisteredUsers}
+        description={t('Registered Users')}
+      />
 
     </div>
   );

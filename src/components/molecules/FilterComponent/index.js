@@ -1,5 +1,6 @@
 import React from 'react'
 import './styles.css'
+import { useTranslation } from 'react-i18next';
 
 export default function FilterComponent({
     dateRange,
@@ -12,10 +13,12 @@ export default function FilterComponent({
     customersState,
     type
 }) {
+    const { t } = useTranslation();
+
     return (
         <div className="filters-section">
             <div className="filter-group">
-                <label htmlFor="start-date">Başlangıç Tarihi:</label>
+                <label htmlFor="start-date">{t('Start Date')}:</label>
                 <input
                     type="date"
                     id="start-date"
@@ -25,7 +28,7 @@ export default function FilterComponent({
             </div>
 
             <div className="filter-group">
-                <label htmlFor="end-date">Bitiş Tarihi:</label>
+                <label htmlFor="end-date">{t('End Date')}:</label>
                 <input
                     type="date"
                     id="end-date"
@@ -35,9 +38,9 @@ export default function FilterComponent({
             </div>
 
             <div className="filter-group">
-                <label htmlFor="user-select">Kullanıcı Seç:</label>
+                <label htmlFor="user-select">{t('Select User')}:</label>
                 {usersState.loading || customersState.loading ? (
-                    <p>Yükleniyor...</p>
+                    <p>{t('Loading...')}:</p>
                 ) : usersState.error || customersState.error ? (
                     <p className="error">{usersState.error || customersState.error}</p>
                 ) : (
@@ -46,7 +49,7 @@ export default function FilterComponent({
                         value={selectedUser}
                         onChange={(e) => setSelectedUser(e.target.value)}
                     >
-                        <option value="">Tüm Kullanıcılar</option>
+                        <option value="">{t('All Users')}</option>
                         {usersState.users.map(user => (
                             <option key={user.id} value={user.id}>
                                 {user.name}
@@ -58,10 +61,10 @@ export default function FilterComponent({
 
             <div className="button-group">
                 <button className="list-button" onClick={filterTasks}>
-                    {type === 'tasks' ? 'Talep Listele' : 'Proje Listele'}
+                    {type === 'tasks' ? t('List Tasks') : t('List Projects')}
                 </button>
                 <button className="create-button" onClick={handleCreateTask}>
-                    {type === 'tasks' ? 'Talep Oluştur' : 'Proje Oluştur'}
+                    {type === 'tasks' ? t('Create Task') : t('Create Project')}
                 </button>
             </div>
         </div>

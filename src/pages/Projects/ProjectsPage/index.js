@@ -9,8 +9,11 @@ import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTe
 import { fetchUsers } from '../../../store/actions/userActions';
 import { fetchCustomers } from '../../../store/actions/customerActions';
 import { format, startOfYear } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 function ProjectsPage() {
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -100,7 +103,7 @@ function ProjectsPage() {
   if (error || usersError || customersError) {
     return (
       <AlertAtom
-        message="Hata"
+        message={t('Error')}
         description={error || usersError || customersError}
         type="error"
         showIcon
