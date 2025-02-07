@@ -121,7 +121,7 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
       </FormItemMolecule>
 
       <FormItemMolecule label={t('File Upload')} name="attachments">
-        <UploadAtom multiple beforeUpload={() => false}>
+        <UploadAtom className='upload-class' multiple beforeUpload={() => false}>
           <ButtonAtom>{t('Select file')}</ButtonAtom>
         </UploadAtom>
       </FormItemMolecule>

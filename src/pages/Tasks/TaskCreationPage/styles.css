@@ -26,3 +26,7 @@ main {
 .task-creation-main.sidebar-open {
   margin-left: 250px;
 }
+
+.upload-class .ant-upload-list-item-name {
+  color: var(--text-color) !important;
+}

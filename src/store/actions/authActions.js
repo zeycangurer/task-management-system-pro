@@ -64,7 +64,7 @@ export const restoreUser = () => {
 
 
 export const registerUser = (userData) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch({ type: types.REGISTER_REQUEST });
 
     try {
@@ -92,18 +92,31 @@ export const registerUser = (userData) => {
 
       await setDoc(doc(db, collectionName, userId), userDocData);
 
-      console.log(userDocData)
-      dispatch({ type: types.REGISTER_SUCCESS, payload: { id: userId, ...userDocData } });
+      const { profiles: { user: currentUser } } = getState();      
+      // console.log(currentUser.id)
+      // console.log(userId)
+      // console.log(currentUser.password)
+
+      if (currentUser && currentUser.password) {
+        if (currentUser.id !== userId) {
+        
+          await signInWithEmailAndPassword(auth, currentUser.email, currentUser.password);
+          dispatch({ type: types.LOGIN_SUCCESS, payload: currentUser });
+        } else {
+          dispatch({ type: types.REGISTER_SUCCESS, payload: { id: userId, ...userDocData } });
+        }
+      } else {
+        dispatch({ type: types.REGISTER_SUCCESS, payload: { id: userId, ...userDocData } });
+      };
     } catch (error) {
       dispatch({ type: types.REGISTER_ERROR, payload: error.message });
     }
   };
 };
 
-export const deleteUser = (userId, getState) => {
-  return async (dispatch) => {
-    const state = getState();
-    const currentUser = state.auth.user;
+export const deleteUser = (userId) => {
+  return async (dispatch, getState) => {
+    const { auth: { user: currentUser } } = getState(); 
     dispatch({ type: types.DELETE_USER_REQUEST });
 
     try {
@@ -124,14 +137,11 @@ export const deleteUser = (userId, getState) => {
         await deleteDoc(customerRef);
       }
 
-      const user = auth.currentUser;
-      if (user && user.uid === userId) {
-        await deleteAuthUser(user);
-      }
-
-      dispatch({ type: types.DELETE_USER_SUCCESS, payload: userId });
-      if (currentUser && currentUser.uid !== userId) {
-        dispatch({ type: types.LOGIN_SUCCESS, payload: currentUser }); 
+      if (currentUser && currentUser.uid === userId) {
+        await deleteAuthUser(currentUser);
+        dispatch(logout());
+      } else {
+        dispatch({ type: types.DELETE_USER_SUCCESS, payload: userId });
       }
     } catch (error) {
       dispatch({ type: types.DELETE_USER_ERROR, payload: error.message });
@@ -139,6 +149,7 @@ export const deleteUser = (userId, getState) => {
     }
   };
 };
+
 
 export const updateUser = (userData, getState) => async (dispatch) => {
   try {

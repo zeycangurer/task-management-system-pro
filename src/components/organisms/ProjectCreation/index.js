@@ -103,7 +103,7 @@ function ProjectCreationFormOrganism({ onFinish, initialValues, isEditMode = fal
       <FormItemMolecule label={t('Project Title')} name="title" rules={[{ required: true, message: t('Please enter a project title.') }]}>
         <InputAtom placeholder={t('Project Title')} />
       </FormItemMolecule>
-      <FormItemMolecule label={t('Project Description')} name="description">
+      <FormItemMolecule label={t('Project Description')} name="description" rules={[{ required: true, message: t('Please enter a project description.') }]}>
         <TextAreaAtom rows={4} placeholder={t('Project Description')} />
       </FormItemMolecule>
       <FormItemMolecule label={t('Start Date')} name="startDate" rules={[{ required: true, message: t('Please select start date') }]}>

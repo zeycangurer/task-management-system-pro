@@ -13,7 +13,7 @@ function Header({ toggleSidebar, isSidebarOpen }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate()
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.profiles.user);
   // console.log(localStorage.getItem('selectedLanguage'));
 
 

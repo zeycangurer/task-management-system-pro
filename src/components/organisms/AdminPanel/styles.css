@@ -50,6 +50,23 @@
     border: none;
 }
 
+.custom-table .ant-table-thead > tr > th {
+    background-color: #f0f2f5;
+    font-weight: bold;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .custom-table .ant-table-tbody > tr > td {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+.data-list-container {
+    overflow-x: auto;
+  }
 
 
 @media (max-width: 768px) {
@@ -63,4 +80,10 @@
         width: 100%; 
         text-align: center;
     }
+
+    .custom-table .ant-table-thead > tr > th,
+    .custom-table .ant-table-tbody > tr > td {
+      font-size: 0.85rem;
+    }
 }
+
