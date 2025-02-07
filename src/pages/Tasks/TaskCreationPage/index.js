@@ -6,8 +6,10 @@ import { message } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './styles.css'
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
+import { useTranslation } from 'react-i18next';
 
 function TaskCreationPage() {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,11 +27,11 @@ function TaskCreationPage() {
     };
     dispatch(taskAction.addTask(taskData, currentUser.uid))
       .then(() => {
-        message.success('Görev başarıyla oluşturuldu.');
+        message.success(t('Task successfully created'));
         navigate('/tasks');
       })
       .catch((error) => {
-        message.error('Görev oluşturulurken bir hata oluştu.');
+        message.error(t('An error occurred while creating the task.'));
         console.error(error);
       });
   };

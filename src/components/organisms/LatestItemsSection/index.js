@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Pagination } from 'antd';
 import './styles.css';
+import { useTranslation } from 'react-i18next';
 
 function LatestItemsSection({ latestTasks, latestProjects }) {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [taskPage, setTaskPage] = useState(1);
   const [projectPage, setProjectPage] = useState(1);
@@ -16,7 +18,7 @@ function LatestItemsSection({ latestTasks, latestProjects }) {
   return (
     <div className="latest-items-section">
       <div className="latest-items">
-        <h3>Son Eklenen Görevler</h3>
+        <h3>{t("Latest Added Tasks")}</h3>
         <ul>
           {paginatedTasks.length > 0 ? (
             paginatedTasks.map((task) => (
@@ -25,7 +27,7 @@ function LatestItemsSection({ latestTasks, latestProjects }) {
               </li>
             ))
           ) : (
-            <p>Henüz eklenen bir görev yok.</p>
+            <p>{t("No tasks added yet.")}</p>
           )}
         </ul>
 
@@ -41,7 +43,7 @@ function LatestItemsSection({ latestTasks, latestProjects }) {
       </div>
 
       <div className="latest-items">
-        <h3>Son Eklenen Projeler</h3>
+        <h3>{t("Latest Added Projects")}</h3>
         <ul>
           {paginatedProjects.length > 0 ? (
             paginatedProjects.map((project) => (
@@ -50,7 +52,7 @@ function LatestItemsSection({ latestTasks, latestProjects }) {
               </li>
             ))
           ) : (
-            <p>Henüz eklenen bir proje yok.</p>
+            <p>{t("No projects added yet.")}</p>
           )}
         </ul>
 

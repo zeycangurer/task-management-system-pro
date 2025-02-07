@@ -8,8 +8,11 @@ import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTe
 import './styles.css'
 import ProjectCreationTemplate from '../../../components/templates/ProjectCreationTemplate';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 function EditProjectPage() {
+  const { t } = useTranslation();
+
   const { projectId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,16 +43,16 @@ function EditProjectPage() {
 
     dispatch(projectActions.updateProject(projectId, projectData))
       .then(() => {
-        message.success('Proje başarıyla güncellendi');
+        message.success(t('Project successfully updated'));
         navigate(`/projects/${projectId}`);
       })
       .catch((error) => {
-        message.error('Proje güncellenemedi: ' + error.message);
+        message.error(t('Project could not be updated') + ': ' + error.message);
       });
   };
 
   if (loading || !project) {
-    return <SpinAtom tip="Yükleniyor..." />;
+    return <SpinAtom tip={t('Loading...')} />;
   }
 
   const initialValues = {

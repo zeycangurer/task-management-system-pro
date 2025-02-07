@@ -2,8 +2,11 @@
 import React from 'react';
 import './styles.css';
 import TableAtom from '../../atoms/Table';
+import { useTranslation } from 'react-i18next';
 
 function TaskList({ tasks, onTaskClick }) {
+  const { t } = useTranslation();
+
   // console.log("TaskList received tasks:", tasks); 
 
   // if (!Array.isArray(tasks)) {
@@ -16,7 +19,10 @@ function TaskList({ tasks, onTaskClick }) {
   // }
 
   return (
-    <TableAtom data={tasks} onDataClick={onTaskClick}  dataType='task' />
+    <>
+      {tasks.length === 0 ? (<p>{t('There are no task to list.')}</p>) : (<TableAtom data={tasks} onDataClick={onTaskClick} dataType='task' />)}
+    </>
+
   );
 }
 

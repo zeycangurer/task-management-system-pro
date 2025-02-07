@@ -7,8 +7,11 @@ import { Timestamp } from 'firebase/firestore';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 import './styles.css';
 import ProjectCreationTemplate from '../../../components/templates/ProjectCreationTemplate';
+import { useTranslation } from 'react-i18next';
 
 function NewProjectPage() {
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.auth.user);
@@ -28,11 +31,11 @@ function NewProjectPage() {
 
     dispatch(addProject(projectData))
       .then(() => {
-        message.success('Proje başarıyla oluşturuldu');
+        message.success(t('Project successfully created.'));
         navigate('/projects');
       })
       .catch((error) => {
-        message.error('Proje oluşturulamadı: ' + error.message);
+        message.error(t('An error occurred while creating the project.') + ": " + error.message);
       });
   };
 

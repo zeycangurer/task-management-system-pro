@@ -8,7 +8,7 @@ function useAuthPersistence() {
 
 
   useEffect(() => {
-    console.log("Redux Kullanıcı:", user);
+    // console.log("Redux Kullanıcı:", user);
 
     dispatch(restoreUser()); 
   }, [dispatch]);

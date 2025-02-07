@@ -1,8 +1,11 @@
 import React from 'react';
 import { Card, List } from 'antd';
 import CommentItem from '../../molecules/CommentItem';
+import { useTranslation } from 'react-i18next';
 
 function CommentsList({ formattedComments }) {
+  const { t } = useTranslation();
+
   return (
     <Card bordered={false} className="comments-list-card">
       {formattedComments && formattedComments.length > 0 ? (
@@ -19,7 +22,7 @@ function CommentsList({ formattedComments }) {
           )}
         />
       ) : (
-        <p>Henüz yorum eklenmemiş.</p>
+        <p>{t('No comments yet')}</p>
       )}
     </Card>
   );

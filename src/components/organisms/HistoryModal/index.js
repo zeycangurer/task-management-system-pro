@@ -1,16 +1,19 @@
 import React from 'react';
 import { Modal, List } from 'antd';
 import ButtonAtom from '../../atoms/Button'
+import { useTranslation } from 'react-i18next';
 
 function HistoryModal({ isVisible, handleClose, filteredHistory, getChangedByName, formatTimestamp }) {
+  const { t } = useTranslation();
+
   return (
     <Modal
-      title="Görev Tarihçesi"
+      title={t('Task History')}
       visible={isVisible}
       onCancel={handleClose}
       footer={[
         <ButtonAtom key="close" onClick={handleClose}>
-          Kapat
+          {t('Close')}
         </ButtonAtom>,
       ]}
       width={800}
@@ -26,12 +29,12 @@ function HistoryModal({ isVisible, handleClose, filteredHistory, getChangedByNam
                   item.timestamp
                 )}`}
               />
-              <div>{item.description || 'Detay yok.'}</div>
+              <div>{item.description || t('Detail not available')}</div>
             </List.Item>
           )}
         />
       ) : (
-        <p>Görev tarihçesi bulunmamaktadır.</p>
+        <p>{t('No task history')}</p>
       )}
     </Modal>
   );

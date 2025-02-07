@@ -7,9 +7,12 @@ import ButtonAtom from '../../atoms/Button';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import FormItemMolecule from '../../molecules/FormItem';
 import { Form } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 function ProfileFormOrganism({ user }) {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
+
   const { loading, error } = useSelector(state => state.users);
   const currentUserPassword = user.password;
 
@@ -30,11 +33,11 @@ function ProfileFormOrganism({ user }) {
       let errors = [];
 
       if (currentPassword !== currentUserPassword) {
-        errors.push({ name: 'currentPassword', errors: ['Mevcut şifre hatalı!'] });
+        errors.push({ name: 'currentPassword', errors: [t('Current password is wrong!')] });
       }
 
       if (newPassword !== confirmPassword) {
-        errors.push({ name: 'confirmPassword', errors: ['Yeni şifreler eşleşmiyor!'] });
+        errors.push({ name: 'confirmPassword', errors: [t('New passwords do not match!')] });
       }
 
       if (errors.length > 0) {
@@ -43,7 +46,7 @@ function ProfileFormOrganism({ user }) {
       }
 
       await dispatch(changePassword(user.id, newPassword, user.role));
-      dispatch(logout()); 
+      dispatch(logout());
     } catch (errorInfo) {
       console.log('Validasyon hatası:', errorInfo);
     }
@@ -52,10 +55,10 @@ function ProfileFormOrganism({ user }) {
   return (
     <div className="profile-form">
       <Form layout="vertical" form={form} onFinish={handleChangePassword}>
-        <FormItemMolecule label="Mevcut Şifre" name="currentPassword" rules={[{ required: true, message: 'Mevcut şifreyi giriniz!' }]}>
+        <FormItemMolecule label={t('Current Password')} name="currentPassword" rules={[{ required: true, message: t('Please enter your current password!') }]}>
           <InputAtom
             type={visiblePasswords.current ? 'text' : 'password'}
-            placeholder="Mevcut Şifre"
+            placeholder={t('Current Password')}
             suffix={
               visiblePasswords.current ? (
                 <EyeTwoTone onClick={() => setVisiblePasswords({ ...visiblePasswords, current: false })} style={{ cursor: 'pointer' }} />
@@ -66,13 +69,16 @@ function ProfileFormOrganism({ user }) {
           />
         </FormItemMolecule>
 
-        <FormItemMolecule label="Yeni Şifre" name="newPassword" rules={[
-          { required: true, message: 'Yeni şifre giriniz!' },
-          { min: 6, message: 'Şifre en az 6 karakter olmalıdır!' }
+        <FormItemMolecule label={t('New Password')} name="newPassword" rules={[
+          { required: true, message: t('Please enter your new password!') },
+          {
+            min: 6,
+            message: t('Password must be at least 6 characters long!')
+          }
         ]}>
           <InputAtom
             type={visiblePasswords.new ? 'text' : 'password'}
-            placeholder="Yeni Şifre"
+            placeholder={t('New Password')}
             suffix={
               visiblePasswords.new ? (
                 <EyeTwoTone onClick={() => setVisiblePasswords({ ...visiblePasswords, new: false })} style={{ cursor: 'pointer' }} />
@@ -83,10 +89,10 @@ function ProfileFormOrganism({ user }) {
           />
         </FormItemMolecule>
 
-        <FormItemMolecule label="Yeni Şifre Tekrarı" name="confirmPassword" rules={[{ required: true, message: 'Şifre tekrarını giriniz!' }]}>
+        <FormItemMolecule label={t('Confirm New Password')} name="confirmPassword" rules={[{ required: true, message: t('Please confirm your new password!') }]}>
           <InputAtom
             type={visiblePasswords.confirm ? 'text' : 'password'}
-            placeholder="Yeni Şifre Tekrarı"
+            placeholder={t('Confirm New Password')}
             suffix={
               visiblePasswords.confirm ? (
                 <EyeTwoTone onClick={() => setVisiblePasswords({ ...visiblePasswords, confirm: false })} style={{ cursor: 'pointer' }} />
@@ -99,7 +105,7 @@ function ProfileFormOrganism({ user }) {
 
         <Form.Item className="full-width-button">
           <ButtonAtom type="primary" htmlType="submit" loading={loading}>
-            Şifreyi Güncelle
+            {t('Update Password')}
           </ButtonAtom>
         </Form.Item>
 

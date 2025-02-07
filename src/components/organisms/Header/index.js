@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../../store/actions/authActions';
 import { FaUserCircle, FaSun, FaMoon, FaBars, FaTimes } from 'react-icons/fa';
 import './styles.css';
+import LanguageSwitcher from '../../molecules/LanguageSwitcher';
 
 function Header({ toggleSidebar, isSidebarOpen }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  console.log(localStorage.getItem('selectedLanguage'));
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -46,6 +48,7 @@ function Header({ toggleSidebar, isSidebarOpen }) {
       </div>
 
       <div className="header-right">
+        <LanguageSwitcher />
         <button onClick={toggleThemeMode} className="theme-button" aria-label="Temayı Değiştir">
           {theme === 'light' ? <FaMoon /> : <FaSun />}
         </button>

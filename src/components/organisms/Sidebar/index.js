@@ -39,7 +39,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
-                <FaTachometerAlt className="sidebar-icon" /> Dashboard
+                <FaTachometerAlt className="sidebar-icon" /> Anasayfa
               </NavLink>
             </li>
             <li>

@@ -21,6 +21,7 @@ import UnauthorizedPage from './pages/UnauthorizedPage';
 import EditTaskPage from './pages/Tasks/EditTaskPage';
 import EditUserPage from './pages/EditUserPage';
 import useAuthPersistence from './hooks/useAuthPersistence';
+import './i18n'
 
 function App() {
   const dispatch = useDispatch();

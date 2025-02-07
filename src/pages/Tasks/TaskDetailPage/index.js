@@ -12,9 +12,11 @@ import AddCommentForm from '../../../components/organisms/AddCommentForm';
 import HistoryModal from '../../../components/organisms/HistoryModal';
 import useWindowsSize from '../../../hooks/useWindowsSize';
 import { FaArrowLeft } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
 
 
 function TaskDetailPage() {
+  const { t } = useTranslation();
   const { taskId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -70,7 +72,7 @@ function TaskDetailPage() {
     const user = users.find(u => u.id === changedById);
     if (user) return user.name;
     const customer = customers.find(c => c.id === changedById);
-    return customer ? customer.name : 'Bilinmiyor';
+    return customer ? customer.name : t('Unknown');
   };
 
   useEffect(() => {
@@ -97,7 +99,7 @@ function TaskDetailPage() {
   const taskCustomer = customers.filter((customer) => (task?.customer || []).includes(customer.id));
 
   const createdUserName = useMemo(() => {
-    if (!task) return 'Bilinmiyor';
+    if (!task) return t('Unknown');
     // console.log('Task createdUser ID:', task.createdUser);
     const user = users.find(u => u.id === task.createdUser);
     if (user) {
@@ -110,7 +112,7 @@ function TaskDetailPage() {
       return customer.name;
     }
     // console.log('User veya customer bulunamadı.');
-    return 'Bilinmiyor';
+    return t('Unknown');
   }, [task, users, customers]);
 
   const formattedCreatedAt = useMemo(() => {
@@ -143,7 +145,7 @@ function TaskDetailPage() {
     }
 
     if (newAssignees.length === 0) {
-      message.error('Atama yapabilmek için en az bir kullanıcı seçmelisiniz.');
+      message.error(t('At least one user must be selected'));
       return;
     }
 
@@ -151,6 +153,7 @@ function TaskDetailPage() {
 
     dispatch(action.assignTask(task.id, newAssignees, currentUser.uid))
       .catch((error) => {
+        message.error(t('Assignment error'));
         // console.error('Görev atama hatası:', error);
       });
   };
@@ -158,45 +161,45 @@ function TaskDetailPage() {
   const handleCommentSubmit = (values) => {
     const { comment, attachments } = values;
     if (comment.trim() === '') {
-      message.error('Yorum boş olamaz.');
+      message.error(t('Comment cannot be empty'));
       return;
     }
     dispatch(action.addComment(task.id, comment, currentUser.uid, attachments))
       .then(() => {
-        message.success('Yorum başarıyla eklendi.');
+        message.success(t('Comment added successfully'));
       })
       .catch((error) => {
-        message.error('Yorum eklenirken bir hata oluştu.');
+        message.error(t('An error occurred while adding the comment'));
       });
-    console.log(values)
-    console.log('Görev ID:', task.id);
+    // console.log(values)
+    // console.log('Görev ID:', task.id);
 
   };
 
 
   const handleEditTitle = () => {
     if (editTitle.trim() === '') {
-      message.error('Başlık boş olamaz.');
+      message.error(t('Title cannot be empty'));
       return;
     }
     dispatch(action.updateTask(task.id, { title: editTitle }, currentUser.uid))
       .then(() => {
-        message.success('Görev başlığı güncellendi.');
+        message.success(t('Task title updated'));
         setIsEditing(false);
       })
       .catch((error) => {
-        message.error('Görev başlığı güncellenirken bir hata oluştu.');
+        message.error(t('An error occurred while updating the task title'));
       });
   };
 
   const handleDeleteTask = () => {
     dispatch(action.deleteTask(task.id))
       .then(() => {
-        message.success('Görev başarıyla silindi.');
+        message.success(t('Task successfully deleted'));
         navigate('/tasks');
       })
       .catch((error) => {
-        message.error('Görev silinirken bir hata oluştu.');
+        message.error(t('An error occurred while deleting the task'));
       });
   };
 
@@ -206,10 +209,10 @@ function TaskDetailPage() {
 
     dispatch(action.updateTask(task.id, { status: newStatus }, currentUser.uid))
       .then(() => {
-        message.success('Görev durumu güncellendi');
+        message.success(t('Task status updated'));
       })
       .catch((error) => {
-        message.error('Görev durumu güncellenemedi: ' + error.message);
+        message.error(t('Task status could not be updated') + ': ' + error.message);
       });
   };
 
@@ -254,9 +257,9 @@ function TaskDetailPage() {
     return (
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <div className="error-container">
-          {tasksError && <Alert message="Görev Hatası" description={tasksError} type="error" showIcon style={{ marginBottom: '10px' }} />}
-          {usersError && <Alert message="Kullanıcı Hatası" description={usersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
-          {customersError && <Alert message="Müşteri Hatası" description={customersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
+          {tasksError && <Alert message={t('Task Error')} description={tasksError} type="error" showIcon style={{ marginBottom: '10px' }} />}
+          {usersError && <Alert message={t('User Error')} description={usersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
+          {customersError && <Alert message={t('Customer Error')} description={customersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
         </div>
       </HeaderSideBarTemplate>
     );
@@ -266,7 +269,7 @@ function TaskDetailPage() {
     return (
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <div className="task-detail">
-          <Alert message="Görev bulunamadı." type="warning" showIcon />
+          <Alert message={t('Task not found')} type="warning" showIcon />
         </div>
       </HeaderSideBarTemplate>
     );
@@ -278,7 +281,7 @@ function TaskDetailPage() {
         <div className="task-detail">
           <Card bordered={false} className='task-header-info'>
             <Button type="link" onClick={handleBack} className="back-button">
-              <FaArrowLeft /> Geri
+              <FaArrowLeft /> {t('Back')}
             </Button>
             <TaskHeader
               isEditing={isEditing}
