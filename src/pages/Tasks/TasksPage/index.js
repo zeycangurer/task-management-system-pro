@@ -1,35 +1,32 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import Header from '../../../components/organisms/Header';
-import Sidebar from '../../../components/organisms/Sidebar';
-import TaskList from '../../../components/organisms/TaskList';
 import './styles.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../../../store/actions/taskActions';
 import { fetchUsers } from '../../../store/actions/userActions';
 import { fetchCustomers } from '../../../store/actions/customerActions';
-import { startOfYear, format } from 'date-fns';
+import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import TitleAtom from '../../../components/atoms/Title';
 import FilterComponent from '../../../components/molecules/FilterComponent';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
+import TaskList from '../../../components/organisms/TaskList';
 import { useTranslation } from 'react-i18next';
 
 function TasksPage() {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const root = useSelector(state => state)
-  const tasksState = root.tasks;
-  const usersState = root.users;
-  const customersState = root.customers;
-  const currentUser = useSelector(state => state.profiles.user);
+
+  const tasksState = useSelector((state) => state.tasks);
+  const usersState = useSelector((state) => state.users);
+  const customersState = useSelector((state) => state.customers);
+  const currentUser = useSelector((state) => state.profiles.user);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const [dateRange, setDateRange] = useState({
     startDate: '2020-01-01',
-    endDate: format(new Date(), 'yyyy-MM-dd'),
+    endDate: format(new Date(), 'yyyy-MM-dd')
   });
   const [selectedUser, setSelectedUser] = useState('');
 
@@ -39,60 +36,6 @@ function TasksPage() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-
-  const filterTasks = () => {
-    // console.log("Filtering tasks with selectedUser:", selectedUser);
-    let filtered = tasksState.tasks;
-
-    if (currentUser?.role === 'customer') {
-      filtered = filtered.filter(task => task.customer === currentUser.id);
-    }
-
-    if (dateRange.startDate && dateRange.endDate) {
-      const start = new Date(dateRange.startDate);
-      const end = new Date(dateRange.endDate);
-      const fixedEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999);
-
-      // console.log("Start Date:", start, "Fixed End Date:", fixedEnd);
-
-      filtered = filtered.filter(task => {
-        const taskDate = task.createdAt
-          ? new Date(task.createdAt.seconds * 1000)
-          : null;
-
-        if (!taskDate) {
-          // console.log("Task excluded due to missing createdAt date:", task.id);
-          return false;
-        }
-
-        taskDate.setHours(0, 0, 0, 0);
-        const isWithinRange = taskDate >= start && taskDate <= fixedEnd;
-
-        if (!isWithinRange) {
-          // console.log(`Task excluded due to date: ${task.id}, Created At: ${taskDate}`);
-        }
-        return isWithinRange;
-      });
-    }
-
-    if (selectedUser) {
-      filtered = filtered.filter(task => {
-        const assignedTo = Array.isArray(task.assignedTo) ? task.assignedTo : [];
-        const hasUser = assignedTo.includes(selectedUser);
-        // console.log(`Task ID: ${task.id}, has selected user: ${hasUser}`);
-        return hasUser;
-      });
-    }
-
-    // console.log("Filtered tasks count:", filtered.length);
-    setFilteredTasks(filtered);
-  };
-
-
-  const handleCreateTask = () => {
-    navigate('/createTask');
-  };
-
   useEffect(() => {
     dispatch(fetchTasks());
     dispatch(fetchUsers());
@@ -100,89 +43,116 @@ function TasksPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (tasksState.loading || usersState.loading || customersState.loading) {
-      // console.log("Veriler yükleniyor...");
-      return;
+    const { loading, error, tasks } = tasksState;
+    const { loading: usersLoading, error: usersError } = usersState;
+    const { loading: customersLoading, error: customersError } = customersState;
+
+    if (
+      !loading &&
+      !usersLoading &&
+      !customersLoading &&
+      !error &&
+      !usersError &&
+      !customersError &&
+      Array.isArray(tasks)
+    ) {
+      if (currentUser?.role === 'customer') {
+        const customerTasks = tasks.filter((task) => task.customer === currentUser.id);
+        setFilteredTasks(customerTasks);
+      } else {
+        setFilteredTasks(tasks);
+      }
+    }
+  }, [tasksState, usersState, customersState, currentUser]);
+
+  const handleFilterTasks = () => {
+    let baseTasks;
+    if (currentUser?.role === 'customer') {
+      baseTasks = tasksState.tasks.filter((task) => task.customer === currentUser.id);
+    } else {
+      baseTasks = tasksState.tasks;
     }
 
-    if (tasksState.error || usersState.error || customersState.error) {
-      // console.log("Veri yükleme hatası:", tasksState.error, usersState.error, customersState.error);
-      return;
+    if (dateRange.startDate && dateRange.endDate) {
+      const start = new Date(dateRange.startDate);
+      const end = new Date(dateRange.endDate);
+      const fixedEnd = new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59, 999);
+
+      baseTasks = baseTasks.filter((task) => {
+        if (!task.createdAt) return false;
+        const taskDate = new Date(task.createdAt.seconds * 1000);
+        taskDate.setHours(0, 0, 0, 0);
+        return taskDate >= start && taskDate <= fixedEnd;
+      });
     }
 
-    if (!Array.isArray(tasksState.tasks) || !Array.isArray(usersState.users) || !Array.isArray(customersState.customers)) {
-      // console.log("Veriler doğru formatta değil");
-      return;
+    if (selectedUser) {
+      baseTasks = baseTasks.filter((task) => {
+        const assignedTo = Array.isArray(task.assignedTo) ? task.assignedTo : [];
+        return assignedTo.includes(selectedUser);
+      });
     }
 
-    // console.log("Yüklenen görevler:", JSON.stringify(tasksState.tasks));
-    // console.log("Yüklenen kullanıcılar:", JSON.stringify(usersState.users));
-    // console.log("Yüklenen müşteriler:", JSON.stringify(customersState.customers));
+    setFilteredTasks(baseTasks);
+  };
 
-    filterTasks();
-  }, [
-    tasksState.loading,
-    usersState.loading,
-    customersState.loading,
-    tasksState.error,
-    usersState.error,
-    customersState.error,
-    tasksState.tasks,
-    usersState.users,
-    customersState.customers,
-    dateRange,
-    selectedUser,
-  ]);
+  const handleCreateTask = () => {
+    navigate('/createTask');
+  };
+
+  const handleTaskClick = (taskId) => {
+    navigate(`/tasks/${taskId}`);
+  };
 
   const tasksWithUserNames = useMemo(() => {
-    return filteredTasks.map(task => {
-      const assignedUserNames = Array.isArray(task.assignedTo) && task.assignedTo.length > 0
-        ? task.assignedTo.map(userId => {
-          const user = usersState.users.find(user => user.id === userId);
-          return user ? user.name : t('Unknown');
-        }).join(', ')
-        : t('Unknown');
+    return filteredTasks.map((task) => {
+      const assignedUserNames =
+        Array.isArray(task.assignedTo) && task.assignedTo.length > 0
+          ? task.assignedTo
+              .map((userId) => {
+                const user = usersState.users.find((u) => u.id === userId);
+                return user ? user.name : t('Unknown');
+              })
+              .join(', ')
+          : t('Unknown');
 
       let createdUserName = t('Unknown');
-      const createdUserInUsers = usersState.users.find(user => user.id === task.createdUser);
-      const createdUserInCustomers = customersState.customers.find(customer => customer.id === task.createdUser);
+      const createdUserInUsers = usersState.users.find((u) => u.id === task.createdUser);
+      const createdUserInCustomers = customersState.customers.find((c) => c.id === task.createdUser);
+
       if (createdUserInUsers) {
         createdUserName = createdUserInUsers.name;
       } else if (createdUserInCustomers) {
         createdUserName = createdUserInCustomers.name;
       }
 
-      return { ...task, assignedToName: assignedUserNames, createdUserName };
+      return {
+        ...task,
+        assignedToName: assignedUserNames,
+        createdUserName
+      };
     });
-  }, [filteredTasks, usersState.users, customersState.customers]);
-
-  useEffect(() => {
-    // console.log("Tasks:", tasksState.tasks);
-    // console.log("Users:", usersState.users);
-    // console.log("Customers:", customersState.customers);
-    // console.log("Filtered Tasks:", filteredTasks);
-    // console.log("Tasks with User Names:", tasksWithUserNames);
-  }, [tasksState.tasks, usersState.users, customersState.customers, filteredTasks, tasksWithUserNames]);
-
-  const handleTaskClick = (taskId) => {
-    navigate(`/tasks/${taskId}`);
-  };
+  }, [filteredTasks, usersState.users, customersState.customers, t]);
 
   return (
     <div className="dashboard-container">
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
         <main className="tasks-main">
-          <TitleAtom level={1} className="title">{t('Tasks')}</TitleAtom>
-          <FilterComponent dateRange={dateRange}
+          <TitleAtom level={1} className="title">
+            {t('Tasks')}
+          </TitleAtom>
+          <FilterComponent
+            dateRange={dateRange}
             setDateRange={setDateRange}
             usersState={usersState}
             selectedUser={selectedUser}
             setSelectedUser={setSelectedUser}
-            filterTasks={filterTasks}
+            filterTasks={handleFilterTasks} 
             handleCreateTask={handleCreateTask}
             customersState={customersState}
-            type='tasks'
+            type="tasks"
           />
+
           <div className="tasks-list-section">
             {tasksState.loading ? (
               <p>{t('Loading tasks...')}</p>

@@ -57,49 +57,79 @@
 }
 
 .header-right {
+  /* background-color: white; */
   display: flex;
-  align-items: center;
-  flex-shrink: 1;
+  gap: 0.5rem;
+  align-items: center; 
+  flex-direction: row;
 }
 
-.theme-button {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  font-size: 1.2rem; 
+.lang-avatar, .user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   cursor: pointer;
-  margin-right: 15px;
-  transition: color 0.3s;
-  flex-shrink: 0;
-}
-
-.theme-button:hover {
-  color: var(--secondary-color);
-}
-
-.user-info {
+  transition: background-color 0.3s;
   display: flex;
   align-items: center;
-  margin-right: 15px;
-  color: var(--text-color);
-  flex-shrink: 1;
-  min-width: 0; 
+  justify-content: center;
 }
 
-.user-icon {
-  font-size: 1.5rem; 
-  margin-right: 8px;
-  color: var(--primary-color);
-  flex-shrink: 0;
+.user-avatar-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
 }
 
-.user-email {
-  font-size: 1rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 150px; 
+.lang-avatar-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
 }
+
+.lang-avatar:hover, .user-avatar:hover {
+  background-color:var(--background-color);
+}
+
+.language-dropdown-menu, .user-dropdown-menu {
+  border-radius: 8px; 
+  background-color: var(--languser-dropdown-color) !important;
+}
+.language-dropdown-menu .ant-dropdown-menu-item .ant-dropdown-menu-title-content {
+  color: var(--text-light) !important;
+  font-size: 0.95rem; 
+}
+
+.language-dropdown-menu .ant-dropdown-menu-item:hover,
+.user-dropdown-menu .ant-dropdown-menu-item:hover {
+  background-color: rgba(255,255,255, 0.15) !important; 
+  color: white !important;
+}
+
+.menu-item-selected {
+  background-color:var(--sidebar-color); 
+  font-weight: bold;
+  color: white !important;
+  /* width: 20px; 
+  margin-right: 8px; 
+  border-radius:20% */
+}
+
+
+.user-dropdown-menu .ant-dropdown-menu-item {
+  font-size: 0.95rem;
+  color: var(--text-light) !important;
+
+}
+
+.lang-menu-item {
+  width: 20px; 
+  margin-right: 8px; 
+  border-radius:20%;
+  color:var(--text-color) !important;
+}
+
 
 .logout-button {
   background-color: var(--error-color);
@@ -141,11 +171,6 @@
     display: none;
   }
 
-  .theme-button {
-    font-size: 1rem; 
-    margin-right: 10px;
-  }
-
   .user-icon {
     font-size: 1.2rem; 
   }
@@ -160,6 +185,8 @@
     font-size: 0.8rem; 
   }
 }
+
+
 
 @media (max-width: 480px) {
   .header-title {

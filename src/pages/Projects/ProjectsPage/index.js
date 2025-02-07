@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchProjects } from '../../../store/actions/projectActions';
@@ -8,19 +8,18 @@ import AlertAtom from '../../../components/atoms/Alert';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 import { fetchUsers } from '../../../store/actions/userActions';
 import { fetchCustomers } from '../../../store/actions/customerActions';
-import { format, startOfYear } from 'date-fns';
+import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 function ProjectsPage() {
   const { t } = useTranslation();
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { projects, loading, error } = useSelector((state) => state.projects);
   const { users, loading: usersLoading, error: usersError } = useSelector((state) => state.users);
   const { customers, loading: customersLoading, error: customersError } = useSelector((state) => state.customers);
-  const currentUser = useSelector(state => state.profiles.user);
+  const currentUser = useSelector((state) => state.profiles.user);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -29,6 +28,7 @@ function ProjectsPage() {
     endDate: format(new Date(), 'yyyy-MM-dd'),
   });
   const [selectedUser, setSelectedUser] = useState('');
+
   const [filteredProjects, setFilteredProjects] = useState([]);
 
   const toggleSidebar = () => {
@@ -43,45 +43,6 @@ function ProjectsPage() {
     navigate(`/projects/${projectId}`);
   };
 
-  const getProjectDate = (project) => {
-
-    if (project.createdAt && project.createdAt.seconds) {
-      return new Date(project.createdAt.seconds * 1000 + project.createdAt.nanoseconds / 1000000);
-    } else if (typeof project.createdAt === 'string') {
-      return new Date(project.createdAt);
-    }
-    return null;
-  };
-
-  const filterProjects = () => {
-    let filtered = projects;
-
-    if (currentUser?.role === 'customer') {
-      filtered = filtered.filter(project => project.customerId === currentUser.id);
-    }
-
-    if (dateRange.startDate && dateRange.endDate) {
-      const start = new Date(dateRange.startDate);
-      const end = new Date(dateRange.endDate);
-      end.setHours(23, 59, 59, 999);
-
-      filtered = filtered.filter((project) => {
-        const projectDate = getProjectDate(project);
-        if (!projectDate) return false;
-        return projectDate >= start && projectDate <= end;
-      });
-    }
-
-    if (selectedUser) {
-      filtered = filtered.filter((project) => {
-        const assignedUsers = Array.isArray(project.assignedUsers) ? project.assignedUsers : [];
-        return assignedUsers.includes(selectedUser);
-      });
-    }
-
-    setFilteredProjects(filtered);
-  };
-
   useEffect(() => {
     dispatch(fetchProjects());
     dispatch(fetchUsers());
@@ -89,16 +50,78 @@ function ProjectsPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!loading && !usersLoading && !customersLoading && !error && !usersError && !customersError) {
-      if (Array.isArray(projects) && Array.isArray(users) && Array.isArray(customers)) {
-        filterProjects();
+    if (
+      !loading &&
+      !usersLoading &&
+      !customersLoading &&
+      !error &&
+      !usersError &&
+      !customersError &&
+      Array.isArray(projects) &&
+      Array.isArray(users) &&
+      Array.isArray(customers)
+    ) {
+      if (currentUser?.role === 'customer') {
+        const customerProjects = projects.filter(p => p.customerId === currentUser.id);
+        setFilteredProjects(customerProjects);
+      } else {
+        setFilteredProjects(projects);
       }
     }
-  }, [loading, usersLoading, customersLoading, error, usersError, customersError, projects, users, customers, dateRange, selectedUser]);
+  }, [
+    loading,
+    usersLoading,
+    customersLoading,
+    error,
+    usersError,
+    customersError,
+    projects,
+    users,
+    customers,
+    currentUser
+  ]);
 
-  // if (loading || usersLoading || customersLoading) {
-  //   return <SpinAtom tip="Yükleniyor..." />;
-  // }
+  const getProjectDate = (project) => {
+    if (project.createdAt && project.createdAt.seconds) {
+      return new Date(
+        project.createdAt.seconds * 1000 +
+        project.createdAt.nanoseconds / 1000000
+      );
+    } else if (typeof project.createdAt === 'string') {
+      return new Date(project.createdAt);
+    }
+    return null;
+  };
+
+  const filterProjects = () => {
+    let baseProjects;
+    if (currentUser?.role === 'customer') {
+      baseProjects = projects.filter(p => p.customerId === currentUser.id);
+    } else {
+      baseProjects = projects;
+    }
+
+    if (dateRange.startDate && dateRange.endDate) {
+      const start = new Date(dateRange.startDate);
+      const end = new Date(dateRange.endDate);
+      end.setHours(23, 59, 59, 999);
+
+      baseProjects = baseProjects.filter((project) => {
+        const projectDate = getProjectDate(project);
+        if (!projectDate) return false;
+        return projectDate >= start && projectDate <= end;
+      });
+    }
+
+    if (selectedUser) {
+      baseProjects = baseProjects.filter((project) => {
+        const assignedUsers = Array.isArray(project.assignedUsers) ? project.assignedUsers : [];
+        return assignedUsers.includes(selectedUser);
+      });
+    }
+
+    setFilteredProjects(baseProjects);
+  };
 
   if (error || usersError || customersError) {
     return (
@@ -110,8 +133,6 @@ function ProjectsPage() {
       />
     );
   }
-
-  // console.log(projects)
 
   return (
     <div className="dashboard-container">
@@ -125,7 +146,7 @@ function ProjectsPage() {
           users={users}
           selectedUser={selectedUser}
           setSelectedUser={setSelectedUser}
-          onFilter={filterProjects}
+          onFilter={filterProjects} 
         />
       </HeaderSideBarTemplate>
     </div>

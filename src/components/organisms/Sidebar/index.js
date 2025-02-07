@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   FaTachometerAlt,
@@ -8,11 +8,27 @@ import {
   FaChartPie
 } from 'react-icons/fa';
 import { RiAdminFill } from "react-icons/ri";
+import { FaSun, FaMoon } from 'react-icons/fa';
+
 
 import './styles.css';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 function Sidebar({ isOpen, toggleSidebar }) {
+  const { t } = useTranslation();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleThemeMode = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
+
   const userRole = useSelector(state => state.profiles.user?.role)
 
   const handleLinkClick = () => {
@@ -39,7 +55,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
-                <FaTachometerAlt className="sidebar-icon" /> Anasayfa
+                <FaTachometerAlt className="sidebar-icon" /> {t('Home')}
               </NavLink>
             </li>
             <li>
@@ -48,7 +64,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
-                <FaTasks className="sidebar-icon" /> Görevler
+                <FaTasks className="sidebar-icon" /> {t('Tasks')}
               </NavLink>
             </li>
             <li>
@@ -57,7 +73,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
-                <FaProjectDiagram className="sidebar-icon" /> Projeler
+                <FaProjectDiagram className="sidebar-icon" /> {t('Projects')}
               </NavLink>
             </li>
             {userRole === 'admin' || userRole === 'user' || userRole === 'manager' ?
@@ -67,7 +83,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                   className={({ isActive }) => isActive ? 'active' : ''}
                   onClick={handleLinkClick}
                 >
-                  <FaChartPie className="sidebar-icon" /> Analitik
+                  <FaChartPie className="sidebar-icon" /> {t('Analysis')}
                 </NavLink>
               </li> : null}
             <li>
@@ -76,7 +92,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
                 className={({ isActive }) => isActive ? 'active' : ''}
                 onClick={handleLinkClick}
               >
-                <FaUser className="sidebar-icon" /> Profil
+                <FaUser className="sidebar-icon" /> {t('Profile')}
               </NavLink>
             </li>
             {userRole === 'admin' ?
@@ -86,9 +102,14 @@ function Sidebar({ isOpen, toggleSidebar }) {
                   className={({ isActive }) => isActive ? 'active' : ''}
                   onClick={handleLinkClick}
                 >
-                  <RiAdminFill className="sidebar-icon" /> Admin Panel
+                  <RiAdminFill className="sidebar-icon" /> {t('Admin Panel')}
                 </NavLink>
               </li> : null}
+            <li>
+              <button onClick={toggleThemeMode} className="theme-button" aria-label="Temayı Değiştir">
+                {theme === 'light' ? <FaMoon /> : <FaSun />}
+              </button>
+            </li>
 
           </ul>
         </nav>
