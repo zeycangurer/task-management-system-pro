@@ -147,10 +147,10 @@ const resources = {
       "The task assignment process was completed successfully.": "The task assignment process was completed successfully.",
       "An error occurred while assigning a task.": "An error occurred while assigning a task.",
       "All tasks have been removed.": "All tasks have been removed.",
-      "All Tasks" : "All Tasks",
+      "All Tasks": "All Tasks",
       "Already assigned": "Zaten atanmış",
       "No tasks available for this project": "No tasks available for this project",
-      "Assign Task":"Assign Task",
+      "Assign Task": "Assign Task",
       "Tasks assigned to the project": "Tasks assigned To the project",
       "Attached Files": "Attached Files",
       "No attached files found.": "No attached files found.",
@@ -226,9 +226,15 @@ const resources = {
       "NameSurname": "Name and Surname",
       "Phone Number": "Phone Number",
       "Password": "Password",
-      "Analysis":"Analysis",
-      "Pending":"Pending"
-
+      "Analysis": "Analysis",
+      "Pending": "Pending",
+      "Search": "Search",
+      "Reset": "Reset",
+      "No data found matching your search criteria.": "No data found matching your search criteria.",
+      "Project successfully deleted.": "Project successfully deleted.",
+      "Task successfully deleted.": "Task successfully deleted.",
+      "User successfully deleted.": "User successfully deleted.",
+      "Please enter a project description.": "Please enter a project description."
     }
   },
   tr: {
@@ -376,10 +382,10 @@ const resources = {
       "The task assignment process was completed successfully.": "Görev atama işlemi başarıyla tamamlandı.",
       "An error occurred while assigning a task.": "Görev atama işlemi sırasında bir hata oluştu.",
       "All tasks have been removed.": "Tüm görevler kaldırıldı.",
-      "All Tasks" : "Bütün Görevler",
+      "All Tasks": "Bütün Görevler",
       "Already assigned": "Zaten atanmış",
       "No tasks available for this project": "Bu proje için uygun görev yok",
-      "Assign Task":"Görev Ata",
+      "Assign Task": "Görev Ata",
       "Tasks assigned to the project": "Projeye Atanmış Görevler",
       "Attached Files": "Ekli Dosyalar",
       "No attached files found.": "Ekli dosya bulunmuyor.",
@@ -455,9 +461,15 @@ const resources = {
       "NameSurname": "Ad Soyad",
       "Phone Number": "Telefon Numarası",
       "Password": "Şifre",
-      "Analysis":"Analizler",
-      "Pending":"Bekliyor"
-
+      "Analysis": "Analizler",
+      "Pending": "Bekliyor",
+      "Search": "Ara",
+      "Reset": "Temizle",
+      "No data found matching your search criteria.": "Aradığınız kriterlerde veri bulunamamaktadır.",
+      "Project successfully deleted.": "Proje başarıyla silinmiştir.",
+      "Task successfully deleted.": "Görev başarıyla silinmiştir.",
+      "User successfully deleted.": "Kullanıcı başarıyla silinmiştir.",
+      "Please enter a project description.": "Lütfen proje açıklaması girin."
     }
   }
 };

@@ -9,8 +9,12 @@ import './styles.css';
 import { useNavigate } from 'react-router-dom';
 import { deleteUser } from '../../store/actions/authActions';
 import { fetchCustomers } from '../../store/actions/customerActions';
+import { message } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 function AdminPanelPage() {
+    const { t } = useTranslation();
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // const currentUser = useSelector(state => state.profiles.user);
@@ -25,7 +29,7 @@ function AdminPanelPage() {
     // console.log(currentUser)
     // console.log(isAdmin)
 
- 
+
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -48,20 +52,33 @@ function AdminPanelPage() {
 
     const handleDeleteProject = (projectId) => {
         dispatch(deleteProject(projectId))
-            .then(() => navigate('/admin'))
+            .then(() => {
+                message.success(t('Project successfully deleted.'));
+                dispatch(fetchProjects());
+                navigate('/admin')
+            })
             .catch((err) => console.error(err));
     };
 
     const handleDeleteTask = (taskId) => {
         dispatch(deleteTask(taskId))
-            .then(() => navigate('/admin'))
+            .then(() => {
+                message.success(t('Task successfully deleted.'));
+                dispatch(fetchTasks());
+                navigate('/admin')
+            })
             .catch((err) => console.error(err));
     };
 
     const handleDeleteUser = async (userId) => {
         dispatch(deleteUser(userId))
-        .then(() => navigate('/admin'))
-        .catch((err) => console.error(err));
+            .then(() => {
+                message.success(t('User successfully deleted.'));
+                dispatch(fetchUsers());
+                dispatch(fetchCustomers());
+                navigate('/admin')
+            })
+            .catch((err) => console.error(err));
     };
 
     const combinedUsers = [

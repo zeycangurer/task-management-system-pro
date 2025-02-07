@@ -8,8 +8,8 @@ function AdminActionButtons({ onEdit, onDelete }) {
 
   return (
     <div className="admin-action-buttons">
-      <ButtonAtom type="primary" onClick={onEdit}>{t('Edit')}</ButtonAtom>
-      <ButtonAtom type="danger" onClick={onDelete}>{t('Delete')}</ButtonAtom>
+      <ButtonAtom type="primary" className="action-button edit-button action-button-admin-tables" onClick={onEdit}>{t('Edit')}</ButtonAtom>
+      <ButtonAtom type="primary" className="action-button delete-button action-button-admin-tables" onClick={onDelete}>{t('Delete')}</ButtonAtom>
     </div>
   );
 }

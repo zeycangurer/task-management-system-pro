@@ -13,12 +13,17 @@ const authReducer = (state = initialState, action) => {
     case types.LOGIN_REQUEST:
       return { ...state, loading: true, error: null };
     case types.LOGIN_SUCCESS:
-    case types.REGISTER_SUCCESS:
-    case types.DELETE_USER_SUCCESS:
       return {
         ...state,
         user: action.payload,
         authError: null,
+      };
+    case types.REGISTER_SUCCESS:
+      return {
+        ...state,
+        user: action.payload ? action.payload : state.user,
+        authError: null,
+        loading: false,
       };
     case types.LOGIN_ERROR:
     case types.REGISTER_ERROR:
@@ -31,6 +36,11 @@ const authReducer = (state = initialState, action) => {
       return initialState;
     case types.SET_ADMIN_STATUS:
       return { ...state, isAdmin: action.payload };
+    case types.DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
 
     default:
       return state;
