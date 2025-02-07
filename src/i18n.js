@@ -80,7 +80,7 @@ const resources = {
       "Close Sidebar": "Close Sidebar",
       "Open Sidebar": "Open Sidebar",
       "Task Management System Pro": "Task Management System Pro",
-      "GTS Pro": "GTS Pro",
+      "TMS Pro": "TMS Pro",
       "Home": "Home",
       "Tasks": "Tasks",
       "Projects": "Projects",
@@ -226,6 +226,9 @@ const resources = {
       "NameSurname": "Name and Surname",
       "Phone Number": "Phone Number",
       "Password": "Password",
+      "Analysis":"Analysis",
+      "Pending":"Pending"
+
     }
   },
   tr: {
@@ -305,7 +308,7 @@ const resources = {
       "Close Sidebar": "Sidebar Kapat",
       "Open Sidebar": "Sidebar Aç",
       "Task Management System Pro": "Görev Takip Sistemi Pro",
-      "GTS Pro": "GTS Pro",
+      "TMS Pro": "GTS Pro",
       "Home": "Anasayfa",
       "Tasks": "Görevler",
       "Projects": "Projeler",
@@ -452,6 +455,9 @@ const resources = {
       "NameSurname": "Ad Soyad",
       "Phone Number": "Telefon Numarası",
       "Password": "Şifre",
+      "Analysis":"Analizler",
+      "Pending":"Bekliyor"
+
     }
   }
 };

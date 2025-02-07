@@ -25,8 +25,8 @@ ChartJS.register(
 );
 
 const colorPalettes = {
-  taskPie: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-  projectPie: ['#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7'],
+  taskPie: ['#36A2EB','#FF6384'],
+  projectPie: ['#36A2EB','#FF6384'],
   taskBar: ['#4BC0C0'],
   projectBar: ['#B5EAD7'],
 };

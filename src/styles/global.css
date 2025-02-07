@@ -18,6 +18,7 @@
   --save-color: #2ecc71;      
   --delete-color: #e74c3c;    
   --history-color: #9b59b6; 
+  --languser-dropdown-color:#85c1e9; 
 }
 
 [data-theme="dark"] {
@@ -38,6 +39,7 @@
   --save-color: #27ae60;      
   --delete-color: #c0392b;    
   --history-color: #8e44ad;
+  --languser-dropdown-color:#1e272e;
 }
 
 * {
