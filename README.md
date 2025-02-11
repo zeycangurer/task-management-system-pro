@@ -1,4 +1,5 @@
 
+
 # Task Management Pro
 
 This project is an application called **Task Management Pro**, built on React and Firebase technologies. It includes features such as role-based permission management, project and task tracking, adding comments/files, and analytics screens.
@@ -33,7 +34,6 @@ This project is an application called **Task Management Pro**, built on React an
 7.  [Environment Variables](#environment-variables)
     
 8.  [Usage](#usage)
-9. [License](#license)
     
 
 
@@ -277,35 +277,37 @@ The design and user experience of this application have been addressed with the 
         
     -   A **responsive** design has been implemented using Ant Design’s grid system and ready-made design elements.
         
-2.  **Dark/Light Mode**
+2.  **Multiple Language Options**
+	-  The default language of the application is set to Turkish; however, the user can easily switch between English and Turkish thanks to the language selector within the application.
+3. **Dark/Light Mode**
     
     -   Users can switch between **dark or light themes** based on their preference. The themes update design elements (background, text colors, etc.) instantly.
         
-3.  **Responsive Design**
+4.  **Responsive Design**
     
     -   **Media queries** and Ant Design’s grid system are used to ensure an optimal view on desktop, tablet, and mobile devices.
         
     -   Tables, cards, and charts adapt to the screen size.
         
-4.  **User-Friendly Forms and Validation**
+5.  **User-Friendly Forms and Validation**
     
     -   **Ant Design**’s `Form` component and `rules` prop are used for validation in task and project creation/edit forms.
         
     -   Real-time feedback is provided for incorrect or missing fields.
         
-5.  **Data Visualization with Charts**
+6.  **Data Visualization with Charts**
     
     -   **Chart.js** and **react-chartjs-2** are used to visually track the status of tasks and projects, as well as user performance, through pie charts and bar charts.
         
-6.  **Clear and Consistent Navigation**
+7.  **Clear and Consistent Navigation**
     
     -   Through a side or top menu bar, **menu items** (Tasks, Projects, Analysis, Admin Panel, etc.) are shown dynamically based on the user’s role, ensuring comfortable navigation.
         
-7.  **Notifications and Feedback**
+8.  **Notifications and Feedback**
     
     -   By using Ant Design’s `notification` or `message` components, the user is instantly informed of the results of actions (successful operation, error, warning, etc.).
         
-8.  **Performance-Focused Approach**
+9.  **Performance-Focused Approach**
     
     -   Asynchronous operations are managed with Redux Thunk, avoiding unnecessary re-renders.
         
@@ -322,6 +324,7 @@ Thus, the user interface is both **visually satisfactory** and provides a **comf
 -   **Frontend:**
     -   [React](https://reactjs.org/): For building user interfaces.
     -   [Redux](https://react-redux.js.org/): For state management.
+    - [i18next](https://www.i18next.com/): Turkish English language option
     -   [Chart.js](https://www.chartjs.org/) and [react-chartjs-2](https://react-chartjs-2.js.org/): For charts.
     -   [Redux Thunk](https://github.com/reduxjs/redux-thunk): Middleware for handling asynchronous actions.
     -   [Ant Design](https://ant.design/): UI components and design system.
@@ -396,6 +399,4 @@ REACT_APP_CLOUDINARY_UPLOAD_PRESET=...
     
 9.  For a **responsive** experience, you can test the application on mobile or different screen sizes.
 
-## License
 
-For detailed information about this project’s license, please see the LICENSE file (if not available, adding one is recommended).
