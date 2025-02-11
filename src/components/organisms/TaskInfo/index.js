@@ -44,7 +44,7 @@ function TaskInfo({
       navigate(`/projects/${task.projectId}`);
     }
   };
-  // console.log(project)
+  console.log(task)
 
   return (
     <div className="task-info">

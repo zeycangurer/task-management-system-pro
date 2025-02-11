@@ -74,7 +74,10 @@ function ProjectDetailPage() {
 
   const handleDeleteProject = () => {
     dispatch(projectAction.deleteProject(projectId))
-      .then(() => navigate('/projects'))
+      .then(() => {
+        message.success(t('Project successfully deleted'));
+        navigate('/projects')
+      })
       .catch((err) => console.error(err));
   };
 

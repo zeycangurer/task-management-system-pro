@@ -15,8 +15,7 @@ function TaskCreationPage() {
   const location = useLocation();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const currentUser = useSelector((state) => state.auth.user);
-
+  const currentUser = useSelector(state => state.profiles.user);
   const queryParams = new URLSearchParams(location.search);
   const projectId = queryParams.get('projectId');
 
@@ -25,7 +24,7 @@ function TaskCreationPage() {
       ...values,
       projectId: values.projectId || projectId,
     };
-    dispatch(taskAction.addTask(taskData, currentUser.uid))
+    dispatch(taskAction.addTask(taskData, currentUser.id))
       .then(() => {
         message.success(t('Task successfully created'));
         navigate(-1);
