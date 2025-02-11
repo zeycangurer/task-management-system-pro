@@ -51,7 +51,6 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
   const [form] = Form.useForm();
 
   const handleFinish = (values) => {
-    // console.log(values)
     onSubmit(values);
   };
 
@@ -125,7 +124,9 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
           <ButtonAtom>{t('Select file')}</ButtonAtom>
         </UploadAtom>
       </FormItemMolecule>
-
+      <div className="upload-description">
+        {t('You can upload multiple files.')}
+      </div>
       <FormItemMolecule
         label={t('Priority Level')}
         name="priority"
@@ -145,7 +146,7 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
       <FormItemMolecule
         label={t('Category')}
         name="category"
-        rules={[{ required: true, message: t('Please select a category.')}]}
+        rules={[{ required: true, message: t('Please select a category.') }]}
       >
         <SelectAtom placeholder={t('Category')} loading={!taskCategories || taskCategories.length === 0}
           disabled={!taskCategories || taskCategories.length === 0}>
@@ -168,7 +169,7 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
           ))}
         </SelectAtom>
       </FormItemMolecule>
-      <FormItemMolecule label={t('Users (Assignees)')} name="assignedTo" rules={[{ required: true, message: t('Please select at least one user.')}]}>
+      <FormItemMolecule label={t('Users (Assignees)')} name="assignedTo" rules={[{ required: true, message: t('Please select at least one user.') }]}>
         <SelectAtom mode="multiple" placeholder={t('Users (Assignees)')} loading={usersLoading}>
           {users.map((user) => (
             <SelectAtom.Option key={user.id} value={user.id}>

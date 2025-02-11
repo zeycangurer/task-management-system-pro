@@ -5,6 +5,7 @@ import ButtonAtom from '../../atoms/Button';
 import UploadAtom from '../../atoms/Upload';
 import FormItemMolecule from '../../molecules/FormItem';
 import { useTranslation } from 'react-i18next';
+import './styles.css'
 
 function AddCommentForm({ handleCommentSubmit, size }) {
   const { t } = useTranslation();
@@ -19,11 +20,15 @@ function AddCommentForm({ handleCommentSubmit, size }) {
   return (
     <Card bordered={false} className="add-comment-card">
       <Form layout="vertical" onFinish={onFinish} form={form}>
-      <FormItemMolecule label={t('Add File')} name="attachments">
+        <FormItemMolecule label={t('Add File')} name="attachments">
           <UploadAtom multiple beforeUpload={() => false}>
             <ButtonAtom>{t('Choose File')}</ButtonAtom>
           </UploadAtom>
         </FormItemMolecule>
+        <div className="upload-description">
+          {t('You can upload multiple files.')}
+        </div>
+
         <Form.Item
           name="comment"
           label={t('Comment')}

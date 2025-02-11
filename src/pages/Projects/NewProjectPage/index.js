@@ -14,7 +14,7 @@ function NewProjectPage() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const currentUser = useSelector((state) => state.auth.user);
+  const currentUser = useSelector((state) => state.profiles.user);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -26,7 +26,7 @@ function NewProjectPage() {
       ...values,
       createdAt: Timestamp.fromDate(new Date()),
       status: 'aktif',
-      createdBy: currentUser.uid,
+      createdBy: currentUser.id,
     };
 
     dispatch(addProject(projectData))

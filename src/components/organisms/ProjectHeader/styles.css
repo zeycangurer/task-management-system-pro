@@ -5,6 +5,7 @@
   border-bottom: 0.5px solid gray;
   padding-bottom: 10px;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .title-section {
@@ -15,6 +16,14 @@
   font-size: 20px;
   margin: 5px;
   color: var(--text-color);
+}
+
+.buttons-container-projectheader {
+  flex: 0 1 auto;
+  order: 2;
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap; 
 }
 
 .buttons-container-projectheader > * {
@@ -31,6 +40,7 @@
     align-items: flex-start;
     max-width: calc(100vw - 20px);
     overflow-x: auto;
+    flex-wrap: nowrap;
   }
 
   .buttons-container-projectheader {
@@ -46,6 +56,7 @@
   .project-header {
     max-width: calc(100vw - 20px);
     overflow-x: auto;
+    flex-wrap: nowrap;
   }
   .buttons-container-projectheader {
     margin-top: 10px;
