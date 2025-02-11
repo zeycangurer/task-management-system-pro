@@ -43,12 +43,6 @@
   font-weight: bold;
 }
 
-.register-header-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
 .theme-button-register {
   background: none;
   border: none;

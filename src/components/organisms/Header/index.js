@@ -8,13 +8,19 @@ import { useTranslation } from 'react-i18next';
 import trFlag from '../../../assets/tr.png';
 import enFlag from '../../../assets/eng.png';
 import { useNavigate } from 'react-router-dom';
+import useWindowSize from '../../../hooks/useWindowsSize';
 
 function Header({ toggleSidebar, isSidebarOpen }) {
+  const windowSize = useWindowSize()
   const { t, i18n } = useTranslation();
   const navigate = useNavigate()
   const dispatch = useDispatch();
   const user = useSelector((state) => state.profiles.user);
   // console.log(localStorage.getItem('selectedLanguage'));
+
+  const avatarSize = windowSize.width && windowSize.width < 768 ? 28 : 36;
+  const langAvatarWidth = windowSize.width && windowSize.width < 768 ? '1.5rem' : '2rem';
+  const langAvatarHeight = windowSize.width && windowSize.width < 768 ? '1.25rem' : '1.75rem';
 
 
   const handleLogout = () => {
@@ -90,14 +96,18 @@ function Header({ toggleSidebar, isSidebarOpen }) {
               <img
                 src={getCurrentLangFlag()}
                 alt={i18n.language}
-                style={{ width: '2rem', height: '1.75rem', borderRadius:'20%'}}
+                style={{
+                  width: langAvatarWidth,
+                  height: langAvatarHeight,
+                  borderRadius: '20%'
+                }}
               />
             </div>
           </div>
         </Dropdown>
         <Dropdown overlay={userMenu} trigger={['click']} placement="bottomRight">
           <div className="user-avatar" title={user?.name || user?.email}>
-            <Avatar size={36} className="user-avatar-icon">
+            <Avatar size={avatarSize} className="user-avatar-icon">
               {user?.name
                 ? user.name.charAt(0).toUpperCase()
                 : (user?.email || 'U').charAt(0).toUpperCase()}

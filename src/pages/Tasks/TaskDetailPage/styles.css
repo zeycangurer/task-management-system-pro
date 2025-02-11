@@ -13,9 +13,11 @@
   margin-bottom: 20px;
 }
 
-.loading-container, .error-container, .task-detail {
-  padding: 20px;
+.task-loading-container, .task-error-container {
+  padding: 100px !important;
 }
+
+
 
 .title-container {
   align-content: center;

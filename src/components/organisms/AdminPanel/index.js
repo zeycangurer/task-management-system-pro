@@ -8,6 +8,9 @@ import ButtonAtom from '../../atoms/Button';
 import { useNavigate } from 'react-router-dom';
 import './styles.css';
 import { useTranslation } from 'react-i18next';
+import { FaFolderPlus } from 'react-icons/fa';
+import { HiUserAdd } from "react-icons/hi";
+import { MdAddTask } from 'react-icons/md';
 
 const { Option } = Select;
 
@@ -48,7 +51,7 @@ function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditPr
                         <Option value="user">{t('Employees')}</Option>
                         <Option value="customer">{t('Customers')}</Option>
                     </Select>
-                    <ButtonAtom className="action-button secondary" onClick={() => navigate('/admin/register')}>{t('Create User')}</ButtonAtom>
+                    <ButtonAtom className="action-button secondary" onClick={() => navigate('/admin/register')}><HiUserAdd />{t('Create User')}</ButtonAtom>
                 </div>
 
             </div>
@@ -68,7 +71,7 @@ function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditPr
                         ))}
                     </Select>
                     <ButtonAtom className="action-button default" onClick={() => navigate('/projects/new')}>
-                        {t('Create Project')}
+                        <FaFolderPlus /> {t('Create Project')}
                     </ButtonAtom>
                 </div>
             </div>
@@ -80,22 +83,26 @@ function AdminPanel({ users, projects, tasks, onEditUser, onDeleteUser, onEditPr
 
             <div className="admin-action-container">
                 <h2>{t('Task Management')}</h2>
-                <div className='admin-filter-button'>
-                    <Select className="filter-dropdown" value={selectedAssignedUser} onChange={setSelectedAssignedUser}>
-                        <Option value="all">{t('All Tasks')}</Option>
-                        {users.map(user => (
-                            <Option key={user.id} value={user.id}>{user.name}</Option>
-                        ))}
-                    </Select>
-                    <Select className="filter-dropdown" value={selectedProject} onChange={setSelectedProject}>
-                        <Option value="all">{t('All Projects')}</Option>
-                        {projects.map(project => (
-                            <Option key={project.id} value={project.id}>{project.title}</Option>
-                        ))}
-                    </Select>
-                    <ButtonAtom className="action-button primary" onClick={() => navigate('/createTask')}>
-                        {t('Create Task')}
-                    </ButtonAtom>
+                <div className='admin-filter-button-task'>
+                    <div className="dropdowns-container">
+                        <Select className="filter-dropdown" value={selectedAssignedUser} onChange={setSelectedAssignedUser}>
+                            <Option value="all">{t('All Users')}</Option>
+                            {users.map(user => (
+                                <Option key={user.id} value={user.id}>{user.name}</Option>
+                            ))}
+                        </Select>
+                        <Select className="filter-dropdown" value={selectedProject} onChange={setSelectedProject}>
+                            <Option value="all">{t('All Projects')}</Option>
+                            {projects.map(project => (
+                                <Option key={project.id} value={project.id}>{project.title}</Option>
+                            ))}
+                        </Select>
+                    </div>
+                    <div className="button-container">
+                        <ButtonAtom className="action-button primary" onClick={() => navigate('/createTask')}>
+                            <MdAddTask />{t('Create Task')}
+                        </ButtonAtom>
+                    </div>
                 </div>
             </div>
             {filteredTasks.length > 0 ? (

@@ -6,14 +6,15 @@ import { useTranslation } from 'react-i18next';
 
 function TableAtom({ data, onDataClick, dataType }) {
   const { t } = useTranslation();
-  const searchInput = useRef(null);  
+  const searchInput = useRef(null);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [activeRowId, setActiveRowId] = useState(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
-    setSearchText(selectedKeys[0]);      
-    setSearchedColumn(dataIndex);        
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
   };
 
   const handleReset = (clearFilters) => {
@@ -26,7 +27,7 @@ function TableAtom({ data, onDataClick, dataType }) {
       <div style={{ padding: 8 }}>
         <Input
           ref={searchInput}
-          placeholder={t('Search')}   
+          placeholder={t('Search')}
           value={selectedKeys[0]}
           onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
@@ -67,9 +68,11 @@ function TableAtom({ data, onDataClick, dataType }) {
   });
 
   const columns = [
-    { title: t('Title'), dataIndex: 'title', key: 'title', width: 150, sorter: (a, b) => (a.title || '').localeCompare(b.title || ''),
-    sortDirections: ['ascend', 'descend'],
-    ...getColumnSearchProps('title'),  },
+    {
+      title: t('Title'), dataIndex: 'title', key: 'title', width: 150, sorter: (a, b) => (a.title || '').localeCompare(b.title || ''),
+      sortDirections: ['ascend', 'descend'],
+      ...getColumnSearchProps('title'),
+    },
   ];
 
   if (dataType === 'analytics') {
@@ -114,16 +117,19 @@ function TableAtom({ data, onDataClick, dataType }) {
       }
     );
   }
-console.log(data)
+  // console.log(data)
   return (
     <div className="data-list-container">
       <Table
         columns={columns}
         dataSource={data}
         rowKey="id"
-        pagination={{ pageSize: 6 }} 
+        pagination={{ pageSize: 6 }}
         onRow={(record) => ({
-          onClick: () => onDataClick(record.id),
+          onClick: () => {
+            setActiveRowId(record.id);
+            onDataClick(record.id);
+          },
         })}
         tableLayout="fixed"
         className="custom-table"
@@ -131,6 +137,8 @@ console.log(data)
         locale={{
           emptyText: t('No data found matching your search criteria.'),
         }}
+        rowClassName={(record) => (record.id === activeRowId ? 'active-row' : '')}
+
       />
     </div>
   );

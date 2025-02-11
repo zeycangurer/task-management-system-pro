@@ -51,11 +51,13 @@
   border-radius: 8px;
   background-color: var(--background-color);
   text-align: left;
+  width: 100%;
   /* box-shadow: 0 2px 8px var(--box-shadow-color); */
 }
 
 .full-width-button {
   width: 100%;
+  padding-top: 15px;
 }
 
 .full-width-button button {
@@ -69,11 +71,27 @@
 .error-text {
   color: red;
   margin-top: 10px;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 100%; 
 }
 
-.user-avatar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
+.profile-page .profile-info .user-avatar {
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+}
+
+.profile-page .profile-info .user-avatar .ant-avatar {
+  border-radius: 50% !important;
+  object-fit: cover;
+}
+
+.profile-form .ant-input {
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-top: 15px;
 }

@@ -7,7 +7,7 @@
   border-radius: 8px;
   border: 1px solid var(--border-color);
   box-shadow: 0 4px 8px var(--box-shadow-color);
-  height:400px;
+  height: auto;
 }
 
 .latest-items {
@@ -37,7 +37,9 @@
   padding: 10px;
   cursor: pointer;
   border-bottom: 1px solid #eee;
-  transition: background 0.3s, color 0.3s;
+  transition:
+    background 0.3s,
+    color 0.3s;
 }
 
 .latest-items ul li:last-child {
@@ -45,7 +47,7 @@
 }
 
 .latest-items ul li:hover {
-  background: #007bff;
+  background: rgba(0,0,0,0.15)  ;
   color: white;
   border-radius: 5px;
 }
@@ -86,16 +88,17 @@
 } */
 
 .last-custom-pagination {
-  margin-top: 10px;
+  margin-top: 20px !important;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;  
-  position: absolute;
+  gap: 5px;
+  /* position: absolute;
   bottom: 10px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); */
+  position: relative;
 }
 
 .last-custom-pagination .ant-pagination-item {
@@ -105,6 +108,18 @@
   min-width: 32px;
   height: 32px;
   font-size: 16px;
+  padding-top: 5px;
+}
+
+.last-custom-pagination .ant-pagination-prev .ant-pagination-item-link svg,
+.last-custom-pagination .ant-pagination-next .ant-pagination-item-link svg {
+  vertical-align:text-top;
+}
+
+.last-custom-pagination .ant-pagination-prev a,
+.last-custom-pagination .ant-pagination-next a {
+  color: inherit !important;
+  transition: none !important;
 }
 
 .last-custom-pagination .ant-pagination-item-active {
@@ -116,7 +131,7 @@
 .last-custom-pagination .ant-pagination-item-active a {
   /* background-color: var(--primary-color);
   border-color: var(--primary-color); */
-  color: white;
+  color: white !important;
 }
 
 
@@ -126,32 +141,59 @@
   align-items: center;
   width: 100%;
   height: 100%;
-  
 }
 
-.last-custom-pagination .ant-pagination-prev,
-.last-custom-pagination .ant-pagination-next {
+.last-custom-pagination .ant-pagination-prev .ant-pagination-item-link,
+.last-custom-pagination .ant-pagination-next .ant-pagination-item-link {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-width: 32px;
-  height: 32px;
+  justify-content: center;
+  height: 100%;
 }
 
 @media (max-width: 768px) {
   .last-custom-pagination {
-      font-size: 14px;
+    position: relative;
+    left: auto;
+    transform: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  margin-top: 5px;
+
   }
 
   .last-custom-pagination .ant-pagination-item {
-      min-width: 28px;
-      height: 28px;
-      font-size: 14px;
+    min-width: 28px;
+    height: 28px;
+    font-size: 14px;
   }
 
   .last-custom-pagination .ant-pagination-prev,
   .last-custom-pagination .ant-pagination-next {
-      min-width: 28px;
-      height: 28px;
+    min-width: 28px;
+    height: 28px;
+  }
+
+  .latest-items-section {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+    padding: 15px;
+  }
+
+  .last-custom-pagination .ant-pagination-prev a,
+  .last-custom-pagination .ant-pagination-next a {
+    color: inherit !important;
+    transition: none !important;
+  }
+
+  .last-custom-pagination .ant-pagination-prev:hover a,
+  .last-custom-pagination .ant-pagination-next:hover a {
+    color: inherit !important;
   }
 }

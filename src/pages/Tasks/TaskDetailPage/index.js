@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
 import * as action from '../../../store/actions/taskActions';
+import * as projectAction from '../../../store/actions/projectActions';
 import { message, Spin, Alert, Button, Card } from 'antd';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 import TaskHeader from '../../../components/organisms/TaskHeader';
@@ -25,6 +26,8 @@ function TaskDetailPage() {
   const tasks = root.tasks.tasks;
   const users = root.users.users;
   const customers = root.customers.customers;
+  const projects = root.projects.projects;
+
   const currentUser = root.auth.user;
   const usersLoading = root.users.loading;
   const customersLoading = root.customers.loading;
@@ -34,6 +37,7 @@ function TaskDetailPage() {
   const tasksError = root.tasks.error;
 
   const [task, setTask] = useState(null);
+  const [project, setProject] = useState(null);
   const [assignment, setAssignment] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
@@ -43,6 +47,11 @@ function TaskDetailPage() {
 
   const size = useWindowsSize()
   // console.log(size)
+
+  useEffect(() => {
+    dispatch(projectAction.fetchProjects());
+  }, [dispatch]);
+  
 
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
@@ -76,18 +85,22 @@ function TaskDetailPage() {
   };
 
   useEffect(() => {
-    // console.log(tasks)
-    const foundTask = tasks.find((t) => t.id === taskId);
-    setTask(foundTask);
-    if (foundTask) {
-      setEditTitle(foundTask.title);
-      setAssignment(foundTask.assignedTo || []);
-      // console.log('Görev:', foundTask);
-      // console.log('Kullanıcılar:', JSON.stringify(users));
-      // console.log('Müşteriler:', JSON.stringify(customers));
+    if (tasks && tasks.length > 0) {
+      const foundTask = tasks.find((t) => t.id === taskId);
+      setTask(foundTask);
+      if (foundTask) {
+        setEditTitle(foundTask.title);
+        setAssignment(foundTask.assignedTo || []);
+        const foundProject = foundTask.projectId
+          ? projects.find(p => p.id === foundTask.projectId)
+          : null;
+        setProject(foundProject);
+        // console.log(foundProject)
+        // console.log(foundTask)
+        // console.log(projects)
+      }
     }
-  }, [tasks, taskId, users, customers]);
-
+  }, [tasks, taskId, users, customers, projects]);
 
 
 
@@ -256,7 +269,7 @@ function TaskDetailPage() {
   if (tasksError || usersError || customersError) {
     return (
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
-        <div className="error-container">
+        <div className="task-error-container">
           {tasksError && <Alert message={t('Task Error')} description={tasksError} type="error" showIcon style={{ marginBottom: '10px' }} />}
           {usersError && <Alert message={t('User Error')} description={usersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
           {customersError && <Alert message={t('Customer Error')} description={customersError} type="error" showIcon style={{ marginBottom: '10px' }} />}
@@ -268,7 +281,7 @@ function TaskDetailPage() {
   if (!task) {
     return (
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
-        <div className="task-detail">
+        <div className="task-error-container">
           <Alert message={t('Task not found')} type="warning" showIcon />
         </div>
       </HeaderSideBarTemplate>
@@ -306,6 +319,7 @@ function TaskDetailPage() {
               sortedUsers={sortedUsers}
               size={size.width <= 768 ? 'small' : 'middle'}
               taskCustomer={taskCustomer}
+              project={project}
             />
           </Card>
           <CommentsList formattedComments={formattedComments} />
@@ -316,6 +330,7 @@ function TaskDetailPage() {
             filteredHistory={filteredHistory}
             getChangedByName={getChangedByName}
             formatTimestamp={formatTimestamp}
+            dataType='task'
           />
         </div>
       </div>

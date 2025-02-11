@@ -10,7 +10,7 @@ function LatestItemsSection({ latestTasks, latestProjects }) {
 
   const [taskPage, setTaskPage] = useState(1);
   const [projectPage, setProjectPage] = useState(1);
-  const pageSize = 5; 
+  const pageSize = 3; 
 
   const paginatedTasks = latestTasks.slice((taskPage - 1) * pageSize, taskPage * pageSize);
   const paginatedProjects = latestProjects.slice((projectPage - 1) * pageSize, projectPage * pageSize);
@@ -58,7 +58,7 @@ function LatestItemsSection({ latestTasks, latestProjects }) {
 
         {latestProjects.length > pageSize && (
           <Pagination
-            className="custom-pagination"
+            className="last-custom-pagination"
             current={projectPage}
             pageSize={pageSize}
             total={latestProjects.length}

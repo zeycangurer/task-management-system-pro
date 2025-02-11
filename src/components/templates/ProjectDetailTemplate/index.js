@@ -182,6 +182,7 @@ function ProjectDetailTemplate({
                 filteredHistory={filteredHistory}
                 getChangedByName={getChangedByName}
                 formatTimestamp={formatTimestamp}
+                dataType = 'project'
             />
         </div>
     );

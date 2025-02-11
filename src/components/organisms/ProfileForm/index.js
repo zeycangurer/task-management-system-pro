@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changePassword } from '../../../store/actions/profileActions';
 import { logout } from '../../../store/actions/authActions';
@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 function ProfileFormOrganism({ user }) {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const { loading, error } = useSelector(state => state.users);
   const currentUserPassword = user.password;
@@ -24,6 +24,59 @@ function ProfileFormOrganism({ user }) {
 
   const [form] = Form.useForm();
   // console.log(user)
+
+  // useEffect(() => {
+  //   const handleLanguageChange = () => {
+  //     const currentErrors = form.getFieldsError().filter(({ errors }) => errors.length > 0);
+  //     const updatedErrors = currentErrors.map(({ name }) => {
+  //       const fieldName = name[0];
+  //       if (fieldName === 'currentPassword') {
+  //         return { name, errors: [t('Current password is wrong!')] };
+  //       }
+  //       if (fieldName === 'confirmPassword') {
+  //         return { name, errors: [t('New passwords do not match!')] };
+  //       }
+  //       return null;
+  //     }).filter(e => e !== null);
+      
+  //     if (updatedErrors.length > 0) {
+  //       form.setFields(updatedErrors);
+  //     }
+  //   };
+
+  //   i18n.on('languageChanged', handleLanguageChange);
+  //   return () => {
+  //     i18n.off('languageChanged', handleLanguageChange);
+  //   };
+  // }, [i18n, form, t]);
+
+  useEffect(() => {
+    const updateErrors = () => {
+      const currentErrors = form.getFieldsError().filter(({ errors }) => errors.length > 0);
+      if (currentErrors.length > 0) {
+        const updatedErrors = currentErrors.map(({ name, errors }) => {
+          const field = name[0];
+          let newError;
+          if (field === 'currentPassword') {
+            newError = errors[0].includes(t('wrong')) ? [t('Current password is wrong!')] : [t('Please enter your current password!')];
+          } else if (field === 'newPassword') {
+            newError = errors[0].includes(t('least')) ? [t('Password must be at least 6 characters long!')] : [t('Please enter your new password!')];
+          } else if (field === 'confirmPassword') {
+            newError = errors[0].includes(t('match')) ? [t('New passwords do not match!')] : [t('Please confirm your new password!')];
+          } else {
+            newError = errors; 
+          }
+          return { name, errors: newError };
+        });
+        form.setFields(updatedErrors);
+      }
+    };
+
+    i18n.on('languageChanged', updateErrors);
+    return () => {
+      i18n.off('languageChanged', updateErrors);
+    };
+  }, [i18n, form, t]);
 
   const handleChangePassword = async () => {
     try {

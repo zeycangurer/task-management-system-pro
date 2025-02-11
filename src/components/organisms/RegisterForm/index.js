@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 
 
 function RegisterFormOrganism({ isEditMode, initialValues }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,6 +31,16 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
       form.setFieldsValue(initialValues);
     }
   }, [initialValues, form]);
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      form.validateFields().catch(() => {});
+    };
+    i18n.on('languageChanged', handleLanguageChange);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n, form]);
 
   const handleSubmit = async (values) => {
     const selectedRole = userType || initialValues.role;
@@ -69,15 +79,17 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
 
   return (
     <div className="register-form">
-      <div className='register-header-container'>
-        <ButtonAtom type="link" onClick={handleBack} className="back-button">
-          <FaArrowLeft /> {t('Back')}
-        </ButtonAtom>
-      </div>
+
       <Form layout="vertical" form={form} onFinish={handleSubmit}>
+        <div className='back-button-container'>
+          <ButtonAtom type="link" onClick={handleBack} className="back-button">
+            <FaArrowLeft /> {t('Back')}
+          </ButtonAtom>
+        </div>
+
         <ErrorContainerMolecule error={error} />
 
-        <FormItemMolecule label={t('User Type')} name="role" rules={[{ required: !isEditMode, message: t('Please select user type!') }]}>
+        <FormItemMolecule style={{paddingTop:'25px'}} label={t('User Type')} name="role" rules={[{ required: !isEditMode, message: t('Please select user type!') }]}>
           <SelectAtom
             placeholder={t('User Type')}
             value={userType || initialValues.role}
@@ -90,17 +102,17 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
         </FormItemMolecule>
 
 
-        <FormItemMolecule label={t('NameSurname')} name="name" rules={[{ required: true, message: t('Please enter your name!') }]}>
+        <FormItemMolecule style={{paddingTop:'25px'}} label={t('NameSurname')} name="name" rules={[{ required: true, message: t('Please enter your name!') }]}>
           <InputAtom placeholder={t('NameSurname')} />
         </FormItemMolecule>
 
-        <FormItemMolecule label={t('Email')} name="email" rules={[
+        <FormItemMolecule style={{paddingTop:'25px'}} label={t('Email')} name="email" rules={[
           { required: true, message: t('Email is required') },
           { type: 'email', message: t('Please enter a valid email') }]}>
           <InputAtom type="email" placeholder={t('Email')} />
         </FormItemMolecule>
 
-        <FormItemMolecule label={t('Phone Number')} name="contactNumber" rules={[
+        <FormItemMolecule style={{paddingTop:'25px'}} label={t('Phone Number')} name="contactNumber" rules={[
           { required: true, message: t('Phone number is required') },
           {
             pattern: /^\d{10,15}$/,
@@ -111,7 +123,7 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
         </FormItemMolecule>
 
         {userType === 'customer' && (
-          <FormItemMolecule label={t('Company Name')} name="company" rules={[{ required: true, message: t('Please enter company name!') }]}>
+          <FormItemMolecule style={{paddingTop:'25px'}} label={t('Company Name')} name="company" rules={[{ required: true, message: t('Please enter company name!') }]}>
             <InputAtom placeholder={t('Company Name')} />
           </FormItemMolecule>
         )}
@@ -122,7 +134,7 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
           { pattern: /[A-Z]/, message: t('Password must contain at least one uppercase letter') },
           { pattern: /[a-z]/, message: t('Password must contain at least one lowercase letter') },
           { pattern: /[0-9]/, message: t('Password must contain at least one digit') }
-        ]}>
+        ]} style={{paddingTop:'30px'}}>
           <InputAtom
             type={visiblePasswords ? 'text' : 'password'}
             placeholder={t('Password')}
@@ -136,7 +148,7 @@ function RegisterFormOrganism({ isEditMode, initialValues }) {
           />
         </FormItemMolecule>
 
-        <Form.Item>
+        <Form.Item style={{paddingTop:'25px'}}>
           <ButtonAtom type="primary" htmlType="submit">
             {t('Save')}
           </ButtonAtom>

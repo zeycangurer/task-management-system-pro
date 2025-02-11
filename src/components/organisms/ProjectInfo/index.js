@@ -22,7 +22,7 @@ function ProjectInfo({
   const { t } = useTranslation();
 
   const statusColor = project.status === 'close' ? 'green' : 'blue';
-  const statusLabel = project.status === 'close' ? t('Complete Project') : t('Reopen Project');
+  const statusLabel = project.status === 'close' ? t('Complete') : t('Incomplete');
   const priorityColor = project.priority === 'high' ? 'red' : project.priority === 'medium' ? 'orange' : 'blue';
   const priorityLabel = projectPriorities.filter(item => item.value === project.priority)[0].label || t('Not specified');
   const categoryLabel = projectCategories.filter(item => item.value === project.category)[0].label || t('Not specified');
@@ -43,26 +43,18 @@ function ProjectInfo({
 
       <p><strong>{t('Assigned Users')}</strong></p>
       {assignedUsers && assignedUsers.length > 0 ? (
-        <List
-          itemLayout="horizontal"
-          dataSource={assignedUsers}
-          grid={{
-            column: assignedUsers.length || 1,
-          }}
-          renderItem={(user) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Avatar>{(user.name || user.email)[0].toUpperCase()}</Avatar>}
-                title={user.name || user.email}
-              />
-            </List.Item>
-          )}
-        />
-      ) :
-        (
-          <p>{t('No assignment')}</p>
-        )
-      }
+        <div className="assigned-users-container">
+          {assignedUsers.map(user => (
+            <div key={user.id} className="assigned-user-item">
+              <Avatar>{(user.name || user.email)[0].toUpperCase()}</Avatar>
+              <span className="assigned-user-title">{user.name || user.email}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>{t('No assignment')}</p>
+      )}
+
 
 
       <h3>{t('User Assignment')}</h3>

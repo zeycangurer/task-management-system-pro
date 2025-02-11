@@ -1,11 +1,10 @@
-
-
 .project-info-card {
   margin-bottom: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: calc(100vw - 20px);
+  overflow-x: auto;
 }
-
 
 .project-header-info {
   margin-bottom: 20px;
@@ -17,6 +16,8 @@
   margin-bottom: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: calc(100vw - 20px);
+  overflow-x: auto;
 }
 
 .project-comments {
@@ -117,5 +118,16 @@
 
   .project-detail .ant-btn {
     margin-bottom: 4px;
+  }
+}
+
+@media (max-width: 320px) {
+  .action-button.submit-button {
+    width: 80px;
+  }
+  
+  .add-comment-card {
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
   }
 }

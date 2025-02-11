@@ -63,7 +63,7 @@ function ChartsSection({ tasks, users, projects, viewType }) {
       <div className="filter-container-charts">
         <RangePicker
           onChange={handleDateFilter}
-          placeholder={[t("Start Date"), t("End Date")]}
+          placeholder={[t('Start Date'), t('End Date')]}
           value={selectedDateRange.length > 0 ? selectedDateRange : null}
         />
       </div>

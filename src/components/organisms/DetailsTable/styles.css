@@ -1,7 +1,90 @@
 .table-container {
-    padding: 30px 20px;
+  padding: 30px 20px;
 }
-.filters-container {
-    padding: 30px 0px;
 
+.table-container {
+  padding: 30px 20px;
+}
+
+.details-filters {
+  display: grid;
+  gap: 15px;
+  padding-bottom: 15px;
+
+}
+
+@media (min-width: 769px) {
+  .details-filters {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+    padding-bottom: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .details-filters {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "user status"
+      "date date";
+  }
+  .user-filter {
+    grid-area: user;
+  }
+  .status-filter {
+    grid-area: status;
+  }
+  .date-filter {
+    grid-area: date;
+  }
+}
+
+@media (max-width: 480px) {
+  .details-filters {
+    gap: 10px;
+    padding-bottom: 10px;
+  }
+}
+
+.details-filters + .buttons-group {
+  margin-top: 20px;
+}
+
+.buttons-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.list-button,
+.create-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-button {
+  background-color: var(--primary-color);
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.list-button:hover {
+  background-color: var(--secondary-color);
+}
+
+.create-button {
+  background-color: var(--success-color);
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+.create-button:hover {
+  background-color: #27ae60;
 }

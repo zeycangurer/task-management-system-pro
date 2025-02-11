@@ -32,7 +32,7 @@ function NewProjectPage() {
     dispatch(addProject(projectData))
       .then(() => {
         message.success(t('Project successfully created.'));
-        navigate('/projects');
+        navigate(-1);
       })
       .catch((error) => {
         message.error(t('An error occurred while creating the project.') + ": " + error.message);

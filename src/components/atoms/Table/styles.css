@@ -12,6 +12,10 @@
   margin-top: 16px;
   text-align: center;
 }
+
+.custom-table .active-row {
+  background-color: grey; 
+}
 /* 
 .status.completed {
   color: green;
@@ -36,6 +40,16 @@
   text-align: center;
 }
 
+.custom-table .ant-pagination-prev .ant-pagination-item-link,
+.custom-table .ant-pagination-next .ant-pagination-item-link {
+  color: var(--pagination-arrow-color) !important;
+  transition: none !important; 
+}
+
+.custom-table .ant-pagination-prev:hover .ant-pagination-item-link,
+.custom-table .ant-pagination-next:hover .ant-pagination-item-link {
+  color: var(--pagination-arrow-color) !important;
+}
 @media (max-width: 768px) {
   .custom-table .ant-table-thead > tr > th,
   .custom-table .ant-table-tbody > tr > td {

@@ -21,7 +21,8 @@ function TaskInfo({
   handleAssignSubmit,
   sortedUsers,
   size,
-  taskCustomer
+  taskCustomer,
+  project
 }) {
   const { t } = useTranslation();
 
@@ -35,15 +36,15 @@ function TaskInfo({
   const startDateStr = task.createdAt ? task.createdAt.toDate().toLocaleDateString() : t('Not specified');
   const endDateStr = task.dueDate ? task.dueDate.toDate().toLocaleDateString() : t('Not specified');
 
-  const projects = useSelector((state) => state.projects.projects);
-  const project = projects.find(p => p.id === task.projectId);
+  // const projects = useSelector((state) => state.projects.projects);
+  // const project = task.projectId ? projects.find(p => p.id === task.projectId) : null;
 
   const handleProjectClick = () => {
     if (task.projectId) {
-      navigate(`/projects/${task.projectId}`); 
+      navigate(`/projects/${task.projectId}`);
     }
   };
-  console.log(project)
+  // console.log(project)
 
   return (
     <div className="task-info">
@@ -56,13 +57,13 @@ function TaskInfo({
       <p><strong>{t('Start Date')}: </strong>{startDateStr}</p>
       <p><strong>{t('End Date')}: </strong>{endDateStr}</p>
       <p><strong>{t('Associated Project')}: </strong>{task.projectId ? (
-          <span className="project-link" onClick={handleProjectClick}>
-            {/* {project.title || 'Yükleniyor...'} */}
-          </span>
-        ) : (
-          t('No project for this task')
-        )}</p>
-      
+        <span className="project-link" onClick={handleProjectClick}>
+          {project.title || t('Loading...')}
+        </span>
+      ) : (
+        t('No project for this task')
+      )}</p>
+
 
       {task.attachments && task.attachments.length > 0 && (
         <div>
@@ -72,7 +73,7 @@ function TaskInfo({
             renderItem={(item, index) => (
               <List.Item key={index}>
                 <a href={item} target="_blank" rel="noopener noreferrer">
-                {t('File')} {index + 1}
+                  {t('File')} {index + 1}
                 </a>
               </List.Item>
             )}
@@ -82,28 +83,22 @@ function TaskInfo({
 
       <p><strong>{t('Assigned Users')}</strong></p>
 
+
       {assignedUserNames && assignedUserNames.length > 0 ? (
-        <List
-          itemLayout="horizontal"
-          dataSource={assignedUserNames}
-          grid={{
-            column: assignedUserNames.length || 1,
-          }}
-          renderItem={(user) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Avatar>{(user.name || user.email)[0].toUpperCase()}</Avatar>}
-                title={user.name || user.email}
-              />
-            </List.Item>
-          )}
-        />
+        <div className="assigned-users-container">
+          {assignedUserNames.map(user => (
+            <div key={user.id} className="assigned-user-item">
+              <Avatar>{(user.name || user.email)[0].toUpperCase()}</Avatar>
+              <span className="assigned-user-title">{user.name || user.email}</span>
+            </div>
+          ))}
+        </div>
       ) : (
         <p>{t('No assignment')}</p>
       )}
 
       <Col xs={24} sm={16} md={12}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className='assignment-dropdown-taskinfo-container'>
           <Select
             mode="multiple"
             allowClear
@@ -112,9 +107,10 @@ function TaskInfo({
             onChange={handleAssignChange}
             style={{ flex: 1, marginRight: '8px' }}
             optionLabelProp="label"
+            className="assignment-dropdown"
           >
             <Option key="all" value="all" label={t('All Users')}>
-            {t('All Users')}
+              {t('All Users')}
             </Option>
             {sortedUsers.map((user) => (
               <Option key={user.id} value={user.id} label={user.name}>
@@ -127,7 +123,7 @@ function TaskInfo({
               tooltipTitle={t('Assignment')}
               icon={FaCheck}
               onClick={handleAssignSubmit}
-              className="action-button assign-button"
+              className="action-button assign-button assign-button-taskinfo"
               size={size}
               type="primary"
             />

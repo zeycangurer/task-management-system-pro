@@ -74,37 +74,43 @@ function DetailsTable({ tasks, users }) {
   };
   return (
     <div className="table-container">
-      <div className="filters-container">
-        <Select
-          mode="multiple"
-          placeholder={t('Select User(s)')}
-          style={{ width: 200, marginRight: 10 }}
-          onChange={handleUserFilter}
-          value={selectedUsers}
-        >
-          {users.map((user) => (
-            <Option key={user.id} value={user.id}>
-              {user.name}
-            </Option>
-          ))}
-        </Select>
+    <div className="details-filters">
+      <div className="filter-item user-filter">
+          <Select
+            mode="multiple"
+            placeholder={t('Select User(s)')}
+            style={{ width: '100%' }}
+            onChange={handleUserFilter}
+            value={selectedUsers}
+          >
+            {users.map((user) => (
+              <Option key={user.id} value={user.id}>
+                {user.name}
+              </Option>
+            ))}
+          </Select>
+        </div>
+        <div className="filter-item status-filter">
+          <Select
+            placeholder={t('Select Status')}
+            style={{ width: '100%' }}
+            onChange={handleStatusFilter}
+            value={selectedStatus}
+            allowClear
+          >
+            <Option value="open">{t('Incomplete')}</Option>
+            <Option value="close">{t('Completed')}</Option>
+          </Select>
+        </div>
+        <div className="filter-item date-filter">
+          <RangePicker
+            onChange={handleDateFilter}
+            placeholder={[t('Start Date'), t('End Date')]}
+            value={selectedDateRange.length > 0 ? selectedDateRange : null}
+            style={{ width: '100%' }}
 
-        <Select
-          placeholder={t('Select Status')}
-          style={{ width: 150, marginRight: 10 }}
-          onChange={handleStatusFilter}
-          value={selectedStatus}
-          allowClear
-        >
-          <Option value="open">{t('Incomplete')}</Option>
-          <Option value="close">{t('Completed')}</Option>
-        </Select>
-
-        <RangePicker
-          onChange={handleDateFilter}
-          placeholder={[t('Start Date'), t('End Date')]}
-          value={selectedDateRange.length > 0 ? selectedDateRange : null}
-        />
+          />
+        </div>
       </div>
 
       {data.length === 0 ? (
