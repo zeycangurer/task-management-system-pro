@@ -44,6 +44,7 @@
   transition: font-size 0.3s ease;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-bottom: 5px;
 }
 
 .full-title {
@@ -64,7 +65,7 @@
   flex-direction: row;
 }
 
-.lang-avatar, .user-avatar {
+.lang-avatar {
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -73,6 +74,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 8px;
+  margin-right: 5px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0px;
+  margin-right: 5px;
+  
 }
 
 .user-avatar-icon {
@@ -171,14 +188,15 @@
     display: none;
   }
 
-  .user-icon {
-    font-size: 1.2rem; 
-  }
+  /* .lang-avatar-icon{
+    width: 50px;
+    height: 30px;
+  } 
 
-  .user-email {
-    max-width: 120px;
-    font-size: 0.9rem; 
-  }
+  .user-avatar-icon {
+    width: 33px;
+    height: 35px;
+  } */
 
   .logout-button {
     padding: 5px 10px;
@@ -210,5 +228,15 @@
   .logout-button {
     padding: 4px 8px;
     font-size: 0.7rem; 
+  }
+
+   .lang-avatar-icon{
+    width: 5px;
+    height: 30px;
+  } 
+
+  .user-avatar-icon {
+    width: 33px;
+    height: 35px;
   }
 }

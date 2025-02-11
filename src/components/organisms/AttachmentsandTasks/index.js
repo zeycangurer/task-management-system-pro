@@ -83,7 +83,8 @@ function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
             {t('Assign Task')}
             </ButtonAtom>
             <p><strong>{t('Tasks assigned to the project')}</strong></p>
-            <List
+            {tasks && tasks.length > 0 ? (
+                <List
                 itemLayout="horizontal"
                 dataSource={tasks}
                 renderItem={(task) => (
@@ -92,6 +93,8 @@ function AttachmentsandTasks({ project, tasks, currentUser, allTasks }) {
                     </List.Item>
                 )}
             />
+            ): (<p>{t('No tasks have been assigned to this project.')}</p>)}
+            
 
             <p><strong>{t('Attached Files')}</strong></p>
             {project.attachments && project.attachments.length > 0 ? (

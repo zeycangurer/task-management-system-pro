@@ -234,7 +234,11 @@ const resources = {
       "Project successfully deleted.": "Project successfully deleted.",
       "Task successfully deleted.": "Task successfully deleted.",
       "User successfully deleted.": "User successfully deleted.",
-      "Please enter a project description.": "Please enter a project description."
+      "Please enter a project description.": "Please enter a project description.",
+      "Project History":"Project History",
+      "No tasks have been assigned to this project.":"No tasks have been assigned to this project.",
+      "List":"List"
+
     }
   },
   tr: {
@@ -382,7 +386,7 @@ const resources = {
       "The task assignment process was completed successfully.": "Görev atama işlemi başarıyla tamamlandı.",
       "An error occurred while assigning a task.": "Görev atama işlemi sırasında bir hata oluştu.",
       "All tasks have been removed.": "Tüm görevler kaldırıldı.",
-      "All Tasks": "Bütün Görevler",
+      "All Tasks": "Tüm Görevler",
       "Already assigned": "Zaten atanmış",
       "No tasks available for this project": "Bu proje için uygun görev yok",
       "Assign Task": "Görev Ata",
@@ -469,7 +473,11 @@ const resources = {
       "Project successfully deleted.": "Proje başarıyla silinmiştir.",
       "Task successfully deleted.": "Görev başarıyla silinmiştir.",
       "User successfully deleted.": "Kullanıcı başarıyla silinmiştir.",
-      "Please enter a project description.": "Lütfen proje açıklaması girin."
+      "Please enter a project description.": "Lütfen proje açıklaması girin.",
+      "Project History":"Proje Tarihçesi",
+      "No tasks have been assigned to this project.":"Bu projeye görev atanmamıştır.",
+      "List":"Listele",
+      
     }
   }
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaCheck, FaTrash, FaHistory, FaEdit } from 'react-icons/fa';
-import { MdCreateNewFolder } from "react-icons/md";
+import { MdAddTask } from 'react-icons/md';
 import ActionButton from '../../molecules/ActionButton';
 
 import './styles.css';
@@ -25,7 +25,7 @@ function ProjectHeader({
       <div className="title-section">
         <h2 className="project-title">{project.title}</h2>
       </div>
-      <div className="buttons-container">
+      <div className="buttons-container-projectheader">
         <ActionButton
           tooltipTitle={t('History')}
           icon={FaHistory}
@@ -54,7 +54,7 @@ function ProjectHeader({
             />
             <ActionButton
               tooltipTitle={t('Create Task')}
-              icon={MdCreateNewFolder}
+              icon={MdAddTask}
               onClick={onCreateTask}
               className="action-button create-button"
               size={size}

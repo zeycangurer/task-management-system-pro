@@ -12,14 +12,14 @@ function QuickActions() {
   
   return (
     <div className="quick-actions">
-      <ButtonAtom className="action-button primary" onClick={() => navigate('/createTask')}>
+      <ButtonAtom className="quick-action-button primary" onClick={() => navigate('/createTask')}>
       {t("Create Task")}
       </ButtonAtom>
-      <ButtonAtom className="action-button default" onClick={() => navigate('/projects/new')}>
+      <ButtonAtom className="quick-action-button default" onClick={() => navigate('/projects/new')}>
       {t("Create Project")}
       </ButtonAtom>
       {userRole === 'admin' || userRole === 'user' || userRole === 'manager' ? (
-        <ButtonAtom className="action-button dashed" onClick={() => navigate('/analytics')}>
+        <ButtonAtom className="quick-action-button dashed" onClick={() => navigate('/analytics')}>
         {t("View Analysis")}
         </ButtonAtom>
       ) : null}

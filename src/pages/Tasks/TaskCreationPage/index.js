@@ -28,7 +28,7 @@ function TaskCreationPage() {
     dispatch(taskAction.addTask(taskData, currentUser.uid))
       .then(() => {
         message.success(t('Task successfully created'));
-        navigate('/tasks');
+        navigate(-1);
       })
       .catch((error) => {
         message.error(t('An error occurred while creating the task.'));

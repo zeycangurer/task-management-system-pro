@@ -1,11 +1,68 @@
 .project-link {
-    color: #1890ff;
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color 0.3s ease-in-out;
+  color: #1890ff;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+}
+
+.project-link:hover {
+  color: #0056b3;
+}
+.assigned-users-container {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 0;
+  flex-wrap: nowrap;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.assigned-user-item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+
+.assigned-user-title {
+  margin-left: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.assignment-dropdown {
+  width: auto;
+}
+
+.assignment-dropdown-taskinfo-container {
+  display: flex;
+  align-items: center;
+  width: 100% !important;
+}
+
+.assign-button-taskinfo {
+  margin-top: 8px;
+}
+.ant-list-item-meta-avatar {
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.assignment-dropdown {
+  width: 100% !important;
+}
+
+@media (max-width: 768px) {
+  .assignment-dropdown-taskinfo-container {
+    width: auto;
   }
-  
-  .project-link:hover {
-    color: #0056b3;
+
+  .ant-list-items {
+    flex-direction: column;
   }
-  
+  .assignment-dropdown {
+    width: 100% !important;
+  }
+}

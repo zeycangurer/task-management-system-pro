@@ -13,7 +13,8 @@
 }
 
 .register-page h1 {
-  font-size: 2em;
+  font-size: 2rem; 
+  text-align: center;
   margin-bottom: 20px;
   color: var(--primary-color);
 }
@@ -45,23 +46,28 @@
   font-weight: bold;
 }
 
-.register-header-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
 
-.theme-button-register {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  /*font-size: 1.2rem;
-  cursor: pointer;
-  padding-right: 15px;
-  transition: color 0.3s;
-  flex-shrink: 0; */
-}
 
 .error-message{
   margin: 5px 0px !important;
+}
+
+.back-button-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  .register-page h1 {
+    font-size: 1.6rem;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-page h1 {
+    font-size: 1.4rem;
+    padding: 0 5px;
+  }
 }
