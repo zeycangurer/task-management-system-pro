@@ -224,7 +224,10 @@ const resources = {
       "No tasks have been assigned to this project.":"No tasks have been assigned to this project.",
       "List":"List",
       "You can upload multiple files.":"You can upload multiple files.",
-      "Category Level":"Category"
+      "Category Level":"Category",
+      "Upcoming Tasks":"Upcoming Tasks",
+      "Latest Added Tasks":"Latest Added Tasks",
+      "Latest Added Projects":"Latest Added Projects"
 
 
 
@@ -453,7 +456,10 @@ const resources = {
       "No tasks have been assigned to this project.":"Bu projeye görev atanmamıştır.",
       "List":"Listele",
       "You can upload multiple files.":"Birden fazla dosya yükleyebilirsiniz.",
-      "Category Level":"Kategori"
+      "Category Level":"Kategori",
+      "Upcoming Tasks":"Yaklaşan Görevler",
+      "Latest Added Tasks":"Son Eklenen Görevler",
+      "Latest Added Projects":"Son Eklenen Projeler"
       
     }
   }
