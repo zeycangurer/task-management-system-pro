@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { Table, Input, Space, Button } from 'antd';
+import { Table, Input, Space, Button, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import AdminActionButtons from '../AdminActionButtons';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+
+const { confirm } = Modal;
 
 function AdminTaskTable({ tasks, onEdit, onDelete }) {
   const { t } = useTranslation();
@@ -84,6 +86,20 @@ function AdminTaskTable({ tasks, onEdit, onDelete }) {
     return assignedNames.join(', ');
   };
 
+  const handleDelete = (taskId) => {
+    confirm({
+      title: t('confirm.deleteTaskTitle'),
+      content: t('confirm.deleteContent'),
+      okText: t('confirm.yes'),
+      cancelText: t('confirm.no'),
+      onOk() {
+        onDelete(taskId);
+      },
+      onCancel() {
+      },
+    });
+  };
+
   const columns = [
     {
       title: t('Task Title'),
@@ -112,7 +128,7 @@ function AdminTaskTable({ tasks, onEdit, onDelete }) {
       render: (_, record) => (
         <AdminActionButtons
           onEdit={() => onEdit(record)}
-          onDelete={() => onDelete(record.id)}
+          onDelete={() => handleDelete(record.id)}
         />
       ),
     },
@@ -125,9 +141,13 @@ function AdminTaskTable({ tasks, onEdit, onDelete }) {
       rowKey="id"
       pagination={{ pageSize: 6 }}
       scroll={{ x: 600, y: 400 }}
-        locale={{
-          emptyText: t('No data found matching your search criteria.'),
-        }}    />
+      locale={{
+        emptyText: t('No data found matching your search criteria.'),
+      }}
+      onRow={(record) => ({
+        onClick: () => navigate(`/tasks/${record.id}`),
+      })}
+    />
   );
 }
 

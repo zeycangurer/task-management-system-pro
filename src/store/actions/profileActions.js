@@ -54,11 +54,9 @@ export const changePassword = (userId, newPassword, userRole) => {
         payload: { userId, updatedAt: new Date() },
       });
 
-      message.success('Şifreniz başarıyla güncellendi.');
     } catch (error) {
       console.error('Şifre değiştirme hatası:', error);
       dispatch({ type: types.CHANGE_PASSWORD_FAILURE, payload: error.message });
-      message.error('Şifre değiştirme sırasında bir hata oluştu.');
     }
   };
 };

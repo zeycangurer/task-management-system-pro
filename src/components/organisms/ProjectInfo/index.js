@@ -35,7 +35,12 @@ function ProjectInfo({
       <p><strong>{t('Description')}: </strong>{project.description}</p>
       <p><strong>{t('Created By')}: </strong>{createdUserName}</p>
       <p><strong>{t('Category')}: </strong>{categoryLabel}</p>
-      <p><strong>{t('Customer')}: </strong>{projectCustomer[0].name || t('Unknown')}</p>
+      <p>
+        <strong>{t('Customer')}: </strong>
+        {(projectCustomer && projectCustomer[0] && projectCustomer[0].name) 
+          ? projectCustomer[0].name 
+          : t('No customer info.')}
+      </p>
       <p><strong>{t('Status')}: </strong><Tag color={statusColor}>{statusLabel}</Tag></p>
       <p><strong>{t('Priority')}: </strong><Tag color={priorityColor}>{priorityLabel}</Tag></p>
       <p><strong>{t('Start Date')}: </strong>{startDateStr}</p>

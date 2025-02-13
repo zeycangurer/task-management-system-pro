@@ -1,5 +1,5 @@
 import { db } from '../../firebaseConfig';
-import { collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, arrayRemove, Timestamp, getDocs, writeBatch, getDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, arrayRemove, Timestamp, getDocs, writeBatch, getDoc, deleteField } from 'firebase/firestore';
 import { message } from 'antd'
 import * as types from '../constants/projectActionTypes';
 
@@ -296,10 +296,8 @@ export const updateProject = (projectId, updatedData) => {
         type: types.UPDATE_PROJECT_SUCCESS,
         payload: updatedProjectData,
       });
-      message.success('Proje başarıyla güncellendi.');
     } catch (error) {
       dispatch({ type: types.UPDATE_PROJECT_FAILURE, payload: error.message });
-      message.error('Proje güncellenirken bir hata oluştu.');
     }
   };
 };
@@ -309,7 +307,44 @@ export const deleteProject = (projectId) => {
     dispatch({ type: types.DELETE_PROJECT_REQUEST });
     try {
       const projectRef = doc(db, 'projects', projectId);
+      const projectSnap = await getDoc(projectRef);
+      if (!projectSnap.exists()) {
+        throw new Error('Project not found');
+      }
+      const projectData = projectSnap.data();
+      const { assignedTasks, assignedUsers, customerId } = projectData;
+
       await deleteDoc(projectRef);
+
+      if (Array.isArray(assignedTasks) && assignedTasks.length > 0) {
+        await Promise.all(
+          assignedTasks.map(async (taskId) => {
+            const taskRef = doc(db, 'tasks', taskId);
+            await updateDoc(taskRef, {
+              projectId: deleteField()
+            });
+          })
+        );
+      }
+
+      if (Array.isArray(assignedUsers) && assignedUsers.length > 0) {
+        await Promise.all(
+          assignedUsers.map(async (userId) => {
+            const userRef = doc(db, 'users', userId);
+            await updateDoc(userRef, {
+              assignedProjects: arrayRemove(projectId)
+            });
+          })
+        );
+      }
+
+      if (customerId) {
+        const customerRef = doc(db, 'customers', customerId);
+        await updateDoc(customerRef, {
+          projects: arrayRemove(projectId)
+        });
+      }
+
       dispatch({ type: types.DELETE_PROJECT_SUCCESS, payload: projectId });
     } catch (error) {
       dispatch({ type: types.DELETE_PROJECT_FAILURE, payload: error.message });

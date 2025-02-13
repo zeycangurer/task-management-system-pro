@@ -94,11 +94,9 @@ export const addTask = (taskData, currentUserId) => {
         });
       }
       dispatch({ type: types.CREATE_TASK_SUCCESS, payload: { id: docRef.id, ...newTask } });
-      message.success('Görev başarıyla oluşturuldu.');
     } catch (error) {
       dispatch({ type: types.CREATE_TASK_FAILURE, payload: error.message });
-      message.error('Görev oluşturulurken bir hata oluştu.');
-      console.error('Görev oluşturma hatası:', error);
+     
     }
   };
 };
@@ -193,10 +191,8 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
       const updatedTaskData = { id: updatedTaskSnap.id, ...updatedTaskSnap.data() };
 
       dispatch({ type: types.ASSIGN_TASK_SUCCESS, payload: updatedTaskData });
-      message.success('Görev başarıyla atandı ve güncellendi.');
     } catch (error) {
       dispatch({ type: types.ASSIGN_TASK_FAILURE, payload: error.message });
-      message.error('Görev atanırken veya güncellenirken bir hata oluştu.');
     }
   };
 };
@@ -289,10 +285,8 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
       const updatedTaskData = { id: updatedTaskSnap.id, ...updatedTaskSnap.data() };
 
       dispatch({ type: types.UPDATE_TASK_SUCCESS, payload: updatedTaskData });
-      message.success('Görev başarıyla güncellendi.');
     } catch (error) {
       dispatch({ type: types.UPDATE_TASK_FAILURE, payload: error.message });
-      message.error('Görev güncellenirken bir hata oluştu: ' + error.message);
     }
   };
 };
@@ -355,10 +349,8 @@ export const addComment = (taskId, comment, currentUserId, attachments) => {
       const updatedTaskData = { id: taskSnap.id, ...taskSnap.data() };
       console.log(updatedTaskData)
       dispatch({ type: types.ADD_COMMENT_SUCCESS, payload: updatedTaskData });
-      message.success('Yorum başarıyla eklendi.');
     } catch (error) {
       dispatch({ type: types.ADD_COMMENT_FAILURE, payload: error.message });
-      console.error('Yorum ekleme hatası:', error);
       throw error;
     }
   };
@@ -370,13 +362,42 @@ export const deleteTask = (taskId) => {
     dispatch({ type: types.DELETE_TASK_REQUEST });
     try {
       const taskRef = doc(db, 'tasks', taskId);
+      const taskSnap = await getDoc(taskRef);
+      if (!taskSnap.exists()) {
+        throw new Error('Task not found');
+      }
+      const taskData = taskSnap.data();
       await deleteDoc(taskRef);
+
+      if (taskData.projectId) {
+        const projectRef = doc(db, 'projects', taskData.projectId);
+        await updateDoc(projectRef, {
+          assignedTasks: arrayRemove(taskId)
+        });
+      }
+
+      if (taskData.assignedTo && Array.isArray(taskData.assignedTo)) {
+        await Promise.all(
+          taskData.assignedTo.map((userId) => {
+            const userRef = doc(db, 'users', userId);
+            return updateDoc(userRef, {
+              assignedTasks: arrayRemove(taskId)
+            });
+          })
+        );
+      }
+
+      if (taskData.customer) {
+        const customerRef = doc(db, 'customers', taskData.customer);
+        await updateDoc(customerRef, {
+          createdTasks: arrayRemove(taskId)
+        });
+      }
+      
       dispatch({ type: types.DELETE_TASK_SUCCESS, payload: taskId });
-      message.success('Görev başarıyla silindi.');
 
     } catch (error) {
       dispatch({ type: types.DELETE_TASK_FAILURE, payload: error.message });
-      message.error('Görev silinirken bir hata oluştu.');
 
     }
   };

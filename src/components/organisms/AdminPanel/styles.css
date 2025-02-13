@@ -85,6 +85,14 @@
 .data-list-container {
   overflow-x: auto;
 }
+
+.admin-filter-button-task .dropdowns-container {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
 @media (min-width: 769px) {
   .admin-filter-button-task {
     flex-direction: row;

@@ -1,11 +1,13 @@
 import React from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Modal } from 'antd';
 import TitleEditMolecule from '../../molecules/TitleEditMolecule';
 import ActionButton from '../../molecules/ActionButton';
 import { FaEdit, FaCheck, FaTrash, FaHistory, FaRegTimesCircle } from 'react-icons/fa';
 import './styles.css';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+
+const { confirm } = Modal;
 
 function TaskHeader({
   onEditTask,
@@ -19,6 +21,19 @@ function TaskHeader({
   const userRole = useSelector(state => state.profiles.user?.role)
   const { t } = useTranslation();
 
+  const handleDelete = () => {
+    confirm({
+      title: t('confirm.deleteTaskTitle'),
+      content: t('confirm.deleteContent'),
+      okText: t('confirm.yes'),
+      cancelText: t('confirm.no'),
+      onOk() {
+        handleDeleteTask();
+      },
+      onCancel() {
+      }
+    });
+  };
   return (
     <div className="task-header">
       <div className="title-section">
@@ -47,7 +62,7 @@ function TaskHeader({
             <ActionButton
               tooltipTitle={t('Delete')}
               icon={FaTrash}
-              onClick={handleDeleteTask}
+              onClick={handleDelete}
               className="action-button delete-button"
               size={size}
               type="danger"

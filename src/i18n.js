@@ -227,9 +227,16 @@ const resources = {
       "Category Level":"Category",
       "Upcoming Tasks":"Upcoming Tasks",
       "Latest Added Tasks":"Latest Added Tasks",
-      "Latest Added Projects":"Latest Added Projects"
-
-
+      "Latest Added Projects":"Latest Added Projects",
+      "confirm": {
+        "deleteUserTitle": "Are you sure you want to delete this user?",
+        "deleteContent": "This action cannot be undone.",
+        "yes": "Yes",
+        "no": "No",
+        "deleteProjectTitle": "Are you sure you want to delete this project?",
+        "deleteTaskTitle": "Are you sure you want to delete this task?",
+      },
+      "No customer info.":"No customer info."
 
     }
   },
@@ -459,8 +466,16 @@ const resources = {
       "Category Level":"Kategori",
       "Upcoming Tasks":"Yaklaşan Görevler",
       "Latest Added Tasks":"Son Eklenen Görevler",
-      "Latest Added Projects":"Son Eklenen Projeler"
-      
+      "Latest Added Projects":"Son Eklenen Projeler",
+      "confirm": {
+        "deleteUserTitle": "Bu kullanıcıyı silmek istediğinize emin misiniz?",
+        "deleteContent": "Bu işlem geri alınamaz.",
+        "yes": "Evet",
+        "no": "Hayır",
+        "deleteProjectTitle": "Bu projeyi silmek istediğinize emin misiniz?",
+        "deleteTaskTitle": "Bu görevi silmek istediğinize emin misiniz?",
+      },
+      "No customer info.":"Müşteri bilgisi yok."
     }
   }
 };

@@ -6,6 +6,9 @@ import ActionButton from '../../molecules/ActionButton';
 import './styles.css';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { Modal } from 'antd';
+
+const { confirm } = Modal;
 
 function ProjectHeader({
   project,
@@ -19,6 +22,20 @@ function ProjectHeader({
 }) {
   const userRole = useSelector(state => state.profiles.user?.role)
   const { t } = useTranslation();
+
+  const handleDelete = () => {
+    confirm({
+      title: t('confirm.deleteProjectTitle'),
+      content: t('confirm.deleteContent'),
+      okText: t('confirm.yes'),
+      cancelText: t('confirm.no'),
+      onOk() {
+        onDeleteProject();
+      },
+      onCancel() {
+      }
+    });
+  };
 
   return (
     <div className="project-header">
@@ -47,7 +64,7 @@ function ProjectHeader({
             <ActionButton
               tooltipTitle={t('Delete')}
               icon={FaTrash}
-              onClick={onDeleteProject}
+              onClick={handleDelete}
               className="action-button delete-button"
               size={size}
               type="danger"

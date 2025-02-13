@@ -44,14 +44,19 @@ function TaskInfo({
       navigate(`/projects/${task.projectId}`);
     }
   };
-  console.log(task)
+  // console.log(task)
 
   return (
     <div className="task-info">
       <p><strong>{t('Description')}: </strong>{task.description}</p>
       <p><strong>{t('Created By')}: </strong>{createdUserName}</p>
       <p><strong>{t('Category')}: </strong>{categoryLabel}</p>
-      <p><strong>{t('Customer')}: </strong>{taskCustomer[0].name || t('Unknown')}</p>
+      <p>
+        <strong>{t('Customer')}: </strong>
+        {(taskCustomer && taskCustomer[0] && taskCustomer[0].name) 
+          ? taskCustomer[0].name 
+          : t('No customer info.')}
+      </p>
       <p><strong>{t('Status')}: </strong><Tag color={statusColor}>{statusLabel}</Tag></p>
       <p><strong>{t('Priority')}: </strong><Tag color={priorityColor}>{priorityLabel}</Tag></p>
       <p><strong>{t('Start Date')}: </strong>{startDateStr}</p>

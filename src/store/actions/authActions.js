@@ -2,7 +2,7 @@ import { message } from 'antd';
 import { auth, db } from '../../firebaseConfig';
 import { signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { fetchUserDetails } from './profileActions';
-import { doc, getDoc, setDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, updateDoc, arrayRemove, deleteField } from 'firebase/firestore';
 import { deleteUser as deleteAuthUser } from 'firebase/auth';
 import * as types from '../constants/authActionType'
 
@@ -42,10 +42,8 @@ export const logout = () => {
       .then(() => {
         dispatch({ type: types.LOGOUT });
         localStorage.removeItem('user');
-        message.success('Başarıyla çıkış yapıldı.');
       })
       .catch((error) => {
-        message.error('Çıkış yaparken bir hata oluştu.');
       });
   };
 };
@@ -130,11 +128,63 @@ export const deleteUser = (userId) => {
         throw new Error('Kullanıcı bulunamadı!');
       }
 
+      let deletedUserData = null;
+      let role = null;
+
       if (userSnap.exists()) {
+        deletedUserData = userSnap.data();
+        role = deletedUserData.role;
         await deleteDoc(userRef);
       }
       if (customerSnap.exists()) {
+        deletedUserData = customerSnap.data();
+        role = deletedUserData.role; 
         await deleteDoc(customerRef);
+      }
+
+      if (role === 'customer') {
+        if (deletedUserData.createdTasks && Array.isArray(deletedUserData.createdTasks)) {
+          await Promise.all(
+            deletedUserData.createdTasks.map(async (taskId) => {
+              const taskRef = doc(db, 'tasks', taskId);
+              await updateDoc(taskRef, {
+                customer: deleteField()
+              });
+            })
+          );
+        }
+        if (deletedUserData.projects && Array.isArray(deletedUserData.projects)) {
+          await Promise.all(
+            deletedUserData.projects.map(async (projectId) => {
+              const projectRef = doc(db, 'projects', projectId);
+              await updateDoc(projectRef, {
+                customerId: deleteField()
+              });
+            })
+          );
+        }
+      }
+      else if (role === 'admin' || role === 'manager' || role === 'user') {
+        if (deletedUserData.assignedProjects && Array.isArray(deletedUserData.assignedProjects)) {
+          await Promise.all(
+            deletedUserData.assignedProjects.map(async (projectId) => {
+              const projectRef = doc(db, 'projects', projectId);
+              await updateDoc(projectRef, {
+                assignedUsers: arrayRemove(userId)
+              });
+            })
+          );
+        }
+        if (deletedUserData.assignedTasks && Array.isArray(deletedUserData.assignedTasks)) {
+          await Promise.all(
+            deletedUserData.assignedTasks.map(async (taskId) => {
+              const taskRef = doc(db, 'tasks', taskId);
+              await updateDoc(taskRef, {
+                assignedTo: arrayRemove(userId)
+              });
+            })
+          );
+        }
       }
 
       if (currentUser && currentUser.uid === userId) {
