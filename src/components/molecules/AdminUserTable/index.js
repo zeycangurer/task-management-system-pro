@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { Table, Input, Space, Button } from 'antd';
+import { Table, Input, Space, Button, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import AdminActionButtons from '../AdminActionButtons';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+
+const { confirm } = Modal;
 
 function AdminUserTable({ users, onDelete }) {
   const { t } = useTranslation();
@@ -89,6 +91,20 @@ function AdminUserTable({ users, onDelete }) {
     navigate(`/admin/${user.id}/edit`, { state: { userData: user } });
   };
 
+  const handleDelete = (userId) => {
+    confirm({
+      title: t('confirm.deleteUserTitle'),
+      content: t('confirm.deleteContent'),
+      okText: t('confirm.yes'),
+      cancelText: t('confirm.no'),
+      onOk() {
+        onDelete(userId);
+      },
+      onCancel() {
+      }
+    });
+  };
+
   const columns = [
     {
       title: t('Name'),
@@ -120,7 +136,7 @@ function AdminUserTable({ users, onDelete }) {
       render: (_, record) => (
         <AdminActionButtons
           onEdit={() => handleEdit(record)}
-          onDelete={() => onDelete(record.id)}
+          onDelete={() => handleDelete(record.id)}
         />
       ),
     },
@@ -133,9 +149,9 @@ function AdminUserTable({ users, onDelete }) {
       rowKey="id"
       pagination={{ pageSize: 6 }}
       scroll={{ x: 600, y: 400 }}
-        locale={{
-          emptyText: t('No data found matching your search criteria.'),
-        }}
+      locale={{
+        emptyText: t('No data found matching your search criteria.'),
+      }}
     />
   );
 }
