@@ -147,6 +147,8 @@ function AdminTaskTable({ tasks, onEdit, onDelete }) {
       onRow={(record) => ({
         onClick: () => navigate(`/tasks/${record.id}`),
       })}
+      className="custom-table"
+
     />
   );
 }

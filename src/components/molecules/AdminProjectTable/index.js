@@ -141,6 +141,8 @@ function AdminProjectTable({ projects, onEdit, onDelete }) {
       onRow={(record) => ({
         onClick: () => navigate(`/projects/${record.id}`),
       })}
+      className="custom-table"
+
     />
   );
 }

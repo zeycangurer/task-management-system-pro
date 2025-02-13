@@ -152,6 +152,7 @@ function AdminUserTable({ users, onDelete }) {
       locale={{
         emptyText: t('No data found matching your search criteria.'),
       }}
+      className="custom-table"
     />
   );
 }
