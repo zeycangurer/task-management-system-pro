@@ -30,9 +30,10 @@ function HistoryModal({ isVisible, handleClose, filteredHistory, getChangedByNam
           renderItem={(item, index) => (
             <List.Item key={index}>
               <List.Item.Meta
-                title={`${getChangedByName(item.changedBy)} tarafından ${formatTimestamp(
-                  item.timestamp
-                )}`}
+                title={t('changedBy', {
+                  name: getChangedByName(item.changedBy),
+                  timestamp: formatTimestamp(item.timestamp)
+                })}
               />
               <div>{item.description || t('Detail not available')}</div>
             </List.Item>

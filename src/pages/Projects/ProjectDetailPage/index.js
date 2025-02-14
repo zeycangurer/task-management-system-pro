@@ -10,6 +10,7 @@ import { message } from 'antd';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 import './styles.css'
 import { useTranslation } from 'react-i18next';
+import LoadingSpinner from '../../../components/molecules/LoadingSpinner';
 
 function ProjectDetailPage() {
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ function ProjectDetailPage() {
   // useEffect(() => {
   //   console.log('Proje veya görevler güncellendi:', project, tasks);
   // }, [project, tasks]);
-  
+
   useEffect(() => {
     if (!users.length) {
       dispatch(userAction.fetchUsers());
@@ -65,7 +66,7 @@ function ProjectDetailPage() {
   const projectTasks = useMemo(() => {
     return tasks.filter((task) => task.projectId === projectId);
   }, [tasks, projectId]);
-  
+
   const handleBack = () => navigate(-1);
 
   const handleEdit = () => {
@@ -89,19 +90,19 @@ function ProjectDetailPage() {
     const newStatus = project.status === 'close' ? 'open' : 'close';
 
     const updatedProject = {
-        ...project,
-        status: newStatus,
-        changedBy: currentUser.uid,
+      ...project,
+      status: newStatus,
+      changedBy: currentUser.uid,
     };
 
     dispatch(projectAction.updateProject(projectId, updatedProject))
-        .then(() => {
-            message.success(t('Project status updated'));
-        })
-        .catch((error) => {
-            message.error(t('Project status could not be updated') + ': ' + error.message);
-        });
-};
+      .then(() => {
+        message.success(t('Project status updated'));
+      })
+      .catch((error) => {
+        message.error(t('Project status could not be updated') + ': ' + error.message);
+      });
+  };
 
 
   const handleAssignChange = (value) => {
@@ -130,7 +131,12 @@ function ProjectDetailPage() {
   };
 
   if (loading || !project) {
-    return <div>{t('Loading...')}</div>;
+    return (
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+        <LoadingSpinner tip={t('Loading...')} />
+      </HeaderSideBarTemplate>
+    );
+
   }
 
   if (error) {

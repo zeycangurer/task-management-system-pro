@@ -28,10 +28,15 @@ function TaskInfo({
 
   const navigate = useNavigate()
   const statusColor = task.status === 'close' ? 'green' : 'blue';
-  const statusLabel = task.status === 'close' ? t('Complete Task') : t('Reopen Task');;
+  const statusLabel = task.status === 'close' ? t('Complete') : t('Incomplete');;
   const priorityColor = task.priority === 'urgent' ? 'red' : task.priority === 'soon' ? 'orange' : 'blue';
-  const priorityLabel = taskPriorities.filter(item => item.value === task.priority)[0].label || t('Not specified');
-  const categoryLabel = taskCategories.filter(item => item.value === task.category)[0].label || t('Not specified');
+
+
+  const priorityItem = taskPriorities.find(item => item.value === task.priority);
+  const categoryItem = taskCategories.find(item => item.value === task.category);
+
+  const priorityLabel = priorityItem ? t(priorityItem.label) : t('Not specified');
+  const categoryLabel = categoryItem ? t(categoryItem.label) : t('Not specified');
 
   const startDateStr = task.createdAt ? task.createdAt.toDate().toLocaleDateString() : t('Not specified');
   const endDateStr = task.dueDate ? task.dueDate.toDate().toLocaleDateString() : t('Not specified');
