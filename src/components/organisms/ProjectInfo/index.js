@@ -24,8 +24,12 @@ function ProjectInfo({
   const statusColor = project.status === 'close' ? 'green' : 'blue';
   const statusLabel = project.status === 'close' ? t('Complete') : t('Incomplete');
   const priorityColor = project.priority === 'high' ? 'red' : project.priority === 'medium' ? 'orange' : 'blue';
-  const priorityLabel = projectPriorities.filter(item => item.value === project.priority)[0].label || t('Not specified');
-  const categoryLabel = projectCategories.filter(item => item.value === project.category)[0].label || t('Not specified');
+
+  const priorityItem = projectPriorities.find(item => item.value === project.priority);
+  const categoryItem = projectCategories.find(item => item.value === project.category);
+
+  const priorityLabel = priorityItem ? t(priorityItem.label) : t('Not specified');
+  const categoryLabel = categoryItem ? t(categoryItem.label) : t('Not specified');
 
   const startDateStr = project.startDate ? project.startDate.toDate().toLocaleDateString() : t('Not specified');
   const endDateStr = project.endDate ? project.endDate.toDate().toLocaleDateString() : t('Not specified');

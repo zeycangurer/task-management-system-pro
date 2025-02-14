@@ -12,8 +12,9 @@ import CommentsList from '../../../components/organisms/CommentsList';
 import AddCommentForm from '../../../components/organisms/AddCommentForm';
 import HistoryModal from '../../../components/organisms/HistoryModal';
 import useWindowsSize from '../../../hooks/useWindowsSize';
-import { FaArrowLeft } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import TaskDetailTemplate from '../../../components/templates/TaskDetailTemplate';
+import LoadingSpinner from '../../../components/molecules/LoadingSpinner';
 
 
 function TaskDetailPage() {
@@ -49,9 +50,19 @@ function TaskDetailPage() {
   // console.log(size)
 
   useEffect(() => {
-    dispatch(projectAction.fetchProjects());
-  }, [dispatch]);
-  
+    if (!tasks || tasks.length === 0) {
+      dispatch(action.fetchTasks());
+    }
+  }, [dispatch, tasks]);
+
+  useEffect(() => {
+    if (!projects || projects.length === 0) {
+      dispatch(projectAction.fetchProjects());
+    }
+  }, [dispatch, projects]);
+
+
+
 
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return 'N/A';
@@ -258,9 +269,7 @@ function TaskDetailPage() {
   if (tasksLoading || usersLoading || customersLoading) {
     return (
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
-        <div className="loading-container">
-          <Spin size="large" tip="Yükleniyor..." />
-        </div>
+        <LoadingSpinner tip={t('Loading...')}/>
       </HeaderSideBarTemplate>
     );
   }
@@ -291,48 +300,35 @@ function TaskDetailPage() {
   return (
     <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
       <div className="dashboard-container">
-        <div className="task-detail">
-          <Card bordered={false} className='task-header-info'>
-            <Button type="link" onClick={handleBack} className="back-button">
-              <FaArrowLeft /> {t('Back')}
-            </Button>
-            <TaskHeader
-              isEditing={isEditing}
-              editTitle={editTitle}
-              setEditTitle={setEditTitle}
-              handleEditTitle={handleEditTitle}
-              onEditTask={handleEdit}
-              showHistoryModal={showHistoryModal}
-              handleDeleteTask={handleDeleteTask}
-              handleToggleComplete={handleToggleComplete}
-              size={size.width <= 768 ? 'small' : 'middle'}
-              task={task}
-            />
-            <TaskInfo
-              task={task}
-              assignedUserNames={assignedUserNames}
-              formattedCreatedAt={formattedCreatedAt}
-              createdUserName={createdUserName}
-              assignment={assignment}
-              handleAssignChange={handleAssignChange}
-              handleAssignSubmit={handleAssignSubmit}
-              sortedUsers={sortedUsers}
-              size={size.width <= 768 ? 'small' : 'middle'}
-              taskCustomer={taskCustomer}
-              project={project}
-            />
-          </Card>
-          <CommentsList formattedComments={formattedComments} />
-          <AddCommentForm handleCommentSubmit={handleCommentSubmit} size={size.width <= 768 ? 'small' : 'middle'} />
-          <HistoryModal
-            isVisible={isHistoryModalVisible}
-            handleClose={handleHistoryModalClose}
-            filteredHistory={filteredHistory}
-            getChangedByName={getChangedByName}
-            formatTimestamp={formatTimestamp}
-            dataType='task'
-          />
-        </div>
+        <TaskDetailTemplate
+          handleBack={handleBack}
+          editTitle={editTitle}
+          isEditing={isEditing}
+          setEditTitle={setEditTitle}
+          handleEditTitle={handleEditTitle}
+          handleEdit={handleEdit}
+          showHistoryModal={showHistoryModal}
+          handleDeleteTask={handleDeleteTask}
+          handleToggleComplete={handleToggleComplete}
+          size={size}
+          task={task}
+          assignedUserNames={assignedUserNames}
+          formattedCreatedAt={formattedCreatedAt}
+          createdUserName={createdUserName}
+          assignment={assignment}
+          handleAssignChange={handleAssignChange}
+          handleAssignSubmit={handleAssignSubmit}
+          sortedUsers={sortedUsers}
+          taskCustomer={taskCustomer}
+          project={project}
+          formattedComments={formattedComments}
+          handleCommentSubmit={handleCommentSubmit}
+          isHistoryModalVisible={isHistoryModalVisible}
+          handleHistoryModalClose={handleHistoryModalClose}
+          filteredHistory={filteredHistory}
+          getChangedByName={getChangedByName}
+          formatTimestamp={formatTimestamp}
+        />
       </div>
     </HeaderSideBarTemplate>
 

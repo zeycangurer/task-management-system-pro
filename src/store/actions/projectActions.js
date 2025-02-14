@@ -180,7 +180,7 @@ export const updateProject = (projectId, updatedData) => {
         throw new Error('Proje bulunamadı.');
       }
 
-      console.log(updatedData)
+      // console.log(updatedData)
       const projectData = projectSnap.data();
 
       const oldAssignedTasks = projectData.assignedTasks || [];
@@ -472,7 +472,7 @@ export const addComment = (projectId, comment, currentUserId, attachments) => {
 
       const projectSnap = await getDoc(projectRef);
       const updatedProjectData = { id: projectSnap.id, ...projectSnap.data() };
-      console.log(updatedProjectData)
+      // console.log(updatedProjectData)
       dispatch({ type: types.ADD_COMMENT_SUCCESS, payload: updatedProjectData });
       message.success('Yorum başarıyla eklendi.');
     } catch (error) {

@@ -156,6 +156,7 @@ const resources = {
       "Select User(s)": "Select User(s)",
       "Select Status": "Select Status",
       "Incomplete": "Incomplete",
+      "Complete": "Complete",
       "Select Date Range": "Select Date Range",
       "No tasks found.": "No tasks found.",
       "Project Analysis": "Project Analysis",
@@ -220,14 +221,14 @@ const resources = {
       "Task successfully deleted.": "Task successfully deleted.",
       "User successfully deleted.": "User successfully deleted.",
       "Please enter a project description.": "Please enter a project description.",
-      "Project History":"Project History",
-      "No tasks have been assigned to this project.":"No tasks have been assigned to this project.",
-      "List":"List",
-      "You can upload multiple files.":"You can upload multiple files.",
-      "Category Level":"Category",
-      "Upcoming Tasks":"Upcoming Tasks",
-      "Latest Added Tasks":"Latest Added Tasks",
-      "Latest Added Projects":"Latest Added Projects",
+      "Project History": "Project History",
+      "No tasks have been assigned to this project.": "No tasks have been assigned to this project.",
+      "List": "List",
+      "You can upload multiple files.": "You can upload multiple files.",
+      "Category Level": "Category",
+      "Upcoming Tasks": "Upcoming Tasks",
+      "Latest Added Tasks": "Latest Added Tasks",
+      "Latest Added Projects": "Latest Added Projects",
       "confirm": {
         "deleteUserTitle": "Are you sure you want to delete this user?",
         "deleteContent": "This action cannot be undone.",
@@ -236,7 +237,29 @@ const resources = {
         "deleteProjectTitle": "Are you sure you want to delete this project?",
         "deleteTaskTitle": "Are you sure you want to delete this task?",
       },
-      "No customer info.":"No customer info."
+      "No customer info.": "No customer info.",
+      "taskPriorities": {
+        "urgent": "Urgent",
+        "soon": "Soon",
+        "canWait": "Can Wait"
+      },
+      "taskCategories": {
+        "demand": "Demand",
+        "error": "Error",
+        "meeting": "Meeting"
+      },
+      "projectPriorities": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "projectCategories": {
+        "software": "Software",
+        "design": "Design",
+        "marketing": "Marketing",
+        "finance": "Finance"
+      },
+      "changedBy": "By {{name}} - {{timestamp}}"
 
     }
   },
@@ -395,6 +418,7 @@ const resources = {
       "Select User(s)": "Kullanıcı seçin",
       "Select Status": "Durum seçin",
       "Incomplete": "Tamamlanmadı",
+      "Complete": "Tamamlandı",
       "Select Date Range": "Tarih aralığı seç",
       "No tasks found.": "Görev bulunamadı.",
       "Project Analysis": "Proje Analizi",
@@ -459,14 +483,14 @@ const resources = {
       "Task successfully deleted.": "Görev başarıyla silinmiştir.",
       "User successfully deleted.": "Kullanıcı başarıyla silinmiştir.",
       "Please enter a project description.": "Lütfen proje açıklaması girin.",
-      "Project History":"Proje Tarihçesi",
-      "No tasks have been assigned to this project.":"Bu projeye görev atanmamıştır.",
-      "List":"Listele",
-      "You can upload multiple files.":"Birden fazla dosya yükleyebilirsiniz.",
-      "Category Level":"Kategori",
-      "Upcoming Tasks":"Yaklaşan Görevler",
-      "Latest Added Tasks":"Son Eklenen Görevler",
-      "Latest Added Projects":"Son Eklenen Projeler",
+      "Project History": "Proje Tarihçesi",
+      "No tasks have been assigned to this project.": "Bu projeye görev atanmamıştır.",
+      "List": "Listele",
+      "You can upload multiple files.": "Birden fazla dosya yükleyebilirsiniz.",
+      "Category Level": "Kategori",
+      "Upcoming Tasks": "Yaklaşan Görevler",
+      "Latest Added Tasks": "Son Eklenen Görevler",
+      "Latest Added Projects": "Son Eklenen Projeler",
       "confirm": {
         "deleteUserTitle": "Bu kullanıcıyı silmek istediğinize emin misiniz?",
         "deleteContent": "Bu işlem geri alınamaz.",
@@ -475,7 +499,32 @@ const resources = {
         "deleteProjectTitle": "Bu projeyi silmek istediğinize emin misiniz?",
         "deleteTaskTitle": "Bu görevi silmek istediğinize emin misiniz?",
       },
-      "No customer info.":"Müşteri bilgisi yok."
+      "No customer info.": "Müşteri bilgisi yok.",
+      "taskPriorities": {
+        "urgent": "Acil",
+        "soon": "Yakın Zamanda",
+        "canWait": "Bekleyebilir"
+      },
+      "taskCategories": {
+        "demand": "İstek",
+        "error": "Hata",
+        "meeting": "Görüşme"
+      },
+      "projectPriorities": {
+        "high": "Yüksek",
+        "medium": "Orta",
+        "low": "Düşük"
+      },
+      "projectCategories": {
+        "software": "Yazılım",
+        "design": "Tasarım",
+        "marketing": "Pazarlama",
+        "finance": "Finans"
+      },
+      "changedBy": "{{name}} tarafından {{timestamp}}"
+
+
+
     }
   }
 };

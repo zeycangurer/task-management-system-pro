@@ -137,7 +137,7 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
           disabled={!taskPriorities || taskPriorities.length === 0}>
           {taskPriorities.map((priority) => (
             <SelectAtom.Option key={priority.value} value={priority.value}>
-              {priority.label}
+            {t(priority.label)}
             </SelectAtom.Option>
           ))}
         </SelectAtom>
@@ -152,7 +152,7 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
           disabled={!taskCategories || taskCategories.length === 0}>
           {taskCategories.map((category) => (
             <SelectAtom.Option key={category.value} value={category.value}>
-              {category.label}
+              {t(category.label)}
             </SelectAtom.Option>
           ))}
         </SelectAtom>
