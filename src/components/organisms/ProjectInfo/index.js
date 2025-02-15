@@ -33,7 +33,6 @@ function ProjectInfo({
 
   const startDateStr = project.startDate ? project.startDate.toDate().toLocaleDateString() : t('Not specified');
   const endDateStr = project.endDate ? project.endDate.toDate().toLocaleDateString() : t('Not specified');
-
   return (
     <div className='project-info'>
       <p><strong>{t('Description')}: </strong>{project.description}</p>

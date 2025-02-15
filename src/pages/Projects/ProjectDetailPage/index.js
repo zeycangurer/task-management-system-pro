@@ -38,7 +38,17 @@ function ProjectDetailPage() {
   // useEffect(() => {
   //   console.log('Proje veya görevler güncellendi:', project, tasks);
   // }, [project, tasks]);
+  useEffect(() => {
+    if (projects.length) {
+      const foundProject = projects.find(p => p.id === projectId);
+      setProject(foundProject);
+      if (foundProject) {
+        setAssignment(foundProject.assignedUsers || []);
+      }
+    }
+  }, [projects, projectId]);
 
+  
   useEffect(() => {
     if (!users.length) {
       dispatch(userAction.fetchUsers());
