@@ -4,13 +4,8 @@ import './styles.css';
 import { useSelector, useDispatch } from 'react-redux';
 import * as action from '../../../store/actions/taskActions';
 import * as projectAction from '../../../store/actions/projectActions';
-import { message, Spin, Alert, Button, Card } from 'antd';
+import { message, Alert } from 'antd';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
-import TaskHeader from '../../../components/organisms/TaskHeader';
-import TaskInfo from '../../../components/organisms/TaskInfo';
-import CommentsList from '../../../components/organisms/CommentsList';
-import AddCommentForm from '../../../components/organisms/AddCommentForm';
-import HistoryModal from '../../../components/organisms/HistoryModal';
 import useWindowsSize from '../../../hooks/useWindowsSize';
 import { useTranslation } from 'react-i18next';
 import TaskDetailTemplate from '../../../components/templates/TaskDetailTemplate';
@@ -29,7 +24,7 @@ function TaskDetailPage() {
   const customers = root.customers.customers;
   const projects = root.projects.projects;
 
-  const currentUser = root.auth.user;
+  const currentUser = root.profiles.user;
   const usersLoading = root.users.loading;
   const customersLoading = root.customers.loading;
   const tasksLoading = root.tasks.loading;
@@ -175,7 +170,7 @@ function TaskDetailPage() {
 
     newAssignees = newAssignees.filter(userId => userId);
 
-    dispatch(action.assignTask(task.id, newAssignees, currentUser.uid))
+    dispatch(action.assignTask(task.id, newAssignees, currentUser.id))
       .catch((error) => {
         message.error(t('Assignment error'));
         // console.error('Görev atama hatası:', error);
@@ -188,7 +183,7 @@ function TaskDetailPage() {
       message.error(t('Comment cannot be empty'));
       return;
     }
-    dispatch(action.addComment(task.id, comment, currentUser.uid, attachments))
+    dispatch(action.addComment(task.id, comment, currentUser.id, attachments))
       .then(() => {
         message.success(t('Comment added successfully'));
       })
@@ -206,7 +201,7 @@ function TaskDetailPage() {
       message.error(t('Title cannot be empty'));
       return;
     }
-    dispatch(action.updateTask(task.id, { title: editTitle }, currentUser.uid))
+    dispatch(action.updateTask(task.id, { title: editTitle }, currentUser.id))
       .then(() => {
         message.success(t('Task title updated'));
         setIsEditing(false);
@@ -231,7 +226,13 @@ function TaskDetailPage() {
   const handleToggleComplete = () => {
     const newStatus = task.status === 'close' ? 'open' : 'close';
 
-    dispatch(action.updateTask(task.id, { status: newStatus }, currentUser.uid))
+    const updatedTask = {
+      ...task,
+      status: newStatus,
+      changedBy: currentUser.id,
+    };
+
+    dispatch(action.updateTask(taskId, updatedTask))
       .then(() => {
         message.success(t('Task status updated'));
       })
@@ -262,7 +263,7 @@ function TaskDetailPage() {
 
   const filteredHistory = useMemo(() => {
     if (!task || !Array.isArray(task.history)) return [];
-    return task.history.filter(entry => ['assign', 'unassign', 'update'].includes(entry.changeType));
+    return task.history.filter(entry => ['firsthistory','assign', 'unassign', 'update', 'taskAssign', 'taskupdate', 'categoryupdate','priorityupdate', 'statusupdate','unassigntaskupdate', 'customerupdate', 'titleupdate','descriptionupdate'].includes(entry.changeType));
   }, [task]);
 
 

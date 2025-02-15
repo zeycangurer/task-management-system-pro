@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import ButtonAtom from '../../atoms/Button';
-import { Col, Select, List, Tag, Avatar, Card, Modal, message } from 'antd';
-import { FaArrowLeft, FaCheck } from 'react-icons/fa';
+import { Card, message } from 'antd';
+import { FaArrowLeft } from 'react-icons/fa';
 import './styles.css';
 import { useNavigate } from 'react-router-dom';
 import ProjectHeader from '../../organisms/ProjectHeader';
@@ -135,7 +135,7 @@ function ProjectDetailTemplate({
 
     const filteredHistory = useMemo(() => {
         if (!project || !Array.isArray(project.history)) return [];
-        return project.history.filter(entry => ['assign', 'unassign', 'update', 'taskAssign', 'taskupdate'].includes(entry.changeType));
+        return project.history.filter(entry => ['firsthistory','assign', 'unassign', 'update', 'taskAssign', 'taskupdate', 'categoryupdate','priorityupdate', 'statusupdate','unassigntaskupdate', 'customerupdate', 'titleupdate','descriptionupdate'].includes(entry.changeType));
     }, [project]);
 
     return (

@@ -1,15 +1,14 @@
 import { db } from '../../firebaseConfig';
-import { collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, arrayRemove, Timestamp, getDocs, writeBatch, getDoc, onSnapshot } from 'firebase/firestore';
-import { message } from 'antd'
+import { collection, addDoc, updateDoc, deleteDoc, doc, arrayUnion, arrayRemove, Timestamp, writeBatch, getDoc, onSnapshot } from 'firebase/firestore';
 import * as types from '../constants/taskActionTypes';
 
 
-const getUserNameById = (userId, state) => {
-  const user = state.users.users.find(u => u.id === userId);
-  if (user) return user.name;
-  const customer = state.customers.customers.find(c => c.id === userId);
-  return customer ? customer.name : 'Bilinmiyor';
-};
+// const getUserNameById = (userId, state) => {
+//   const user = state.users.users.find(u => u.id === userId);
+//   if (user) return user.name;
+//   const customer = state.customers.customers.find(c => c.id === userId);
+//   return customer ? customer.name : 'Bilinmiyor';
+// };
 
 export const addTask = (taskData, currentUserId) => {
   return async (dispatch) => {
@@ -69,8 +68,8 @@ export const addTask = (taskData, currentUserId) => {
         status: 'open',
         history: [
           {
-            changeType: 'update',
-            description: 'Görev oluşturuldu.',
+            changeType: 'firsthistory',
+            description: '',
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           },
@@ -90,13 +89,13 @@ export const addTask = (taskData, currentUserId) => {
       if (taskData.projectId) {
         const projectRef = doc(db, 'projects', taskData.projectId);
         await updateDoc(projectRef, {
-          assignedTasks: arrayUnion(taskId) 
+          assignedTasks: arrayUnion(taskId)
         });
       }
       dispatch({ type: types.CREATE_TASK_SUCCESS, payload: { id: docRef.id, ...newTask } });
     } catch (error) {
       dispatch({ type: types.CREATE_TASK_FAILURE, payload: error.message });
-     
+
     }
   };
 };
@@ -127,7 +126,7 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
   return async (dispatch, getState) => {
     dispatch({ type: types.ASSIGN_TASK_REQUEST });
     try {
-      const state = getState();
+      // const state = getState();
 
       const taskRef = doc(db, 'tasks', taskId);
       const taskSnap = await getDoc(taskRef);
@@ -148,11 +147,11 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
       });
 
       if (addedAssignees.length > 0) {
-        const addedNames = addedAssignees.map(id => getUserNameById(id, state)).join(', ');
+        // const addedNames = addedAssignees.map(id => getUserNameById(id, state)).join(', ');
         batch.update(taskRef, {
           history: arrayUnion({
             changeType: 'assign',
-            description: `Göreve atandı: ${addedNames}`,
+            description: `${addedAssignees}`,
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           }),
@@ -160,11 +159,11 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
       }
 
       if (removedAssignees.length > 0) {
-        const removedNames = removedAssignees.map(id => getUserNameById(id, state)).join(', ');
+        // const removedNames = removedAssignees.map(id => getUserNameById(id, state)).join(', ');
         batch.update(taskRef, {
           history: arrayUnion({
             changeType: 'unassign',
-            description: `Görevden çıkarıldı: ${removedNames}`,
+            description: `${removedAssignees}`,
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           }),
@@ -199,13 +198,14 @@ export const assignTask = (taskId, newAssignees, currentUserId) => {
 
 
 
-export const updateTask = (taskId, updatedData, currentUserId) => {
+export const updateTask = (taskId, updatedData) => {
   return async (dispatch) => {
     dispatch({ type: types.UPDATE_TASK_REQUEST });
     try {
       const taskRef = doc(db, 'tasks', taskId);
       const taskSnap = await getDoc(taskRef);
 
+      console.log(updatedData)
       if (!taskSnap.exists()) throw new Error("Görev bulunamadı!");
 
       const existingTask = taskSnap.data();
@@ -214,47 +214,76 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
         updatedAt: Timestamp.fromDate(new Date()),
       };
 
-      let description = 'Görev güncellendi: ';
-      if (updatedData.title) description += `Başlık '${updatedData.title}' olarak değiştirildi. `;
-      if (updatedData.status !== undefined) description += `Görev ${updatedData.status === 'close' ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi. `;
-      if (updatedData.description) description += `Açıklama güncellendi. `;
+      const historyEntries = [];
 
-      const calculateDueDate = (priority) => {
-        const now = new Date();
-        switch (priority) {
-          case 'urgent': return new Date(now.setDate(now.getDate() + 1));
-          case 'soon': return new Date(now.setDate(now.getDate() + 3));
-          case 'can wait': return new Date(now.setMonth(now.getMonth() + 6));
-          default: return null;
-        }
-      };
+      if (updatedData.title && updatedData.title !== existingTask.title) {
+        historyEntries.push({
+          changeType: 'titleupdate',
+          description: `${updatedData.title}`,
+          changedBy: updatedData.changedBy,
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
 
-      if (updatedData.priority && (!existingTask.priority || updatedData.priority !== existingTask.priority)) {
-        const newDueDate = calculateDueDate(updatedData.priority);
-        updatePayload.dueDate = newDueDate ? Timestamp.fromDate(newDueDate) : existingTask?.dueDate || null;
-        description += `Öncelik değişti, bitiş tarihi güncellendi. `;
+      if (updatedData.description && updatedData.description !== existingTask.description) {
+        historyEntries.push({
+          changeType: 'descriptionupdate',
+          description: `${updatedData.description}`,
+          changedBy: updatedData.changedBy,
+          timestamp: Timestamp.fromDate(new Date()),
+        });
       }
 
       if (updatedData.customer && updatedData.customer !== existingTask.customer) {
-        description += `Müşteri değiştirildi. `;
-
-        if (existingTask.customer) {
-          const oldCustomerRef = doc(db, 'customers', existingTask.customer);
-          const oldCustomerSnap = await getDoc(oldCustomerRef);
-
-          if (oldCustomerSnap.exists()) {
-            const oldCustomerData = oldCustomerSnap.data();
-            await updateDoc(oldCustomerRef, {
-              createdTasks: oldCustomerData.createdTasks ? arrayRemove(taskId) : [],
-            });
-          }
-        }
-
-        const newCustomerRef = doc(db, 'customers', updatedData.customer);
-        await updateDoc(newCustomerRef, {
-          createdTasks: arrayUnion(taskId),
+        historyEntries.push({
+          changeType: 'customerupdate',
+          description: `${updatedData.customer}`,
+          changedBy: updatedData.changedBy,
+          timestamp: Timestamp.fromDate(new Date()),
         });
       }
+
+      if (updatedData.category && updatedData.category !== existingTask.category) {
+        historyEntries.push({
+          changeType: 'categoryupdate',
+          description: `${updatedData.category}`,
+          changedBy: updatedData.changedBy,
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
+
+      if (updatedData.priority && updatedData.priority !== existingTask.priority) {
+        const calculateDueDate = (priority) => {
+          const now = new Date();
+          switch (priority) {
+            case 'urgent': return new Date(now.setDate(now.getDate() + 1));
+            case 'soon': return new Date(now.setDate(now.getDate() + 3));
+            case 'can-wait': return new Date(now.setMonth(now.getMonth() + 6));
+            default: return null;
+          }
+        };
+        const newDueDate = calculateDueDate(updatedData.priority);
+        if (newDueDate) {
+          updatePayload.dueDate = Timestamp.fromDate(newDueDate);
+        }
+        historyEntries.push({
+          changeType: 'priorityupdate',
+          description: `${updatedData.priority}`,
+          changedBy: updatedData.changedBy,
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      if (updatedData.status && updatedData.status !== existingTask.status) {
+        historyEntries.push({
+          changeType: 'statusupdate',
+          description: `${updatedData.status}`,
+          changedBy: updatedData.changedBy,
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
 
       if (updatedData.projectId) {
         const projectRef = doc(db, 'projects', updatedData.projectId);
@@ -271,19 +300,26 @@ export const updateTask = (taskId, updatedData, currentUserId) => {
         }
       }
 
-      await updateDoc(taskRef, {
+      const batch = writeBatch(db);
+      batch.update(taskRef, {
         ...updatePayload,
-        history: arrayUnion({
-          changeType: 'update',
-          description: description.trim(),
-          changedBy: currentUserId,
-          timestamp: Timestamp.fromDate(new Date()),
-        }),
+        history: arrayUnion(...historyEntries),
       });
 
+      // await updateDoc(taskRef, {
+      //   ...updatePayload,
+      //   history: arrayUnion({
+      //     changeType: 'update',
+      //     description: description.trim(),
+      //     changedBy: currentUserId,
+      //     timestamp: Timestamp.fromDate(new Date()),
+      //   }),
+      // });
+      await batch.commit();
       const updatedTaskSnap = await getDoc(taskRef);
       const updatedTaskData = { id: updatedTaskSnap.id, ...updatedTaskSnap.data() };
 
+      console.log(updatedTaskData)
       dispatch({ type: types.UPDATE_TASK_SUCCESS, payload: updatedTaskData });
     } catch (error) {
       dispatch({ type: types.UPDATE_TASK_FAILURE, payload: error.message });
@@ -393,7 +429,7 @@ export const deleteTask = (taskId) => {
           createdTasks: arrayRemove(taskId)
         });
       }
-      
+
       dispatch({ type: types.DELETE_TASK_SUCCESS, payload: taskId });
 
     } catch (error) {

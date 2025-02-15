@@ -4,12 +4,12 @@ import { message } from 'antd'
 import * as types from '../constants/projectActionTypes';
 
 
-const getUserNameById = (userId, state) => {
-  const user = state.users.users.find(u => u.id === userId);
-  if (user) return user.name;
-  const customer = state.customers.customers.find(c => c.id === userId);
-  return customer ? customer.name : 'Bilinmiyor';
-};
+// const getUserNameById = (userId, state) => {
+//   const user = state.users.users.find(u => u.id === userId);
+//   if (user) return user.name;
+//   const customer = state.customers.customers.find(c => c.id === userId);
+//   return customer ? customer.name : 'Bilinmiyor';
+// };
 
 export const fetchProjects = () => {
   return async (dispatch) => {
@@ -34,13 +34,21 @@ export const addProject = (projectData) => {
 
       const data = {
         ...projectData,
-        status:'open',
+        status: 'open',
         assignedUsers: projectData.assignedUsers || [],
         assignedTasks: projectData.assignedTasks || [],
         startDate: projectData.startDate ? Timestamp.fromDate(new Date(projectData.startDate)) : null,
         endDate: projectData.endDate ? Timestamp.fromDate(new Date(projectData.endDate)) : null,
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
+        history: [
+          {
+            changeType: 'firsthistory',
+            description: '',
+            changedBy: projectData.changedBy,
+            timestamp: Timestamp.fromDate(new Date()),
+          },
+        ]
       };
 
       const docRef = await addDoc(collection(db, 'projects'), data);
@@ -189,8 +197,15 @@ export const updateProject = (projectId, updatedData) => {
       const startDateVal = updatedData.startDate instanceof Date ? Timestamp.fromDate(updatedData.startDate) : updatedData.startDate;
       const endDateVal = updatedData.endDate instanceof Date ? Timestamp.fromDate(updatedData.endDate) : updatedData.endDate;
 
+      const finalStatus = typeof updatedData.status !== 'undefined' ? updatedData.status : projectData.status;
+      const finalTitle = typeof updatedData.title !== 'undefined' ? updatedData.title : projectData.title;
+      const finalDescription = typeof updatedData.description !== 'undefined' ? updatedData.description : projectData.description;
+
       const data = {
         ...updatedData,
+        title: finalTitle,
+        description: finalDescription,
+        status: finalStatus,
         assignedUsers: updatedData.assignedUsers || [],
         assignedTasks: newAssignedTasks,
         startDate: startDateVal || null,
@@ -221,11 +236,12 @@ export const updateProject = (projectId, updatedData) => {
           updatedAt: Timestamp.fromDate(new Date()),
         });
       }
+
       const historyUpdates = [];
       if (updatedData.category !== projectData.category) {
         historyUpdates.push({
-          changeType: 'update',
-          description: `Kategori güncellendi: '${updatedData.category || 'N/A'}'`,
+          changeType: 'categoryupdate',
+          description: `${updatedData.category}`,
           changedBy: updatedData.changedBy || 'System',
           timestamp: Timestamp.fromDate(new Date()),
         });
@@ -233,10 +249,63 @@ export const updateProject = (projectId, updatedData) => {
 
       if (updatedData.priority !== projectData.priority) {
         historyUpdates.push({
-          changeType: 'update',
-          description: `Öncelik güncellendi: '${updatedData.priority || 'N/A'}'`,
+          changeType: 'priorityupdate',
+          description: `${updatedData.priority}`,
           changedBy: updatedData.changedBy || 'System',
           timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      if (updatedData.customerId !== projectData.customerId) {
+        historyUpdates.push({
+          changeType: 'customerupdate',
+          description: `${updatedData.customerId}`,
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      if (typeof updatedData.title !== 'undefined' && updatedData.title !== projectData.title) {
+        historyUpdates.push({
+          changeType: 'titleupdate',
+          description: `${updatedData.title}`,
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      if (typeof updatedData.description !== 'undefined' && updatedData.description !== projectData.description) {
+        historyUpdates.push({
+          changeType: 'descriptionupdate',
+          description: `${updatedData.description}`,
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      // if (addedTasks.length > 0 || removedTasks.length > 0) {
+      //   const historyEntry = {
+      //     changeType: 'taskupdate',
+      //     description: `Görev güncellemeleri yapıldı.`,
+      //     changedBy: updatedData.changedBy || 'System',
+      //     timestamp: Timestamp.fromDate(new Date()),
+      //   };
+
+      //   batch.update(projectRef, {
+      //     history: arrayUnion(historyEntry),
+      //   });
+      // }
+
+      if (typeof updatedData.status !== 'undefined' && updatedData.status !== projectData.status) {
+        const historyEntry = {
+          changeType: 'statusupdate',
+          description: `${updatedData.status}`,
+          changedBy: updatedData.changedBy || 'System',
+          timestamp: Timestamp.fromDate(new Date()),
+        };
+
+        batch.update(projectRef, {
+          history: arrayUnion(historyEntry),
         });
       }
 
@@ -246,52 +315,12 @@ export const updateProject = (projectId, updatedData) => {
         });
       });
 
-      if (addedTasks.length > 0 || removedTasks.length > 0) {
-        const historyEntry = {
-          changeType: 'taskupdate',
-          description: `Görev güncellemeleri yapıldı.`,
-          changedBy: updatedData.changedBy || 'System',
-          timestamp: Timestamp.fromDate(new Date()),
-        };
-
-        batch.update(projectRef, {
-          history: arrayUnion(historyEntry),
-        });
-      }
-
-      if (updatedData.status !== projectData.status) {
-        const description = `Proje durumu ${updatedData.status === 'close' ? 'tamamlandı' : 'tamamlanmadı'} olarak güncellendi.`;
-
-        const historyEntry = {
-          changeType: 'update',
-          description,
-          changedBy: updatedData.changedBy || 'System',
-          timestamp: Timestamp.fromDate(new Date()),
-        };
-
-        batch.update(projectRef, {
-          history: arrayUnion(historyEntry),
-        });
-      }
-
-      if (addedTasks.length > 0 || removedTasks.length > 0) {
-        const historyEntry = {
-          changeType: 'taskupdate',
-          description: 'Görev güncellemeleri yapıldı.',
-          changedBy: updatedData.changedBy || 'System',
-          timestamp: Timestamp.fromDate(new Date()),
-        };
-        batch.update(projectRef, {
-          history: arrayUnion(historyEntry),
-        });
-      }
-
 
       await batch.commit();
 
       const updatedProjectSnap = await getDoc(projectRef);
       const updatedProjectData = { id: updatedProjectSnap.id, ...updatedProjectSnap.data() };
-
+      // console.log(updatedProjectData)
       dispatch({
         type: types.UPDATE_PROJECT_SUCCESS,
         payload: updatedProjectData,
@@ -356,7 +385,7 @@ export const assignProject = (projectId, newAssignees, currentUserId) => {
   return async (dispatch, getState) => {
     dispatch({ type: types.ASSIGN_PROJECT_REQUEST });
     try {
-      const state = getState();
+      // const state = getState();
 
       const projectRef = doc(db, 'projects', projectId);
       const projectSnap = await getDoc(projectRef);
@@ -377,11 +406,11 @@ export const assignProject = (projectId, newAssignees, currentUserId) => {
       });
 
       if (addedAssignees.length > 0) {
-        const addedNames = addedAssignees.map(id => getUserNameById(id, state)).join(', ');
+        // const addedNames = addedAssignees.map(id => getUserNameById(id, state)).join(', ');
         batch.update(projectRef, {
           history: arrayUnion({
             changeType: 'assign',
-            description: `Projeye atandı: ${addedNames}`,
+            description: `${addedAssignees}`,
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           }),
@@ -389,11 +418,11 @@ export const assignProject = (projectId, newAssignees, currentUserId) => {
       }
 
       if (removedAssignees.length > 0) {
-        const removedNames = removedAssignees.map(id => getUserNameById(id, state)).join(', ');
+        // const removedNames = removedAssignees.map(id => getUserNameById(id, state)).join(', ');
         batch.update(projectRef, {
           history: arrayUnion({
             changeType: 'unassign',
-            description: `Projeden çıkarıldı: ${removedNames}`,
+            description: `${removedAssignees}`,
             changedBy: currentUserId,
             timestamp: Timestamp.fromDate(new Date()),
           }),
@@ -504,23 +533,44 @@ export const assignTaskToProject = (projectId, selectedTaskIds, changedBy) => {
       const projectRef = doc(db, 'projects', projectId);
       const batch = writeBatch(db);
 
-      const updatedAssignedTasks = selectedTaskIds;
-
       batch.update(projectRef, {
-        assignedTasks: updatedAssignedTasks,
-        history: arrayUnion({
-          changeType: 'taskupdate',
-          description: `Görev atamaları güncellendi: ${tasksToAdd
-            .map((taskId) => {
-              const task = tasks.find((t) => t.id === taskId);
-              return task ? task.title : taskId;
-            })
-            .join(', ')}`,
-          timestamp: Timestamp.fromDate(new Date()),
-          changedBy,
-        }),
+        assignedTasks: selectedTaskIds,
         updatedAt: Timestamp.fromDate(new Date()),
       });
+
+      const updatedAssignedTasks = selectedTaskIds;
+
+      if (tasksToAdd.length > 0) {
+        batch.update(projectRef, {
+          assignedTasks: updatedAssignedTasks,
+          history: arrayUnion({
+            changeType: 'taskupdate',
+            description: `${tasksToAdd}`,
+            timestamp: Timestamp.fromDate(new Date()),
+            changedBy,
+          }),
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
+      }
+
+      if (tasksToRemove.length > 0) {
+        batch.update(projectRef, {
+          assignedTasks: updatedAssignedTasks,
+          history: arrayUnion({
+            changeType: 'unassigntaskupdate',
+            description: `${tasksToRemove
+              .map((taskId) => {
+                const task = tasks.find((t) => t.id === taskId);
+                return task ? task.title : taskId;
+              })
+              .join(', ')}`,
+            timestamp: Timestamp.fromDate(new Date()),
+            changedBy,
+          }),
+          updatedAt: Timestamp.fromDate(new Date()),
+        });
+      }
+
       tasksToAdd.forEach((taskId) => {
         const taskRef = doc(db, 'tasks', taskId);
         batch.update(taskRef, {
@@ -542,7 +592,7 @@ export const assignTaskToProject = (projectId, selectedTaskIds, changedBy) => {
       const updatedProjectSnap = await getDoc(projectRef);
       const updatedProjectData = { id: updatedProjectSnap.id, ...updatedProjectSnap.data() };
 
-      const updatedState = getState();
+      // const updatedState = getState();
       // console.log('Güncellenen state dispatch öncesi :', updatedState.projects.projects);
       // console.log('updated project data',updatedProjectData)
       dispatch({

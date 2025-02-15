@@ -259,7 +259,25 @@ const resources = {
         "marketing": "Marketing",
         "finance": "Finance"
       },
-      "changedBy": "By {{name}} - {{timestamp}}"
+      "changedBy": "By {{name}} - {{timestamp}}",
+      "history": {
+        "assign": "User assigned: {{users}}",
+        "unassign": "User unassigned: {{users}}",
+        "update": "Updated details: {{details}}",
+        "taskAssign": "Tasks assigned: {{tasks}}",
+        "taskupdate": "Task updates: {{tasks}}",
+        "categoryupdate": "Category updated: {{category}}",
+        "priorityupdate": "Priority updated: {{priority}}",
+        "statusupdate": "Status updated: {{status}}",
+        "unassigntaskupdate": "Tasks unassigned: {{tasks}}",
+        "customerupdate": "Customer updated: {{customer}}",
+        "titleupdate": "Title updated to: {{title}}",
+        "descriptionupdate": "Description updated to: {{description}}",
+        "firsthistory": {
+          "task": "Task created successfully.",
+          "project": "Project created successfully."
+        }
+      },
 
     }
   },
@@ -521,8 +539,26 @@ const resources = {
         "marketing": "Pazarlama",
         "finance": "Finans"
       },
-      "changedBy": "{{name}} tarafından {{timestamp}}"
+      "changedBy": "{{name}} tarafından {{timestamp}}",
+      "history": {
+        "assign": "Kullanıcı atandı: {{users}}",
+        "unassign": "Atanan kullanıcılardan çıkarıldı: {{users}}",
+        "update": "Güncellenen detaylar: {{details}}",
+        "taskAssign": "Görev atamaları: {{tasks}}",
+        "taskupdate": "Görev güncellemeleri: {{tasks}}",
+        "categoryupdate": "Kategori güncellendi: {{category}}",
+        "priorityupdate": "Öncelik güncellendi: {{priority}}",
+        "statusupdate": "Durum güncellendi: {{status}}",
+        "unassigntaskupdate": "Atamadan çıkarılan görevler: {{tasks}}",
+        "customerupdate": "Müşteri güncellendi: {{customer}}",
+        "titleupdate": "Başlık güncellendi: {{title}}",
+        "descriptionupdate": "Açıklama güncellendi: {{description}}",
+        "firsthistory": {
+          "task": "Görev başarıyla oluşturuldu.",
+          "project": "Proje başarıyla oluşturuldu."
+        }
 
+      },
 
 
     }
