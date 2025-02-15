@@ -9,6 +9,7 @@ import './styles.css'
 import ProjectCreationTemplate from '../../../components/templates/ProjectCreationTemplate';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
+import LoadingSpinner from '../../../components/molecules/LoadingSpinner';
 
 function EditProjectPage() {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ function EditProjectPage() {
   const { projectId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const currentUser = useSelector(state => state.profiles.user);
 
   const { projects, loading } = useSelector((state) => state.projects);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -39,6 +41,7 @@ function EditProjectPage() {
       ...otherValues,
       startDate: startDate ? dayjs(startDate).toDate() : null, 
       endDate: endDate ? dayjs(endDate).toDate() : null,
+      changedBy: currentUser?.id,
     };
 
     dispatch(projectActions.updateProject(projectId, projectData))
@@ -52,7 +55,11 @@ function EditProjectPage() {
   };
 
   if (loading || !project) {
-    return <SpinAtom tip={t('Loading...')} />;
+    return (
+      <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
+        <LoadingSpinner tip={t('Loading...')} />
+      </HeaderSideBarTemplate>
+    );
   }
 
   const initialValues = {

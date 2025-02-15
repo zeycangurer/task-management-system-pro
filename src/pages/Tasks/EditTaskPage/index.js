@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as taskActions from '../../../store/actions/taskActions';
 import { message } from 'antd';
 import SpinAtom from '../../../components/atoms/Spin';
 import HeaderSideBarTemplate from '../../../components/templates/HeaderSideBarTemplate';
 import './styles.css'
 import TaskCreationTemplate from '../../../components/templates/TaskCreationTemplate';
-import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 
 function EditTaskPage() {
@@ -15,7 +14,7 @@ function EditTaskPage() {
     const { taskId } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const currentUser = useSelector(state => state.auth.user);
+    const currentUser = useSelector(state => state.profiles.user);
 
 
 
@@ -39,10 +38,11 @@ function EditTaskPage() {
 
         const taskData = {
             ...otherValues,
+            changedBy: currentUser.id,
         };
         // console.log(taskData)
         // console.log(taskId)
-        dispatch(taskActions.updateTask(taskId, taskData, currentUser.uid))
+        dispatch(taskActions.updateTask(taskId, taskData))
             .then(() => {
                 message.success(t('Task successfully updated'));
                 navigate(`/tasks/${taskId}`);

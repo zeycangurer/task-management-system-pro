@@ -25,7 +25,7 @@ function ProjectDetailPage() {
   const { customers } = root.customers;
   const { projects, loading, error } = root.projects;
   const { tasks } = root.tasks;
-  const currentUser = root.auth.user;
+  const currentUser = root.profiles.user;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [project, setProject] = useState(null);
@@ -92,7 +92,7 @@ function ProjectDetailPage() {
     const updatedProject = {
       ...project,
       status: newStatus,
-      changedBy: currentUser.uid,
+      changedBy: currentUser.id,
     };
 
     dispatch(projectAction.updateProject(projectId, updatedProject))
@@ -124,7 +124,7 @@ function ProjectDetailPage() {
 
     newAssignees = newAssignees.filter(userId => userId);
 
-    dispatch(projectAction.assignProject(project.id, newAssignees, currentUser.uid))
+    dispatch(projectAction.assignProject(project.id, newAssignees, currentUser.id))
       .catch((error) => {
         console.error(t('Assignment error'), error);
       });
