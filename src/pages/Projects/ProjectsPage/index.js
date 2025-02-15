@@ -134,7 +134,7 @@ function ProjectsPage() {
     );
   }
 
-  console.log(filteredProjects)
+  // console.log(filteredProjects)
   return (
     <div className="dashboard-container">
       <HeaderSideBarTemplate isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}>
