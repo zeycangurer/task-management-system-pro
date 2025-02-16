@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Select, List, Tag, Avatar } from 'antd';
 import TooltipAtom from '../../atoms/Tooltip';
 import ActionButton from '../../molecules/ActionButton';
-import { FaCheck } from 'react-icons/fa';
+import { FaUserPlus } from 'react-icons/fa';
 import { projectCategories, projectPriorities } from '../../../utils/arrays';
 import './styles.css'
 import { useTranslation } from 'react-i18next';
@@ -40,8 +40,8 @@ function ProjectInfo({
       <p><strong>{t('Category')}: </strong>{categoryLabel}</p>
       <p>
         <strong>{t('Customer')}: </strong>
-        {(projectCustomer && projectCustomer[0] && projectCustomer[0].name) 
-          ? projectCustomer[0].name 
+        {(projectCustomer && projectCustomer[0] && projectCustomer[0].name)
+          ? projectCustomer[0].name
           : t('No customer info.')}
       </p>
       <p><strong>{t('Status')}: </strong><Tag color={statusColor}>{statusLabel}</Tag></p>
@@ -78,7 +78,7 @@ function ProjectInfo({
             optionLabelProp="label"
           >
             <Option key="all" value="all" label={t('All Users')}>
-            {t('All Users')}
+              {t('All Users')}
             </Option>
             {sortedUsers.map((user) => (
               <Option key={user.id} value={user.id} label={user.name || user.email}>
@@ -89,12 +89,13 @@ function ProjectInfo({
           <TooltipAtom title={t('Assignment Tooltip')}>
             <ActionButton
               tooltipTitle={t('Assignment')}
-              icon={FaCheck}
+              icon={FaUserPlus}
               onClick={handleAssignSubmit}
               className="action-button assign-button"
               size={size}
               type="primary"
-            />
+            >
+            </ActionButton>
           </TooltipAtom>
         </div>
       </Col>

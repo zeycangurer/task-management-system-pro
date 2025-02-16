@@ -278,6 +278,10 @@ const resources = {
           "project": "Project created successfully."
         }
       },
+      "Assign": "Assign",
+      "Click to sort": "Click to sort",
+      "Filter":"Filter"
+
 
     }
   },
@@ -557,8 +561,10 @@ const resources = {
           "task": "Görev başarıyla oluşturuldu.",
           "project": "Proje başarıyla oluşturuldu."
         }
-
       },
+      "Assign": "Ata",
+      "Click to sort": "Sıralamak için tıklayın",
+      "Filter":"Filtrele"
 
 
     }

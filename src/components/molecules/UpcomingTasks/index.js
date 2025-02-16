@@ -18,7 +18,7 @@ function UpcomingTasks({ tasks }) {
   return (
     <div className="upcoming-tasks">
       <h2>{t("Upcoming Tasks")}</h2>
-      <div className="task-list">
+      <div className="upcoming-task-list">
         {paginatedTasks.length > 0 ? (
           paginatedTasks.map(task => (
             <TaskItem key={task.id} id={task.id} title={task.title} dueDate={new Date(task.dueDate.seconds * 1000)} />

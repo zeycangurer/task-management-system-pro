@@ -141,6 +141,7 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  color: var(--text-color);
 }
 
 .last-custom-pagination .ant-pagination-prev .ant-pagination-item-link,
