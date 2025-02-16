@@ -60,6 +60,7 @@ function DetailsTable({ tasks, users }) {
   };
 
   const data = filteredTasks.map((task) => ({
+    id: task.id,
     key: task.id,
     title: task.title,
     status: task.status,
@@ -69,7 +70,9 @@ function DetailsTable({ tasks, users }) {
     dueDate: task.dueDate ? task.dueDate.toDate().toLocaleDateString() : t('Not specified'),
   }));
 
+  // console.log(data)
   const handleRowClick = (taskId) => {
+    // console.log(taskId)
     navigate(`/tasks/${taskId}`);
   };
   return (
@@ -116,7 +119,7 @@ function DetailsTable({ tasks, users }) {
       {data.length === 0 ? (
         <p style={{ paddingBlock: 20, paddingInline: 5 }}> {t('No tasks found based on your criteria.')}</p>
       ) : (
-        <TableAtom data={data} dataType="analytics" onDataClick={(record) => handleRowClick(record.key)} />
+        <TableAtom data={data} dataType="analytics" onDataClick={(record) => handleRowClick(record)} />
       )}
 
     </div>

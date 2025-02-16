@@ -14,7 +14,7 @@
   margin-bottom: 12px;
 }
 
-.task-list {
+.upcoming-task-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -41,6 +41,7 @@
 .custom-pagination {
   text-align: center;
   margin-top: 15px;
+  justify-content: center;
 }
 
 .custom-pagination .ant-pagination-item-active {

@@ -45,6 +45,7 @@ main {
 }
 
 @media (max-width: 768px) {
+  
   .stats-section {
     grid-template-columns: 1fr;
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Col, Select, List, Avatar, Tag } from 'antd';
 import ActionButton from '../../molecules/ActionButton';
-import { FaCheck } from 'react-icons/fa'
+import { FaUserPlus } from 'react-icons/fa'
 import TooltipAtom from '../../atoms/Tooltip';
 import { taskCategories, taskPriorities } from '../../../utils/arrays';
 import { useSelector } from 'react-redux';
@@ -131,7 +131,7 @@ function TaskInfo({
           <TooltipAtom title={t('Assignment Tooltip')}>
             <ActionButton
               tooltipTitle={t('Assignment')}
-              icon={FaCheck}
+              icon={FaUserPlus}
               onClick={handleAssignSubmit}
               className="action-button assign-button assign-button-taskinfo"
               size={size}

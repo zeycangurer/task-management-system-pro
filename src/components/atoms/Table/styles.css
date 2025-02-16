@@ -15,6 +15,7 @@
 
 .custom-table .active-row {
   background-color: grey; 
+  color: white;
 }
 /* 
 .status.completed {
@@ -38,6 +39,7 @@
   background-color: #f0f2f5;
   font-weight: bold;
   text-align: center;
+  font-size: 15px;
 }
 
 .custom-table .ant-pagination-prev .ant-pagination-item-link,

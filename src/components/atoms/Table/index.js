@@ -1,14 +1,14 @@
-import React, { useRef, useState } from 'react';
-import { Button, Input, Space, Table } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import './styles.css';
-import { useTranslation } from 'react-i18next';
+import React, { useRef, useState } from "react";
+import { Button, Input, Space, Table } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import "./styles.css";
+import { useTranslation } from "react-i18next";
 
 function TableAtom({ data, onDataClick, dataType }) {
   const { t } = useTranslation();
   const searchInput = useRef(null);
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
   const [activeRowId, setActiveRowId] = useState(null);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -17,21 +17,39 @@ function TableAtom({ data, onDataClick, dataType }) {
     setSearchedColumn(dataIndex);
   };
 
+  const parseDate = (dateField) => {
+    if (!dateField) return new Date(0);
+    if (dateField.seconds) {
+      return new Date(dateField.seconds * 1000);
+    }
+    const parts = dateField.split(".");
+    if (parts.length !== 3) return new Date(0);
+    const [day, month, year] = parts;
+    return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+  };
+
   const handleReset = (clearFilters) => {
     clearFilters();
-    setSearchText('');
+    setSearchText("");
   };
 
   const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+    }) => (
       <div style={{ padding: 8 }}>
         <Input
           ref={searchInput}
-          placeholder={t('Search')}
+          placeholder={t("Search")}
           value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
           onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{ marginBottom: 8, display: 'block' }}
+          style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
           <Button
@@ -41,23 +59,25 @@ function TableAtom({ data, onDataClick, dataType }) {
             size="small"
             style={{ width: 90 }}
           >
-            {t('Search')}
+            {t("Search")}
           </Button>
           <Button
             onClick={() => handleReset(clearFilters)}
             size="small"
             style={{ width: 90 }}
           >
-            {t('Reset')}
+            {t("Reset")}
           </Button>
         </Space>
       </div>
     ),
     filterIcon: (filtered) => (
-      <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+      <SearchOutlined style={{ color: filtered ? "#1890ff" : undefined }} />
     ),
     onFilter: (value, record) => {
-      const recordValue = record[dataIndex] ? record[dataIndex].toString().toLowerCase() : '';
+      const recordValue = record[dataIndex]
+        ? record[dataIndex].toString().toLowerCase()
+        : "";
       return recordValue.includes(value.toLowerCase());
     },
     onFilterDropdownVisibleChange: (visible) => {
@@ -69,49 +89,97 @@ function TableAtom({ data, onDataClick, dataType }) {
 
   const columns = [
     {
-      title: t('Title'), dataIndex: 'title', key: 'title', width: 150, sorter: (a, b) => (a.title || '').localeCompare(b.title || ''),
-      sortDirections: ['ascend', 'descend'],
-      ...getColumnSearchProps('title'),
+      title: t("Title"),
+      dataIndex: "title",
+      key: "title",
+      width: 150,
+      sorter: (a, b) => (a.title || "").localeCompare(b.title || ""),
+      sortDirections: ["ascend", "descend"],
+      ...getColumnSearchProps("title"),
     },
   ];
 
-  if (dataType === 'analytics') {
+  if (dataType === "analytics") {
     columns.push(
-      { title: t('Assignee'), dataIndex: 'assignedToName', key: 'assignedToName', width: 150 },
       {
-        title: t('Status'),
-        dataIndex: 'status',
-        key: 'status',
+        title: t("Assignee"),
+        dataIndex: "assignedToName",
+        key: "assignedToName",
+        width: 150,
+      },
+      {
+        title: t("Status"),
+        dataIndex: "status",
+        key: "status",
         width: 120,
         render: (status) => (
-          <span className={`status ${status === 'close' ? 'completed' : 'pending'}`}>
-            {status === 'close' ? t('Completed') : t('Pending')}
+          <span
+            className={`status ${status === "close" ? "completed" : "pending"}`}
+          >
+            {status === "close" ? t("Completed") : t("Pending")}
           </span>
         ),
       },
-      { title: t('End Date'), dataIndex: 'dueDate', key: 'dueDate', defaultSortOrder: 'ascend', width: 130 }
+      {
+        title: t("End Date"),
+        dataIndex: "dueDate",
+        key: "dueDate",
+        sortDirections: ["ascend", "descend"],
+        // defaultSortOrder: "ascend",
+        width: 130,
+        sorter: (a, b) => {
+          const dateA = parseDate(a.dueDate);
+          const dateB = parseDate(b.dueDate);
+          return dateA - dateB;
+        },
+      }
     );
   } else {
     columns.push(
-      { title: t('Description'), dataIndex: 'description', key: 'description', width: 180 },
-      { title: t('Assignee'), dataIndex: 'assignedToName', key: 'assignedToName', width: 150 },
-      { title: t('Creator'), dataIndex: 'createdUserName', key: 'createdUserName', width: 150 },
       {
-        title: 'Oluşturulma Tarihi',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
+        title: t("Description"),
+        dataIndex: "description",
+        key: "description",
         width: 140,
-        render: (createdAt) =>
-          createdAt ? new Date(createdAt.seconds * 1000).toLocaleDateString() : 'N/A',
       },
       {
-        title: t('Creation Date'),
-        dataIndex: 'status',
-        key: 'status',
+        title: t("Assignee"),
+        dataIndex: "assignedToName",
+        key: "assignedToName",
+        width: 150,
+      },
+      {
+        title: t("Creator"),
+        dataIndex: "createdUserName",
+        key: "createdUserName",
+        width: 120,
+      },
+      {
+        title: t("Creation Date"),
+        dataIndex: "createdAt",
+        key: "createdAt",
+        sortDirections: ["ascend", "descend"],
+        sorter: (a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt.seconds * 1000) : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt.seconds * 1000) : 0;
+          return dateA - dateB;
+        },
+        width: 140,
+        render: (createdAt) =>
+          createdAt
+            ? new Date(createdAt.seconds * 1000).toLocaleDateString()
+            : "N/A",
+      },
+      {
+        title: t("Status"),
+        dataIndex: "status",
+        key: "status",
         width: 120,
         render: (status) => (
-          <span className={`status ${status === 'close' ? 'completed' : 'pending'}`}>
-            {status === 'close' ? t('Completed') : t('Pending')}
+          <span
+            className={`status ${status === "close" ? "completed" : "pending"}`}
+          >
+            {status === "close" ? t("Completed") : t("Pending")}
           </span>
         ),
       }
@@ -135,10 +203,12 @@ function TableAtom({ data, onDataClick, dataType }) {
         className="custom-table"
         scroll={{ x: 900, y: 400 }}
         locale={{
-          emptyText: t('No data found matching your search criteria.'),
+          emptyText: t("No data found matching your search criteria."),
         }}
-        rowClassName={(record) => (record.id === activeRowId ? 'active-row' : '')}
-
+        rowClassName={(record) =>
+          record.id === activeRowId ? "active-row" : ""
+        }
+        
       />
     </div>
   );

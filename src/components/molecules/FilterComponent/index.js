@@ -87,7 +87,7 @@ function FilterComponent({
       <div className="buttons-group">
         <button className="list-button" onClick={filterTasks}>
           <FaList style={{ marginRight: '5px' }} />
-          {t('List')}
+          {t('Filter')}
         </button>
         <button className="create-button" onClick={handleCreateTask}>
           <FaPlus style={{ marginRight: '5px' }} />
