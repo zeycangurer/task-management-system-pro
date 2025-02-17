@@ -37,15 +37,23 @@ export const addProject = (projectData) => {
         status: 'open',
         assignedUsers: projectData.assignedUsers || [],
         assignedTasks: projectData.assignedTasks || [],
-        startDate: projectData.startDate ? Timestamp.fromDate(new Date(projectData.startDate)) : null,
-        endDate: projectData.endDate ? Timestamp.fromDate(new Date(projectData.endDate)) : null,
+        startDate: projectData.startDate
+          ? (projectData.startDate.seconds
+            ? projectData.startDate
+            : Timestamp.fromDate(new Date(projectData.startDate)))
+          : null,
+        endDate: projectData.endDate
+          ? (projectData.endDate.seconds
+            ? projectData.endDate
+            : Timestamp.fromDate(new Date(projectData.endDate)))
+          : null,
         createdAt: Timestamp.fromDate(new Date()),
         updatedAt: Timestamp.fromDate(new Date()),
         history: [
           {
             changeType: 'firsthistory',
             description: '',
-            changedBy: projectData.changedBy,
+            changedBy: projectData.createdBy,
             timestamp: Timestamp.fromDate(new Date()),
           },
         ]
@@ -60,6 +68,7 @@ export const addProject = (projectData) => {
       dispatch({ type: types.ADD_PROJECT_SUCCESS, payload: newProject });
 
     } catch (error) {
+
       console.error('Hata:', error.message);
       dispatch({ type: types.ADD_PROJECT_FAILURE, payload: error.message });
     }

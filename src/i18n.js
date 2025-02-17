@@ -123,6 +123,7 @@ const resources = {
       "Please select start date": "Please select start date.",
       "Please select end date": "Please select end date.",
       "Task list updated!": "Task list updated!",
+      "Project list updated!": "Project list updated!",
       "Project successfully created.": "Project successfully created.",
       "An error occurred while creating the project.": "Proje oluşturulurken bir hata oluştu.",
       "There are no project to list.": "There are no project to list.",
@@ -280,8 +281,11 @@ const resources = {
       },
       "Assign": "Assign",
       "Click to sort": "Click to sort",
-      "Filter":"Filter"
-
+      "Filter": "Filter",
+      "There is no data to display.": "There is no data to display.",
+      "Select a customer first.": "Select a customer first.",
+      "This field cannot be changed.": "This field cannot be changed.",
+      "No upcoming tasks.": "No upcoming tasks."
 
     }
   },
@@ -406,6 +410,7 @@ const resources = {
       "Please select start date": "Lütfen başlangıç tarihini seçin.",
       "Please select end date": "Lütfen bitiş tarihini seçin.",
       "Task list updated!": "Görev listesi yenilendi!",
+      "Project list updated!": "Proje listesi yenilendi!",
       "Project successfully created.": "Proje başarıyla oluşturuldu.",
       "An error occurred while creating the project.": "Proje oluşturulurken bir hata oluştu.",
       "There are no project to list.": "Listelenecek proje bulunmamaktadır.",
@@ -564,7 +569,11 @@ const resources = {
       },
       "Assign": "Ata",
       "Click to sort": "Sıralamak için tıklayın",
-      "Filter":"Filtrele"
+      "Filter": "Filtrele",
+      "There is no data to display.": "Görüntülenecek veri bulunmamaktadır.",
+      "Select a customer first.": "Önce müşteri seçiniz.",
+      "This field cannot be changed.": "Bu alan değiştirilemez.",
+      "No upcoming tasks.":"Yaklaşan görev yok."
 
 
     }
