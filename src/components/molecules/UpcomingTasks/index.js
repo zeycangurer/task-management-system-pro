@@ -3,15 +3,23 @@ import TaskItem from '../../atoms/TaskItem';
 import { Pagination } from 'antd';
 import './styles.css';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 
 function UpcomingTasks({ tasks }) {
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 3;
+  const currentUser = useSelector(state => state.profiles.user);
 
   const upcomingTasks = tasks
-    ?.filter(task => task.dueDate && task.status !== 'close')
-    .sort((a, b) => a.dueDate.seconds - b.dueDate.seconds);
+  ?.filter(task => {
+    if (currentUser?.role === 'customer') {
+      return task.customer === currentUser.id;
+    }
+    return true;
+  })
+  .filter(task => task.dueDate && task.status !== 'close')
+  .sort((a, b) => a.dueDate.seconds - b.dueDate.seconds);
 
   const paginatedTasks = upcomingTasks.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 

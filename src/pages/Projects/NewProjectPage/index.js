@@ -16,17 +16,20 @@ function NewProjectPage() {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.profiles.user);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+console.log(currentUser)
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   const onFinish = (values) => {
+    const { startDate, endDate, ...otherValues } = values;
+
     const projectData = {
-      ...values,
+      ...otherValues,
       createdAt: Timestamp.fromDate(new Date()),
-      status: 'aktif',
       createdBy: currentUser.id,
+      startDate: startDate ? Timestamp.fromDate(new Date(startDate)) : null,
+      endDate: endDate ? Timestamp.fromDate(new Date(endDate)) : null,
     };
 
     dispatch(addProject(projectData))

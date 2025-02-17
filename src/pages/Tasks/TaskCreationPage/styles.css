@@ -30,3 +30,7 @@ main {
 .upload-class .ant-upload-list-item-name {
   color: var(--text-color) !important;
 }
+
+.project-alert-message {
+  color: var(--error-color);
+}
