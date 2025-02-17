@@ -151,9 +151,9 @@ function TaskCreationFormOrganism({ onSubmit, initialValues, isEditMode }) {
     return '';
   }, [isEditMode, projectId, urlProjectId, selectedCustomer]);
 
-  console.log(isEditMode)
-  console.log(projectId)
-  console.log(urlProjectId)
+  // console.log(isEditMode)
+  // console.log(projectId)
+  // console.log(urlProjectId)
 
 
   return (
