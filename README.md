@@ -8,8 +8,9 @@ This project is an application called **Task Management Pro**, built on React an
 ## Table of Contents
 
 1.  [Overview](#overview)
+2. [Demo Login Information](#demo-login-information)
     
-2.  [Features and Screens](#features-and-screens)
+3.  [Features and Screens](#features-and-screens)
     
     -   [Task Screens](#task-screens)
         
@@ -23,17 +24,18 @@ This project is an application called **Task Management Pro**, built on React an
         
     -   [Admin Panel](#admin-panel)
         
-3.  [Role and Permission Management](#role-and-permission-management)
+4.  [Role and Permission Management](#role-and-permission-management)
     
-4.  [Design and User Experience](#design-and-user-experience)
+5.  [Design and User Experience](#design-and-user-experience)
     
-5.  [Used Technologies and Dependencies](#used-technologies-and-dependencies)
+6.  [Used Technologies and Dependencies](#used-technologies-and-dependencies)
     
-6.  [Installation](#installation)
+7.  [Installation](#installation)
     
-7.  [Environment Variables](#environment-variables)
+8.  [Environment Variables](#environment-variables)
     
-8.  [Usage](#usage)
+9.  [Usage](#usage)
+10. [License](#license)
     
 
 
@@ -53,7 +55,24 @@ This project is designed to facilitate task and project tracking within a team o
     
 -   Visualize project status with analysis screens showing statistical data and charts
     
+## Demo Login Information
+To try the application, you can use the demo accounts by clicking on the link:
+[Demo Link](https://task-management-system-pro.vercel.app/login)
+- **Admin User**
+	- Email: admin@admin.com
+	- Password: 123456
 
+- **Manager User**
+	- Email: manager1@manager.com
+	- Password: 123456
+
+- **Employee User**
+	- Email: -   employee1@employee.com
+	- Password: 123456
+
+- **Customer User**
+	- Email: customer5@customer.com
+	- Password: 123456
 
 ## Features and Screens
 
@@ -399,4 +418,6 @@ REACT_APP_CLOUDINARY_UPLOAD_PRESET=...
     
 9.  For a **responsive** experience, you can test the application on mobile or different screen sizes.
 
+## License
 
+For detailed information about this project’s license, please see the LICENSE file (if not available, adding one is recommended).
