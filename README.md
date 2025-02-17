@@ -67,7 +67,7 @@ To try the application, you can use the demo accounts by clicking on the link:
 	- Password: 123456
 
 - **Employee User**
-	- Email: -   employee1@employee.com
+	- Email: employee1@employee.com
 	- Password: 123456
 
 - **Customer User**
