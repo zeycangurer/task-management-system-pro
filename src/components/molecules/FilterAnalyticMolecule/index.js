@@ -52,7 +52,6 @@ function FilterAnalyticMolecule({
           onChange={(value) => setSelectedCategory(value)}
         >
           <SelectAtom.Option value="">Tüm Kategoriler</SelectAtom.Option>
-          {/* Dinamik kategori listesi eklenebilir */}
         </SelectAtom>
       </div>
       <ButtonAtom type="primary" onClick={filterAnalytics}>
