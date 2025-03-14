@@ -16,7 +16,7 @@ function NewProjectPage() {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.profiles.user);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-console.log(currentUser)
+// console.log(currentUser)
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
